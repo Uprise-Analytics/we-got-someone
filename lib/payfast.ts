@@ -9,16 +9,28 @@ export const PAYFAST_URL = IS_SANDBOX
   ? 'https://sandbox.payfast.co.za/eng/process'
   : 'https://www.payfast.co.za/eng/process'
 
-export function generateSignature(data: Record<string, string>, passphrase: string): string {
-  const filtered = Object.fromEntries(
-    Object.entries(data).filter(([, v]) => v !== '' && v !== undefined)
-  )
-  const str = Object.entries(filtered)
-    .map(([k, v]) => `${k}=${encodeURIComponent(v).replace(/%20/g, '+')}`)
-    .join('&')
+function pfEncode(val: string): string {
+  return encodeURIComponent(val.trim())
+    .replace(/%20/g, '+')
+    .replace(/!/g, '%21')
+    .replace(/'/g, '%27')
+    .replace(/\(/g, '%28')
+    .replace(/\)/g, '%29')
+    .replace(/\*/g, '%2A')
+}
 
-  const withPassphrase = passphrase ? `${str}&passphrase=${encodeURIComponent(passphrase).replace(/%20/g, '+')}` : str
-  return crypto.createHash('md5').update(withPassphrase).digest('hex')
+export function generateSignature(data: Record<string, string>, passphrase: string): string {
+  let output = ''
+  for (const [key, val] of Object.entries(data)) {
+    if (val !== undefined && val.trim() !== '') {
+      output += `${key}=${pfEncode(val)}&`
+    }
+  }
+  output = output.slice(0, -1)
+  if (passphrase.trim()) {
+    output += `&passphrase=${pfEncode(passphrase)}`
+  }
+  return crypto.createHash('md5').update(output).digest('hex')
 }
 
 export function verifyITN(params: Record<string, string>, passphrase: string): boolean {

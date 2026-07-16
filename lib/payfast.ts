@@ -20,13 +20,12 @@ function pfEncode(val: string): string {
 }
 
 export function generateSignature(data: Record<string, string>, passphrase: string): string {
-  let output = ''
-  for (const [key, val] of Object.entries(data)) {
-    if (val !== undefined && val.trim() !== '') {
-      output += `${key}=${pfEncode(val)}&`
-    }
-  }
-  output = output.slice(0, -1)
+  const sorted = Object.entries(data)
+    .filter(([, val]) => val !== undefined && val.trim() !== '')
+    .sort(([a], [b]) => a.localeCompare(b))
+
+  let output = sorted.map(([key, val]) => `${key}=${pfEncode(val)}`).join('&')
+
   if (passphrase.trim()) {
     output += `&passphrase=${pfEncode(passphrase)}`
   }

@@ -1,14 +1,26 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 
 export default function PhotoGallery({ photos }: { photos: string[] }) {
   const [index, setIndex] = useState<number | null>(null)
   const open = index !== null
+  const touchStartX = useRef<number | null>(null)
 
   const prev = useCallback(() => setIndex(i => (i !== null && i > 0 ? i - 1 : i)), [])
   const next = useCallback(() => setIndex(i => (i !== null && i < photos.length - 1 ? i + 1 : i)), [photos.length])
   const close = useCallback(() => setIndex(null), [])
+
+  function onTouchStart(e: React.TouchEvent) {
+    touchStartX.current = e.touches[0].clientX
+  }
+
+  function onTouchEnd(e: React.TouchEvent) {
+    if (touchStartX.current === null) return
+    const diff = touchStartX.current - e.changedTouches[0].clientX
+    if (Math.abs(diff) > 50) diff > 0 ? next() : prev()
+    touchStartX.current = null
+  }
 
   useEffect(() => {
     if (!open) return
@@ -45,6 +57,8 @@ export default function PhotoGallery({ photos }: { photos: string[] }) {
         <div
           className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
           onClick={close}
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
         >
           {/* Close */}
           <button

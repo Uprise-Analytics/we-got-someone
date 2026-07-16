@@ -2,7 +2,7 @@ import crypto from 'crypto'
 
 export const PAYFAST_MERCHANT_ID = process.env.PAYFAST_MERCHANT_ID!
 export const PAYFAST_MERCHANT_KEY = process.env.PAYFAST_MERCHANT_KEY!
-export const PAYFAST_PASSPHRASE = process.env.PAYFAST_PASSPHRASE ?? ''
+export const PAYFAST_PASSPHRASE = (process.env.PAYFAST_PASSPHRASE ?? '').trim()
 export const IS_SANDBOX = process.env.PAYFAST_SANDBOX === 'true' || process.env.NODE_ENV !== 'production'
 
 export const PAYFAST_URL = IS_SANDBOX

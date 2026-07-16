@@ -22,6 +22,7 @@ function pfEncode(val: string): string {
 export function generateSignature(data: Record<string, string>, passphrase: string): string {
   const entries = Object.entries(data)
     .filter(([, val]) => val !== undefined && val.trim() !== '')
+    .sort(([a], [b]) => a.localeCompare(b))
 
   let output = entries.map(([key, val]) => `${key}=${pfEncode(val)}`).join('&')
 
@@ -29,8 +30,8 @@ export function generateSignature(data: Record<string, string>, passphrase: stri
     output += `&passphrase=${pfEncode(passphrase)}`
   }
   const hash = crypto.createHash('md5').update(output).digest('hex')
-  console.log('PAYFAST_SIG_STRING:', output)
-  console.log('PAYFAST_SIG_HASH:', hash)
+  console.warn('PAYFAST_SIG_STRING:', output)
+  console.warn('PAYFAST_SIG_HASH:', hash)
   return hash
 }
 

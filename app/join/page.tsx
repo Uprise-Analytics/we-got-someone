@@ -356,7 +356,7 @@ export default function JoinPage() {
               <input
                 type="text"
                 inputMode="numeric"
-                placeholder="062 131 7657"
+                placeholder="071 234 5678"
                 value={phone}
                 onChange={e => {
                   const digits = e.target.value.replace(/\D/g, '').slice(0, 10)

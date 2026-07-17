@@ -44,7 +44,7 @@ const SECTIONS = [
   },
   {
     heading: 'Contact us',
-    body: `For any privacy-related questions or requests, contact us at: info@gotsomeone.co.za`,
+    body: `For any privacy-related questions or requests, contact us at: info@upriseanalytics.co.za`,
   },
 ]
 

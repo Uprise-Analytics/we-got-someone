@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
+import Image from 'next/image'
 import Navbar from '@/components/Navbar'
 import HeroSearch from '@/components/HeroSearch'
 import WorkerMarquee from '@/components/WorkerMarquee'
@@ -147,9 +148,7 @@ export default async function HomePage() {
       {/* ── Footer ── */}
       <footer className="bg-gray-900 py-10 px-6">
         <div className="max-w-5xl mx-auto flex flex-col items-center gap-6">
-          <span className="text-base font-bold text-white">
-            We Got <span className="text-green-400">Someone</span>
-          </span>
+          <Image src="/logo.png" alt="We Got Someone" width={160} height={40} className="h-8 w-auto" />
           <div className="flex flex-wrap justify-center gap-x-8 gap-y-3 text-xs text-gray-400">
             <Link href="/workers" className="hover:text-white transition-colors">Find a worker</Link>
             <Link href="/join" className="hover:text-white transition-colors">List yourself</Link>

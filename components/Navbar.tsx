@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import NavMenu from './NavMenu'
 
 type NavbarProps =
@@ -11,8 +12,8 @@ export default function Navbar(props: NavbarProps) {
   return (
     <nav className="sticky top-0 z-50 bg-white border-b border-gray-100">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
-        <Link href="/" className="text-base sm:text-lg font-bold text-gray-900 tracking-tight whitespace-nowrap">
-          We Got <span className="text-green-600">Someone</span>
+        <Link href="/" className="flex items-center">
+          <Image src="/logo.png" alt="We Got Someone" width={160} height={40} priority className="h-8 sm:h-9 w-auto" />
         </Link>
 
         {props.variant === 'public' && <NavMenu />}

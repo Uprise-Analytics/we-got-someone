@@ -148,7 +148,7 @@ export default async function HomePage() {
       {/* ── Footer ── */}
       <footer className="bg-gray-900 py-10 px-6">
         <div className="max-w-5xl mx-auto flex flex-col items-center gap-6">
-          <Image src="/logo.png" alt="We Got Someone" width={220} height={55} className="h-12 w-auto" />
+          <Image src="/logo.png" alt="We Got Someone" width={360} height={90} className="h-16 w-auto" />
           <div className="flex flex-wrap justify-center gap-x-8 gap-y-3 text-xs text-gray-400">
             <Link href="/workers" className="hover:text-white transition-colors">Find a worker</Link>
             <Link href="/join" className="hover:text-white transition-colors">List yourself</Link>

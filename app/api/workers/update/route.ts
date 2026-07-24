@@ -4,14 +4,27 @@ import { createServerClient } from '@supabase/ssr'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 
 export async function POST(req: NextRequest) {
-  const cookieStore = await cookies()
-  const serverSupabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { cookies: { getAll: () => cookieStore.getAll() } }
-  )
+  let user: { id: string } | null = null
 
-  const { data: { user } } = await serverSupabase.auth.getUser()
+  // Mobile app sends Bearer token in Authorization header
+  const authHeader = req.headers.get('Authorization')
+  const bearerToken = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null
+
+  if (bearerToken) {
+    const { data } = await supabaseAdmin.auth.getUser(bearerToken)
+    user = data.user ?? null
+  } else {
+    // Web browser uses cookie-based session
+    const cookieStore = await cookies()
+    const serverSupabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      { cookies: { getAll: () => cookieStore.getAll() } }
+    )
+    const { data } = await serverSupabase.auth.getUser()
+    user = data.user ?? null
+  }
+
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const {

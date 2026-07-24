@@ -64,7 +64,7 @@ export default function PromoCodeForm() {
         </button>
       </div>
       {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-      <p className="text-xs text-gray-400 mt-2">Valid codes give you 30 days free. No card needed.</p>
+      <p className="text-xs text-gray-400 mt-2">Valid codes give you 60 days free. No card needed.</p>
     </form>
   )
 }

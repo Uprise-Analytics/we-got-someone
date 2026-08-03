@@ -367,10 +367,14 @@ export default function EditProfileForm({ worker }: { worker: Worker }) {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1.5">Website</label>
           <input
-            type="url"
-            placeholder="e.g. https://www.yourcompany.co.za"
+            type="text"
+            placeholder="e.g. www.yourcompany.co.za"
             value={website}
             onChange={e => setWebsite(e.target.value)}
+            onBlur={e => {
+              const v = e.target.value.trim()
+              if (v && !v.startsWith('http://') && !v.startsWith('https://')) setWebsite('https://' + v)
+            }}
             className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-gray-50"
           />
         </div>

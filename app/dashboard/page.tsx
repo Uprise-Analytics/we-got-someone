@@ -46,7 +46,13 @@ export default async function DashboardPage() {
       <div className="relative max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
 
         {/* Header */}
-        <div className="bg-white border border-gray-200 rounded-2xl p-5 mb-5 text-center">
+        <div className="bg-white border border-gray-200 rounded-2xl mb-5 text-center overflow-hidden">
+          {worker.banner_url && (
+            <div className="w-full h-32 sm:h-40 bg-gray-100 overflow-hidden">
+              <img src={worker.banner_url} alt="Banner" className="w-full h-full object-cover" />
+            </div>
+          )}
+          <div className="p-5">
           <div className="relative inline-block mb-3">
             <div className="w-20 h-20 rounded-2xl bg-gray-100 overflow-hidden shadow-sm mx-auto">
               {worker.photo_url ? (
@@ -78,6 +84,7 @@ export default async function DashboardPage() {
           >
             Edit profile
           </Link>
+          </div>{/* end inner padding */}
         </div>
 
         {/* Status banner */}

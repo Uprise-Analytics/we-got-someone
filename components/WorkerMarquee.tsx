@@ -56,7 +56,6 @@ export default function WorkerMarquee({ workers }: { workers: Worker[] }) {
                       </div>
                     )}
                   </div>
-                  <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-bold text-gray-900 text-sm truncate">{worker.name}</p>

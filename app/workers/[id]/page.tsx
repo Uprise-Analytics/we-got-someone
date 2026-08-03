@@ -135,12 +135,6 @@ export default async function WorkerProfilePage({ params }: { params: Promise<{ 
                 {worker.years_experience} yr{worker.years_experience !== 1 ? 's' : ''} exp
               </span>
             )}
-            {worker.available_now && (
-              <span className="text-sm font-medium bg-green-600 text-white px-3 py-1 rounded-full flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-                Available now
-              </span>
-            )}
           </div>
 
           {/* ── Languages ── */}

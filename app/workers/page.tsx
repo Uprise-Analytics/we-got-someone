@@ -166,8 +166,8 @@ export default async function WorkersPage({
                     </div>
                   ) : null}
 
-                  {/* Card top: photo centered, availability */}
-                  <div className={`relative pt-6 pb-4 px-4 text-center border-b border-gray-100 ${worker.available_now ? 'bg-green-50' : 'bg-gray-50'}`}>
+                  {/* Card top: photo centered */}
+                  <div className="relative pt-6 pb-4 px-4 text-center border-b border-gray-100 bg-gray-50">
                     <div className="relative inline-block mb-2">
                       <div className="w-20 h-20 rounded-full bg-gray-200 overflow-hidden shadow-sm mx-auto">
                         {worker.photo_url ? (
@@ -178,21 +178,12 @@ export default async function WorkersPage({
                           </div>
                         )}
                       </div>
-                      {worker.available_now && (
-                        <span className="absolute bottom-0.5 right-0.5 w-4 h-4 bg-green-500 border-2 border-white rounded-full" />
-                      )}
                     </div>
                     <p className="font-bold text-gray-900 text-base leading-snug mb-0.5">{worker.name}</p>
                     {areas.length > 0 && (
                       <p className="text-xs text-gray-400">
                         {areas.slice(0, 2).join(' · ')}{areas.length > 2 ? ` +${areas.length - 2}` : ''}
                       </p>
-                    )}
-                    {worker.available_now && (
-                      <div className="flex items-center justify-center gap-1 mt-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                        <span className="text-xs font-semibold text-green-600">Available now</span>
-                      </div>
                     )}
                   </div>
 

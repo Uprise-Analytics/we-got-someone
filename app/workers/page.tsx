@@ -106,9 +106,7 @@ async function getWorkers(skill?: string, area?: string, sort?: string, name?: s
   if (sort === 'rating') return workers.sort((a, b) => b.avg_rating - a.avg_rating)
 
   const byScore = (a: Worker, b: Worker) => completenessScore(b) - completenessScore(a)
-  const available = shuffleArr(workers.filter(w => w.available_now).sort(byScore))
-  const others    = shuffleArr(workers.filter(w => !w.available_now).sort(byScore))
-  return [...available, ...others]
+  return shuffleArr(workers.sort(byScore))
 }
 
 export default async function WorkersPage({

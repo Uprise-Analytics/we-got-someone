@@ -6,11 +6,13 @@ import { supabase } from '@/lib/supabase-browser'
 import AreaSelect from '@/components/AreaSelect'
 
 const SKILLS = [
-  'Painter', 'Cleaner', 'Gardener', 'Plumber', 'Electrician',
-  'Tiler', 'Carpenter', 'Handyman', 'Domestic Worker', 'Brick Layer',
-  'Kitchen Installer', 'Flooring', 'Air Conditioning', 'Waterproofing',
-  'Roofing', 'Pest Control', 'Landscaping', 'Security', 'Pool & Spa',
-  'Bathroom Renovation',
+  'Air Conditioning', 'Bathroom Renovation', 'Blinds & Curtains', 'Brick Layer',
+  'Carpenter', 'CCTV & Intercom', 'Ceiling', 'Cleaner', 'Domestic Worker',
+  'Drain Cleaning', 'Electrician', 'Flooring', 'Gardener', 'Handyman',
+  'Kitchen Installer', 'Landscaping', 'Moving & Transport', 'Painter',
+  'Paving', 'Pest Control', 'Plastering', 'Plumber', 'Pool & Spa',
+  'Roofing', 'Rubble Removal', 'Security', 'Solar Installation',
+  'Tiler', 'Tree Felling', 'Waterproofing', 'Welding',
 ]
 
 const LANGUAGES = [

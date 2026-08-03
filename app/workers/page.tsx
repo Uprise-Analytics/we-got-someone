@@ -7,6 +7,9 @@ import TradePattern from '@/components/TradePattern'
 const SKILLS = [
   'Painter', 'Cleaner', 'Gardener', 'Plumber', 'Electrician',
   'Tiler', 'Carpenter', 'Handyman', 'Domestic Worker', 'Brick Layer',
+  'Kitchen Installer', 'Flooring', 'Air Conditioning', 'Waterproofing',
+  'Roofing', 'Pest Control', 'Landscaping', 'Security', 'Pool & Spa',
+  'Bathroom Renovation',
 ]
 
 const RANK = ['Primary', 'Secondary', 'Tertiary']
@@ -19,7 +22,7 @@ type Worker = {
   city: string
   area: string
   photo_url: string | null
-  daily_rate: number | null
+  banner_url: string | null
   available_now: boolean
   avg_rating: number
   review_count: number
@@ -57,7 +60,6 @@ function completenessScore(w: Worker): number {
   return (
     (w.photo_url ? 3 : 0) +
     (w.bio ? 2 : 0) +
-    (w.daily_rate ? 1 : 0) +
     (w.work_photos?.length ? 2 : 0) +
     (w.review_count > 0 ? 3 : 0) +
     (w.own_transport ? 1 : 0) +
@@ -76,7 +78,7 @@ async function getWorkers(skill?: string, area?: string, sort?: string, name?: s
   let { data, error } = await applyFilters(
     supabase
       .from('workers')
-      .select(`id, name, bio, skills, city, area, photo_url, daily_rate, available_now, gender, date_of_birth, languages, own_transport, years_experience, service_areas, work_photos, created_at, reviews(rating)`)
+      .select(`id, name, bio, skills, city, area, photo_url, banner_url, available_now, gender, date_of_birth, languages, own_transport, years_experience, service_areas, work_photos, created_at, reviews(rating)`)
       .eq('is_active', true)
   )
 
@@ -84,7 +86,7 @@ async function getWorkers(skill?: string, area?: string, sort?: string, name?: s
     const fallback = await applyFilters(
       supabase
         .from('workers')
-        .select(`id, name, bio, skills, city, area, photo_url, daily_rate, available_now, created_at, reviews(rating)`)
+        .select(`id, name, bio, skills, city, area, photo_url, banner_url, available_now, created_at, reviews(rating)`)
         .eq('is_active', true)
     )
     if (fallback.error || !fallback.data) return []
@@ -100,8 +102,6 @@ async function getWorkers(skill?: string, area?: string, sort?: string, name?: s
   })) as Worker[]
 
   if (sort === 'rating') return workers.sort((a, b) => b.avg_rating - a.avg_rating)
-  if (sort === 'rate_low') return workers.sort((a, b) => (a.daily_rate ?? 99999) - (b.daily_rate ?? 99999))
-  if (sort === 'rate_high') return workers.sort((a, b) => (b.daily_rate ?? 0) - (a.daily_rate ?? 0))
 
   const byScore = (a: Worker, b: Worker) => completenessScore(b) - completenessScore(a)
   const available = shuffleArr(workers.filter(w => w.available_now).sort(byScore))
@@ -157,13 +157,15 @@ export default async function WorkersPage({
                   href={`/workers/${worker.id}`}
                   className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md hover:border-green-300 transition-all group flex flex-col"
                 >
-                  {/* Card top: photo centered, rate badge, availability */}
+                  {/* Banner */}
+                  {worker.banner_url ? (
+                    <div className="w-full h-24 bg-gray-100 overflow-hidden">
+                      <img src={worker.banner_url} alt="" className="w-full h-full object-cover" />
+                    </div>
+                  ) : null}
+
+                  {/* Card top: photo centered, availability */}
                   <div className={`relative pt-6 pb-4 px-4 text-center border-b border-gray-100 ${worker.available_now ? 'bg-green-50' : 'bg-gray-50'}`}>
-                    {worker.daily_rate && (
-                      <span className="absolute top-3 right-3 text-xs font-bold text-green-700 bg-white border border-green-200 px-2.5 py-1 rounded-full shadow-sm">
-                        R{worker.daily_rate}/day
-                      </span>
-                    )}
                     <div className="relative inline-block mb-2">
                       <div className="w-20 h-20 rounded-full bg-gray-200 overflow-hidden shadow-sm mx-auto">
                         {worker.photo_url ? (

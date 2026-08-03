@@ -19,7 +19,7 @@ export default async function EditProfilePage() {
 
   const { data: worker, error: workerError } = await serverSupabase
     .from('workers')
-    .select('id, user_id, name, bio, skills, city, area, phone, photo_url, daily_rate, available_now, gender, date_of_birth, languages, own_transport, years_experience, service_areas, work_photos')
+    .select('id, user_id, name, bio, skills, city, area, phone, photo_url, banner_url, email, website, available_now, gender, date_of_birth, languages, own_transport, years_experience, service_areas, work_photos')
     .eq('user_id', user.id)
     .single()
 
@@ -27,7 +27,7 @@ export default async function EditProfilePage() {
   const workerData = workerError
     ? (await serverSupabase
         .from('workers')
-        .select('id, user_id, name, bio, skills, city, area, phone, photo_url, daily_rate, available_now')
+        .select('id, user_id, name, bio, skills, city, area, phone, photo_url, banner_url, email, website, available_now')
         .eq('user_id', user.id)
         .single()).data
     : worker

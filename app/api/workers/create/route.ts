@@ -4,7 +4,7 @@ import { supabaseAdmin } from '@/lib/supabase-admin'
 export async function POST(req: NextRequest) {
   const body = await req.json()
   const {
-    userId, name, bio, skills, phone, photoUrl, dailyRate,
+    userId, name, bio, skills, phone, photoUrl,
     gender, dateOfBirth, languages, ownTransport, yearsExperience, serviceAreas,
   } = body
 
@@ -23,7 +23,6 @@ export async function POST(req: NextRequest) {
     area: primaryCity,
     phone,
     photo_url: photoUrl ?? null,
-    daily_rate: dailyRate ?? null,
     is_active: false,
     gender: gender ?? null,
     date_of_birth: dateOfBirth ?? null,
@@ -42,8 +41,7 @@ export async function POST(req: NextRequest) {
       area: primaryCity,
       phone,
       photo_url: photoUrl ?? null,
-      daily_rate: dailyRate ?? null,
-      is_active: false,
+        is_active: false,
       gender: gender ?? null,
       date_of_birth: dateOfBirth ?? null,
       languages: languages ?? [],

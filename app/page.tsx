@@ -6,22 +6,32 @@ import HeroSearch from '@/components/HeroSearch'
 import WorkerMarquee from '@/components/WorkerMarquee'
 
 const SKILL_CATEGORIES = [
-  { label: 'Painter',         icon: '🎨' },
-  { label: 'Cleaner',         icon: '🧹' },
-  { label: 'Gardener',        icon: '🌿' },
-  { label: 'Plumber',         icon: '🔧' },
-  { label: 'Electrician',     icon: '⚡' },
-  { label: 'Tiler',           icon: '🪟' },
-  { label: 'Carpenter',       icon: '🪵' },
-  { label: 'Handyman',        icon: '🔨' },
-  { label: 'Domestic Worker', icon: '🏠' },
-  { label: 'Brick Layer',     icon: '🧱' },
+  { label: 'Painter',            icon: '🎨' },
+  { label: 'Cleaner',            icon: '🧹' },
+  { label: 'Gardener',           icon: '🌿' },
+  { label: 'Plumber',            icon: '🔧' },
+  { label: 'Electrician',        icon: '⚡' },
+  { label: 'Tiler',              icon: '🪟' },
+  { label: 'Carpenter',          icon: '🪵' },
+  { label: 'Handyman',           icon: '🔨' },
+  { label: 'Domestic Worker',    icon: '🏠' },
+  { label: 'Brick Layer',        icon: '🧱' },
+  { label: 'Kitchen Installer',  icon: '🍳' },
+  { label: 'Flooring',           icon: '🪵' },
+  { label: 'Air Conditioning',   icon: '❄️' },
+  { label: 'Waterproofing',      icon: '💧' },
+  { label: 'Roofing',            icon: '🏗️' },
+  { label: 'Pest Control',       icon: '🐛' },
+  { label: 'Landscaping',        icon: '🌳' },
+  { label: 'Security',           icon: '🔒' },
+  { label: 'Pool & Spa',         icon: '🏊' },
+  { label: 'Bathroom Renovation',icon: '🚿' },
 ]
 
 async function getFeaturedWorkers() {
   const { data } = await supabase
     .from('workers')
-    .select('id, name, skills, photo_url, daily_rate, service_areas, city, available_now')
+    .select('id, name, skills, photo_url, service_areas, city, available_now')
     .eq('is_active', true)
     .eq('available_now', true)
     .limit(10)
@@ -88,7 +98,7 @@ export default async function HomePage() {
         <section className="py-20 bg-gray-50 overflow-hidden">
           <div className="text-center mb-10 px-6">
             <h2 className="text-2xl font-extrabold text-gray-900 mb-1">
-              We Got <span className="text-green-600">Someone.</span>
+              We Got <span className="text-green-600">Someone</span>
             </h2>
             <p className="text-gray-500 text-sm">
               Workers available right now. Hover to pause.{' '}
@@ -148,7 +158,7 @@ export default async function HomePage() {
       {/* ── Footer ── */}
       <footer className="bg-gray-900 py-10 px-6">
         <div className="max-w-5xl mx-auto flex flex-col items-center gap-6">
-          <Image src="/logo-white.png" alt="We Got Someone" width={360} height={240} className="h-28 sm:h-32 w-auto" />
+          <Image src="/logo-white.png" alt="We Got Someone" width={360} height={240} className="h-40 sm:h-48 w-auto" />
           <div className="flex flex-wrap justify-center gap-x-8 gap-y-3 text-xs text-gray-400">
             <Link href="/workers" className="hover:text-white transition-colors">Find a worker</Link>
             <Link href="/join" className="hover:text-white transition-colors">List yourself</Link>

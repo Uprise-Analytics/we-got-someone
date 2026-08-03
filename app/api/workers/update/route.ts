@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const {
-    name, bio, skills, phone, photoUrl, dailyRate, availableNow,
+    name, bio, skills, phone, photoUrl, bannerUrl, email, website, availableNow,
     gender, dateOfBirth, languages, ownTransport, yearsExperience, serviceAreas, workPhotos,
   } = await req.json()
 
@@ -39,7 +39,8 @@ export async function POST(req: NextRequest) {
     city: primaryCity,
     area: primaryCity,
     available_now: availableNow ?? false,
-    daily_rate: dailyRate ?? null,
+    email: email ?? null,
+    website: website ?? null,
     gender: gender ?? null,
     date_of_birth: dateOfBirth ?? null,
     languages: languages ?? [],
@@ -49,6 +50,7 @@ export async function POST(req: NextRequest) {
     work_photos: workPhotos ?? [],
   }
   if (photoUrl !== undefined) fullUpdates.photo_url = photoUrl
+  if (bannerUrl !== undefined) fullUpdates.banner_url = bannerUrl
 
   const { error: fullError } = await supabaseAdmin
     .from('workers')
@@ -63,7 +65,8 @@ export async function POST(req: NextRequest) {
     city: primaryCity,
     area: primaryCity,
     available_now: availableNow ?? false,
-    daily_rate: dailyRate ?? null,
+    email: email ?? null,
+    website: website ?? null,
     gender: gender ?? null,
     date_of_birth: dateOfBirth ?? null,
     languages: languages ?? [],
@@ -71,6 +74,7 @@ export async function POST(req: NextRequest) {
     years_experience: yearsExperience ?? null,
   }
   if (photoUrl !== undefined) baseUpdates.photo_url = photoUrl
+  if (bannerUrl !== undefined) baseUpdates.banner_url = bannerUrl
 
   const { error: baseError } = await supabaseAdmin
     .from('workers')

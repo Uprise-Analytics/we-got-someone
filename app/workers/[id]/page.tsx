@@ -64,8 +64,16 @@ export default async function WorkerProfilePage({ params }: { params: Promise<{ 
       )}
 
       <div className="relative max-w-2xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-10">
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 sm:p-6 mb-5">
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden mb-5">
 
+          {/* ── Banner ── */}
+          {worker.banner_url && (
+            <div className="w-full h-40 sm:h-52 bg-gray-100 overflow-hidden">
+              <img src={worker.banner_url} alt="Banner" className="w-full h-full object-cover" />
+            </div>
+          )}
+
+          <div className="p-5 sm:p-6">
           {/* ── Profile header: centered on mobile, side-by-side on desktop ── */}
           <div className="flex flex-col items-center sm:flex-row sm:items-start gap-4 sm:gap-6 mb-5 text-center sm:text-left">
             <div className="w-24 h-24 rounded-full bg-gray-200 overflow-hidden flex-shrink-0 shadow-sm">
@@ -135,11 +143,6 @@ export default async function WorkerProfilePage({ params }: { params: Promise<{ 
                 Own transport
               </span>
             )}
-            {worker.daily_rate && (
-              <span className="text-sm font-bold bg-green-50 text-green-700 px-3 py-1 rounded-full">
-                R{worker.daily_rate}/day
-              </span>
-            )}
             {worker.available_now && (
               <span className="text-sm font-medium bg-green-600 text-white px-3 py-1 rounded-full flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
@@ -161,6 +164,28 @@ export default async function WorkerProfilePage({ params }: { params: Promise<{ 
             <div className="mb-5">
               <h2 className="font-semibold text-gray-900 mb-1.5">About</h2>
               <p className="text-gray-600 leading-relaxed text-sm sm:text-base">{worker.bio}</p>
+            </div>
+          )}
+
+          {/* ── Email & Website ── */}
+          {(worker.email || worker.website) && (
+            <div className="flex flex-wrap gap-3 mb-5">
+              {worker.email && (
+                <a href={`mailto:${worker.email}`} className="flex items-center gap-2 text-sm text-gray-600 hover:text-green-600 transition-colors">
+                  <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  {worker.email}
+                </a>
+              )}
+              {worker.website && (
+                <a href={worker.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-gray-600 hover:text-green-600 transition-colors">
+                  <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9" />
+                  </svg>
+                  {worker.website.replace(/^https?:\/\//, '')}
+                </a>
+              )}
             </div>
           )}
 
@@ -210,6 +235,7 @@ export default async function WorkerProfilePage({ params }: { params: Promise<{ 
             )}
           </div>
 
+          </div>{/* end inner padding */}
         </div>
 
         <ReviewForm workerId={worker.id} />

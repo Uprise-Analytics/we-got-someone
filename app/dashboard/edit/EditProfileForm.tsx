@@ -8,6 +8,9 @@ import AreaSelect from '@/components/AreaSelect'
 const SKILLS = [
   'Painter', 'Cleaner', 'Gardener', 'Plumber', 'Electrician',
   'Tiler', 'Carpenter', 'Handyman', 'Domestic Worker', 'Brick Layer',
+  'Kitchen Installer', 'Flooring', 'Air Conditioning', 'Waterproofing',
+  'Roofing', 'Pest Control', 'Landscaping', 'Security', 'Pool & Spa',
+  'Bathroom Renovation',
 ]
 
 const LANGUAGES = [
@@ -25,7 +28,9 @@ type Worker = {
   area: string
   phone: string
   photo_url: string | null
-  daily_rate: number | null
+  banner_url: string | null
+  email: string | null
+  website: string | null
   available_now: boolean
   gender?: string | null
   date_of_birth?: string | null
@@ -72,10 +77,13 @@ export default function EditProfileForm({ worker }: { worker: Worker }) {
   const [bio, setBio] = useState(worker.bio ?? '')
   const [skills, setSkills] = useState<string[]>(worker.skills ?? [])
   const [phone, setPhone] = useState(worker.phone)
-  const [dailyRate, setDailyRate] = useState(worker.daily_rate?.toString() ?? '')
+  const [email, setEmail] = useState(worker.email ?? '')
+  const [website, setWebsite] = useState(worker.website ?? '')
   const [availableNow, setAvailableNow] = useState(worker.available_now ?? false)
   const [photo, setPhoto] = useState<File | null>(null)
   const [photoPreview, setPhotoPreview] = useState<string | null>(worker.photo_url)
+  const [banner, setBanner] = useState<File | null>(null)
+  const [bannerPreview, setBannerPreview] = useState<string | null>(worker.banner_url)
   const [gender, setGender] = useState(worker.gender ?? '')
   const [dateOfBirth, setDateOfBirth] = useState(worker.date_of_birth ?? '')
   const [languages, setLanguages] = useState<string[]>(worker.languages ?? [])
@@ -113,12 +121,24 @@ export default function EditProfileForm({ worker }: { worker: Worker }) {
       }
     }
 
+    let bannerUrl: string | undefined = undefined
+    if (banner) {
+      const ext = banner.name.split('.').pop()
+      const filePath = `${worker.user_id}-banner.${ext}`
+      const { error: uploadError } = await supabase.storage.from('worker-photos').upload(filePath, banner, { upsert: true })
+      if (!uploadError) {
+        const { data: urlData } = supabase.storage.from('worker-photos').getPublicUrl(filePath)
+        bannerUrl = urlData.publicUrl
+      }
+    }
+
     const res = await fetch('/api/workers/update', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        name, bio, skills, phone, photoUrl,
-        dailyRate: dailyRate ? parseInt(dailyRate) : null,
+        name, bio, skills, phone, photoUrl, bannerUrl,
+        email: email || null,
+        website: website || null,
         availableNow,
         gender: gender || null,
         dateOfBirth: dateOfBirth || null,
@@ -146,6 +166,33 @@ export default function EditProfileForm({ worker }: { worker: Worker }) {
 
       {/* ── Profile ── */}
       <CardSection label="Profile">
+        {/* Banner image */}
+        <div>
+          <p className="text-xs font-medium text-gray-500 mb-1.5 text-center">Profile banner</p>
+          <label className="relative block cursor-pointer group rounded-xl overflow-hidden bg-gray-100 border-2 border-dashed border-gray-200 hover:border-green-400 transition-colors" style={{ aspectRatio: '3/1' }}>
+            {bannerPreview ? (
+              <img src={bannerPreview} alt="Banner" className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex flex-col items-center justify-center gap-1 text-gray-400">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span className="text-xs">Add a banner photo</span>
+              </div>
+            )}
+            <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+              <span className="text-white text-xs font-semibold">Change banner</span>
+            </div>
+            <input type="file" accept="image/*" onChange={e => {
+              const file = e.target.files?.[0]
+              if (!file) return
+              setBanner(file)
+              setBannerPreview(URL.createObjectURL(file))
+            }} className="hidden" />
+          </label>
+          <p className="text-xs text-gray-400 mt-1 text-center">Wide photo of your work, premises or team</p>
+        </div>
+
         {/* Clickable photo */}
         <div className="flex flex-col items-center">
           <label className="relative cursor-pointer group">
@@ -307,19 +354,25 @@ export default function EditProfileForm({ worker }: { worker: Worker }) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">Daily rate</label>
-          <div className="relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm font-semibold">R</span>
-            <input
-              type="number"
-              placeholder="e.g. 250"
-              value={dailyRate}
-              onChange={e => setDailyRate(e.target.value)}
-              min={0}
-              className="w-full pl-8 pr-16 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-gray-50"
-            />
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm">/day</span>
-          </div>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">Email address</label>
+          <input
+            type="email"
+            placeholder="e.g. info@yourcompany.co.za"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-gray-50"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">Website</label>
+          <input
+            type="url"
+            placeholder="e.g. https://www.yourcompany.co.za"
+            value={website}
+            onChange={e => setWebsite(e.target.value)}
+            className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-gray-50"
+          />
         </div>
 
         <div>

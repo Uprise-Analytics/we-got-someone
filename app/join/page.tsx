@@ -35,7 +35,6 @@ export default function JoinPage() {
   const [bio, setBio] = useState('')
   const [skills, setSkills] = useState<string[]>([])
   const [phone, setPhone] = useState('')
-  const [dailyRate, setDailyRate] = useState('')
   const [photo, setPhoto] = useState<File | null>(null)
   const [photoPreview, setPhotoPreview] = useState<string | null>(null)
   const [gender, setGender] = useState('')
@@ -126,7 +125,7 @@ export default function JoinPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         userId, name, bio, skills, phone,
-        photoUrl, dailyRate: dailyRate ? parseInt(dailyRate) : null,
+        photoUrl,
         gender, dateOfBirth: dateOfBirth || null,
         languages, ownTransport,
         yearsExperience: yearsExperience ? parseInt(yearsExperience) : null,
@@ -369,21 +368,6 @@ export default function JoinPage() {
                 className="w-full px-4 py-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
               />
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Daily rate</label>
-                <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm font-semibold">R</span>
-                  <input
-                    type="number"
-                    placeholder="e.g. 250"
-                    value={dailyRate}
-                    onChange={e => setDailyRate(e.target.value)}
-                    min={0}
-                    className="w-full pl-8 pr-16 py-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-                  />
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm">/day</span>
-                </div>
-              </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Years of experience</label>
                 <input

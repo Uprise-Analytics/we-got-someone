@@ -7,7 +7,6 @@ type Worker = {
   name: string
   skills: string[]
   photo_url: string | null
-  daily_rate: number | null
   service_areas: string[] | null
   city: string | null
   available_now: boolean
@@ -65,11 +64,6 @@ export default function WorkerMarquee({ workers }: { workers: Worker[] }) {
                     <p className="text-xs text-gray-400 truncate">{areas.slice(0, 2).join(' · ')}</p>
                   )}
                 </div>
-                {worker.daily_rate && (
-                  <span className="text-xs font-bold text-green-700 bg-green-50 border border-green-100 px-2 py-0.5 rounded-full flex-shrink-0">
-                    R{worker.daily_rate}/day
-                  </span>
-                )}
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-xs text-gray-500">

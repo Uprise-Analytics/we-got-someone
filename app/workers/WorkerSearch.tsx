@@ -73,8 +73,6 @@ export default function WorkerSearch({
         >
           <option value="">Sort: Available first</option>
           <option value="rating">Sort: Highest rated</option>
-          <option value="rate_low">Sort: Rate low to high</option>
-          <option value="rate_high">Sort: Rate high to low</option>
         </select>
       </div>
 

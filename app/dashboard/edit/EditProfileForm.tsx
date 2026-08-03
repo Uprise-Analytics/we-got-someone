@@ -81,7 +81,6 @@ export default function EditProfileForm({ worker }: { worker: Worker }) {
   const [phone, setPhone] = useState(worker.phone)
   const [email, setEmail] = useState(worker.email ?? '')
   const [website, setWebsite] = useState(worker.website ?? '')
-  const [availableNow, setAvailableNow] = useState(worker.available_now ?? false)
   const [photo, setPhoto] = useState<File | null>(null)
   const [photoPreview, setPhotoPreview] = useState<string | null>(worker.photo_url)
   const [banner, setBanner] = useState<File | null>(null)
@@ -89,7 +88,6 @@ export default function EditProfileForm({ worker }: { worker: Worker }) {
   const [gender, setGender] = useState(worker.gender ?? '')
   const [dateOfBirth, setDateOfBirth] = useState(worker.date_of_birth ?? '')
   const [languages, setLanguages] = useState<string[]>(worker.languages ?? [])
-  const [ownTransport, setOwnTransport] = useState(worker.own_transport ?? false)
   const [yearsExperience, setYearsExperience] = useState(worker.years_experience?.toString() ?? '')
   const [workPhotos, setWorkPhotos] = useState<string[]>(worker.work_photos ?? [])
   const [uploadingWork, setUploadingWork] = useState(false)
@@ -141,11 +139,9 @@ export default function EditProfileForm({ worker }: { worker: Worker }) {
         name, bio, skills, phone, photoUrl, bannerUrl,
         email: email || null,
         website: website || null,
-        availableNow,
         gender: gender || null,
         dateOfBirth: dateOfBirth || null,
         languages,
-        ownTransport,
         yearsExperience: yearsExperience ? parseInt(yearsExperience) : null,
         serviceAreas,
         workPhotos,
@@ -394,17 +390,6 @@ export default function EditProfileForm({ worker }: { worker: Worker }) {
           />
         </div>
 
-        <Toggle
-          on={ownTransport}
-          onClick={() => setOwnTransport(v => !v)}
-          label="I have my own transport"
-        />
-
-        <Toggle
-          on={availableNow}
-          onClick={() => setAvailableNow(v => !v)}
-          label="Available for work right now"
-        />
       </CardSection>
 
       {/* ── Work photos ── */}

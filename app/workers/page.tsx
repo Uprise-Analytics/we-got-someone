@@ -224,11 +224,6 @@ export default async function WorkersPage({
                           {worker.years_experience} yr{worker.years_experience !== 1 ? 's' : ''} exp
                         </span>
                       )}
-                      {worker.own_transport && (
-                        <span className="text-xs font-medium bg-blue-50 text-blue-700 px-2.5 py-1 rounded-full border border-blue-100">
-                          Transport
-                        </span>
-                      )}
                     </div>
 
                     {/* Languages */}

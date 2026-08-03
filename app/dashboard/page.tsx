@@ -274,6 +274,7 @@ export default async function DashboardPage() {
             {[
               { done: worker.available_now, text: 'Mark yourself Available Now when you\'re free. It jumps you to the top.' },
               { done: !!worker.photo_url, text: 'Add a profile photo' },
+              { done: !!worker.banner_url, text: 'Add a banner photo of your work or premises' },
               { done: !!worker.bio, text: 'Write a short bio about yourself' },
               { done: (worker.work_photos?.length ?? 0) > 0, text: 'Upload work photos to show what you can do' },
               { done: false, text: 'Get your first review from a client' },

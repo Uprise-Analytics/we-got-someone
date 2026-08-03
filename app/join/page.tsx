@@ -40,7 +40,6 @@ export default function JoinPage() {
   const [gender, setGender] = useState('')
   const [dateOfBirth, setDateOfBirth] = useState('')
   const [languages, setLanguages] = useState<string[]>([])
-  const [ownTransport, setOwnTransport] = useState(false)
   const [yearsExperience, setYearsExperience] = useState('')
   const [serviceAreas, setServiceAreas] = useState<string[]>([])
 
@@ -127,7 +126,7 @@ export default function JoinPage() {
         userId, name, bio, skills, phone,
         photoUrl,
         gender, dateOfBirth: dateOfBirth || null,
-        languages, ownTransport,
+        languages,
         yearsExperience: yearsExperience ? parseInt(yearsExperience) : null,
         serviceAreas,
       }),
@@ -380,27 +379,6 @@ export default function JoinPage() {
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
               </div>
-
-              {/* Own transport */}
-              <button
-                type="button"
-                onClick={() => setOwnTransport(v => !v)}
-                className={`w-full flex items-center justify-between px-4 py-3 rounded-lg border text-sm font-medium transition-colors cursor-pointer ${
-                  ownTransport
-                    ? 'bg-green-50 border-green-300 text-green-700'
-                    : 'bg-white border-gray-200 text-gray-600'
-                }`}
-              >
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 17a2 2 0 100-4 2 2 0 000 4zm8 0a2 2 0 100-4 2 2 0 000 4zM3 11l1.5-5h15L21 11M3 11h18M3 11l-1 4h20l-1-4" />
-                  </svg>
-                  I have my own transport
-                </div>
-                <span className={`w-10 h-5 rounded-full transition-colors flex items-center px-0.5 ${ownTransport ? 'bg-green-500' : 'bg-gray-300'}`}>
-                  <span className={`w-4 h-4 rounded-full bg-white shadow transition-transform ${ownTransport ? 'translate-x-5' : 'translate-x-0'}`} />
-                </span>
-              </button>
 
               {error && <p className="text-red-500 text-sm">{error}</p>}
 

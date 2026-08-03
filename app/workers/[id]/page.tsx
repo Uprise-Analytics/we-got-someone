@@ -135,14 +135,6 @@ export default async function WorkerProfilePage({ params }: { params: Promise<{ 
                 {worker.years_experience} yr{worker.years_experience !== 1 ? 's' : ''} exp
               </span>
             )}
-            {worker.own_transport && (
-              <span className="text-sm font-medium bg-blue-50 text-blue-700 px-3 py-1 rounded-full flex items-center gap-1.5">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 17a2 2 0 100-4 2 2 0 000 4zm8 0a2 2 0 100-4 2 2 0 000 4zM3 11l1.5-5h15L21 11M3 11h18M3 11l-1 4h20l-1-4" />
-                </svg>
-                Own transport
-              </span>
-            )}
             {worker.available_now && (
               <span className="text-sm font-medium bg-green-600 text-white px-3 py-1 rounded-full flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-white animate-pulse" />

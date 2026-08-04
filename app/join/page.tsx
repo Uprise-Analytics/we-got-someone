@@ -57,6 +57,9 @@ export default function JoinPage() {
   const [dateOfBirth, setDateOfBirth] = useState('')
   const [languages, setLanguages] = useState<string[]>([])
   const [serviceAreas, setServiceAreas] = useState<string[]>([])
+  const [isEditMode, setIsEditMode] = useState(false)
+  const [existingPhotoUrl, setExistingPhotoUrl] = useState<string | null>(null)
+  const [existingBannerUrl, setExistingBannerUrl] = useState<string | null>(null)
 
   // Keep ref in sync so popstate handler never has a stale closure
   useEffect(() => { stepRef.current = step }, [step])
@@ -80,24 +83,57 @@ export default function JoinPage() {
     return () => window.removeEventListener('popstate', handlePopState)
   }, [])
 
-  // Restore draft on mount
+  // Restore draft on mount + detect if user already signed up (coming back from payment page)
   useEffect(() => {
     try {
       const saved = sessionStorage.getItem('wgs_join_draft')
-      if (!saved) return
-      const d = JSON.parse(saved)
-      if (d.email) setEmail(d.email)
-      if (d.name) setName(d.name)
-      if (d.bio) setBio(d.bio)
-      if (d.phone) setPhone(d.phone)
-      if (d.contactEmail) setContactEmail(d.contactEmail)
-      if (d.website) setWebsite(d.website)
-      if (d.gender) setGender(d.gender)
-      if (d.dateOfBirth) setDateOfBirth(d.dateOfBirth)
-      if (d.skills?.length) setSkills(d.skills)
-      if (d.languages?.length) setLanguages(d.languages)
-      if (d.serviceAreas?.length) setServiceAreas(d.serviceAreas)
+      if (saved) {
+        const d = JSON.parse(saved)
+        if (d.email) setEmail(d.email)
+        if (d.name) setName(d.name)
+        if (d.bio) setBio(d.bio)
+        if (d.phone) setPhone(d.phone)
+        if (d.contactEmail) setContactEmail(d.contactEmail)
+        if (d.website) setWebsite(d.website)
+        if (d.gender) setGender(d.gender)
+        if (d.dateOfBirth) setDateOfBirth(d.dateOfBirth)
+        if (d.skills?.length) setSkills(d.skills)
+        if (d.languages?.length) setLanguages(d.languages)
+        if (d.serviceAreas?.length) setServiceAreas(d.serviceAreas)
+      }
     } catch {}
+
+    // If the user already has an account + worker record, go straight to step 2 in edit mode
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (!session) return
+      const { data: worker } = await supabase
+        .from('workers')
+        .select('name, bio, skills, phone, email, website, gender, date_of_birth, languages, service_areas, photo_url, banner_url')
+        .eq('user_id', session.user.id)
+        .single()
+      if (!worker) return
+      setIsEditMode(true)
+      setEmail(session.user.email ?? '')
+      setName(prev => prev || (worker.name ?? ''))
+      setBio(prev => prev || (worker.bio ?? ''))
+      setPhone(prev => prev || (worker.phone ?? ''))
+      setContactEmail(prev => prev || (worker.email ?? ''))
+      setWebsite(prev => prev || (worker.website ?? ''))
+      setGender(prev => prev || (worker.gender ?? ''))
+      setDateOfBirth(prev => prev || (worker.date_of_birth ?? ''))
+      setSkills(prev => prev.length ? prev : (worker.skills ?? []))
+      setLanguages(prev => prev.length ? prev : (worker.languages ?? []))
+      setServiceAreas(prev => prev.length ? prev : (worker.service_areas ?? []))
+      if (worker.photo_url) {
+        setExistingPhotoUrl(worker.photo_url)
+        setPhotoPreview(prev => prev || worker.photo_url)
+      }
+      if (worker.banner_url) {
+        setExistingBannerUrl(worker.banner_url)
+        setBannerPreview(prev => prev || worker.banner_url)
+      }
+      setStep('profile')
+    })
   }, [])
 
   // Auto-save draft as user types
@@ -158,6 +194,50 @@ export default function JoinPage() {
     if (serviceAreas.length === 0) { setError('Please select at least one area you work in.'); return }
     setLoading(true)
     setError('')
+
+    // Edit mode: user already exists, just update their profile and go back to payment
+    if (isEditMode) {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) { setError('Session expired. Please sign in again.'); setLoading(false); return }
+      const uid = session.user.id
+
+      let photoUrl = existingPhotoUrl
+      if (photo) {
+        const ext = photo.name.split('.').pop()
+        const { error: upErr } = await supabase.storage.from('worker-photos').upload(`${uid}.${ext}`, photo, { upsert: true })
+        if (!upErr) {
+          const { data: u } = supabase.storage.from('worker-photos').getPublicUrl(`${uid}.${ext}`)
+          photoUrl = u.publicUrl
+        }
+      }
+
+      let bannerUrl = existingBannerUrl
+      if (banner) {
+        const ext = banner.name.split('.').pop()
+        const { error: upErr } = await supabase.storage.from('worker-photos').upload(`${uid}-banner.${ext}`, banner, { upsert: true })
+        if (!upErr) {
+          const { data: u } = supabase.storage.from('worker-photos').getPublicUrl(`${uid}-banner.${ext}`)
+          bannerUrl = u.publicUrl
+        }
+      }
+
+      const { error: updateErr } = await supabase.from('workers').update({
+        name, bio, skills, phone,
+        photo_url: photoUrl,
+        banner_url: bannerUrl,
+        email: contactEmail || null,
+        website: website || null,
+        gender,
+        date_of_birth: dateOfBirth || null,
+        languages,
+        service_areas: serviceAreas,
+      }).eq('user_id', uid)
+
+      setLoading(false)
+      if (updateErr) { setError(updateErr.message); return }
+      router.push('/join/payment')
+      return
+    }
 
     // Create Supabase auth user — only happens here, not at step 1
     const { data: authData, error: signUpError } = await supabase.auth.signUp({ email, password })

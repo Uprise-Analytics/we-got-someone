@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     default: 'We Got Someone | Find Trusted Local Workers in South Africa',
     template: '%s | We Got Someone',
   },
-  description: 'Need a painter, cleaner, gardener or plumber? Find trusted local workers near you in South Africa. Direct contact, no agency fees. From R99/month.',
+  description: 'Need a painter, cleaner, gardener or plumber? Find trusted local workers near you in South Africa. Direct contact, no agency fees. First month free, then R59/month.',
   keywords: ['local workers', 'painters', 'cleaners', 'gardeners', 'plumbers', 'handyman', 'South Africa', 'domestic workers', 'electricians', 'day workers'],
   authors: [{ name: 'We Got Someone', url: BASE_URL }],
   creator: 'We Got Someone',
@@ -110,7 +110,7 @@ const structuredData = {
     '@type': 'Country',
     name: 'South Africa',
   },
-  priceRange: 'R99/month',
+  priceRange: 'R59/month',
   sameAs: [],
   potentialAction: {
     '@type': 'SearchAction',

@@ -28,6 +28,9 @@ export default async function PaymentPage() {
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000'
 
+  const nextBilling = new Date()
+  nextBilling.setMonth(nextBilling.getMonth() + 1)
+
   const paymentData: Record<string, string> = {
     merchant_id: PAYFAST_MERCHANT_ID,
     merchant_key: PAYFAST_MERCHANT_KEY,
@@ -38,11 +41,11 @@ export default async function PaymentPage() {
     name_last: worker.name.split(' ').slice(1).join(' ') || '-',
     email_address: user.email!,
     m_payment_id: worker.id,
-    amount: '99.00',
+    amount: '0.00',
     item_name: 'We Got Someone Monthly Listing',
     subscription_type: '1',
-    billing_date: new Date().toISOString().split('T')[0],
-    recurring_amount: '99.00',
+    billing_date: nextBilling.toISOString().split('T')[0],
+    recurring_amount: '59.00',
     frequency: '3',
     cycles: '0',
   }
@@ -61,17 +64,21 @@ export default async function PaymentPage() {
           </svg>
         </div>
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Almost there, {worker.name.split(' ')[0]}!</h1>
-        <p className="text-gray-500 text-sm mb-2">Your profile is saved. Pay R99 to go live.</p>
-        <p className="text-xs text-gray-400 mb-8">You will be billed R99 every month. Cancel anytime.</p>
+        <p className="text-gray-500 text-sm mb-2">Your profile is ready. Your first month is on us.</p>
+        <p className="text-xs text-gray-400 mb-8">After that, just R59/month. Cancel any time.</p>
 
         <div className="bg-gray-50 rounded-xl p-4 mb-6 text-left">
-          <div className="flex justify-between text-sm mb-1">
-            <span className="text-gray-500">We Got Someone Monthly Listing</span>
-            <span className="font-semibold">R99.00/month</span>
+          <div className="flex justify-between text-sm mb-2">
+            <span className="text-gray-500">First month</span>
+            <span className="font-bold text-green-600">FREE</span>
           </div>
-          <div className="flex justify-between text-xs text-gray-400">
+          <div className="flex justify-between text-sm mb-2">
+            <span className="text-gray-500">From month 2</span>
+            <span className="font-semibold">R59.00/month</span>
+          </div>
+          <div className="flex justify-between text-xs text-gray-400 pt-2 border-t border-gray-200">
             <span>Recurring subscription</span>
-            <span>Cancel anytime</span>
+            <span>Cancel any time</span>
           </div>
         </div>
 

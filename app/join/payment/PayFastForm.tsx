@@ -16,7 +16,7 @@ export default function PayFastForm({
         type="submit"
         className="w-full bg-green-600 text-white font-bold py-4 rounded-xl hover:bg-green-700 text-base"
       >
-        Pay R99 with PayFast
+        Activate Free Month
       </button>
     </form>
   )

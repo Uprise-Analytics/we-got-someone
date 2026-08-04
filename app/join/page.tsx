@@ -331,7 +331,7 @@ export default function JoinPage() {
         {step === 'account' && (
           <>
             <h1 className="text-2xl font-bold mb-2 text-center">Create your account</h1>
-            <p className="text-gray-500 text-sm mb-6 text-center">Get listed on We Got Someone for R99/month.</p>
+            <p className="text-gray-500 text-sm mb-6 text-center">First month free, then R59/month. Cancel any time.</p>
 
             <form onSubmit={handleAccountSubmit} className="space-y-4">
               <input

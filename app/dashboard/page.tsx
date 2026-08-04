@@ -95,7 +95,7 @@ export default async function DashboardPage() {
               <p className="font-semibold">Your profile is live</p>
               {onFreeTrial ? (
                 <p className="text-green-100 text-sm mt-0.5">
-                  Free trial: <span className="font-semibold text-white">{daysLeft} day{daysLeft !== 1 ? 's' : ''} remaining</span>. After that, R99/month to stay listed.
+                  Free trial: <span className="font-semibold text-white">{daysLeft} day{daysLeft !== 1 ? 's' : ''} remaining</span>. After that, R59/month to stay listed.
                 </p>
               ) : (
                 <p className="text-green-100 text-sm mt-0.5">People in your area can find and contact you.</p>
@@ -109,14 +109,14 @@ export default async function DashboardPage() {
                 <div className="w-2.5 h-2.5 rounded-full bg-red-400" />
                 <div>
                   <p className="font-semibold">Profile not visible yet</p>
-                  <p className="text-gray-400 text-sm mt-0.5">Pay R99/month to go live and start getting clients.</p>
+                  <p className="text-gray-400 text-sm mt-0.5">Your first month is free. Then R59/month. Cancel any time.</p>
                 </div>
               </div>
               <Link
                 href="/join/payment"
                 className="text-sm bg-green-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-green-700 whitespace-nowrap"
               >
-                Go live for R99
+                Activate free month
               </Link>
             </div>
             {process.env.NODE_ENV === 'development' && <DevActivateBanner />}
@@ -203,7 +203,7 @@ export default async function DashboardPage() {
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-500">Amount</span>
-                  <span className="text-sm font-semibold text-gray-900">R99 / month</span>
+                  <span className="text-sm font-semibold text-gray-900">R59 / month</span>
                 </div>
                 {subscription.next_billing_date && (
                   <div className="flex justify-between items-center">

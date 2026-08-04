@@ -154,14 +154,14 @@ export default async function HomePage() {
             Get found by people<br />who need your skills.
           </h2>
           <p className="text-gray-400 text-base mb-8 leading-relaxed max-w-lg mx-auto">
-            List your profile on We Got Someone for just{' '}
-            <span className="text-white font-semibold">R99/month</span>. No commission, no jobs lost to a middleman. Clients find you and contact you directly.
+            List your profile on We Got Someone.{' '}
+            <span className="text-white font-semibold">First month free</span>, then just R59/month. No commission, no jobs lost to a middleman. Clients find you and contact you directly.
           </p>
           <Link
             href="/join"
             className="inline-block bg-green-500 hover:bg-green-400 text-white font-bold px-10 py-4 rounded-xl text-sm transition-colors shadow-lg shadow-green-500/20"
           >
-            List yourself for R99/month
+            Start free — list yourself now
           </Link>
         </div>
       </section>

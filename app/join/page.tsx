@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase-browser'
 import Navbar from '@/components/Navbar'
@@ -33,6 +33,7 @@ function formatDOB(val: string) {
 export default function JoinPage() {
   const router = useRouter()
   const [step, setStep] = useState<Step>('account')
+  const stepRef = useRef(step)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -56,6 +57,28 @@ export default function JoinPage() {
   const [dateOfBirth, setDateOfBirth] = useState('')
   const [languages, setLanguages] = useState<string[]>([])
   const [serviceAreas, setServiceAreas] = useState<string[]>([])
+
+  // Keep ref in sync so popstate handler never has a stale closure
+  useEffect(() => { stepRef.current = step }, [step])
+
+  // When entering step 2, push a dummy history entry so browser back can be caught
+  useEffect(() => {
+    if (step === 'profile') {
+      window.history.pushState(null, '')
+    }
+  }, [step])
+
+  // Intercept browser back button on step 2 — go to step 1 instead of leaving
+  useEffect(() => {
+    function handlePopState() {
+      if (stepRef.current === 'profile') {
+        setStep('account')
+        window.history.pushState(null, '') // keep the dummy entry so repeated back presses still work
+      }
+    }
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [])
 
   // Restore draft on mount
   useEffect(() => {

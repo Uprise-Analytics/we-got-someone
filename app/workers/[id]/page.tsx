@@ -130,11 +130,6 @@ export default async function WorkerProfilePage({ params }: { params: Promise<{ 
                 {age} yrs old
               </span>
             )}
-            {worker.years_experience != null && (
-              <span className="text-sm font-medium bg-amber-50 text-amber-700 px-3 py-1 rounded-full">
-                {worker.years_experience} yr{worker.years_experience !== 1 ? 's' : ''} exp
-              </span>
-            )}
           </div>
 
           {/* ── Languages ── */}

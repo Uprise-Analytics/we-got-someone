@@ -88,7 +88,6 @@ export default function EditProfileForm({ worker }: { worker: Worker }) {
   const [gender, setGender] = useState(worker.gender ?? '')
   const [dateOfBirth, setDateOfBirth] = useState(worker.date_of_birth ?? '')
   const [languages, setLanguages] = useState<string[]>(worker.languages ?? [])
-  const [yearsExperience, setYearsExperience] = useState(worker.years_experience?.toString() ?? '')
   const [workPhotos, setWorkPhotos] = useState<string[]>(worker.work_photos ?? [])
   const [uploadingWork, setUploadingWork] = useState(false)
   const initialAreas = worker.service_areas?.length ? worker.service_areas : [worker.city].filter(Boolean)
@@ -142,7 +141,6 @@ export default function EditProfileForm({ worker }: { worker: Worker }) {
         gender: gender || null,
         dateOfBirth: dateOfBirth || null,
         languages,
-        yearsExperience: yearsExperience ? parseInt(yearsExperience) : null,
         serviceAreas,
         workPhotos,
       }),
@@ -377,18 +375,6 @@ export default function EditProfileForm({ worker }: { worker: Worker }) {
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">Years of experience</label>
-          <input
-            type="number"
-            placeholder="e.g. 3"
-            value={yearsExperience}
-            onChange={e => setYearsExperience(e.target.value)}
-            min={0}
-            max={60}
-            className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-gray-50"
-          />
-        </div>
 
       </CardSection>
 

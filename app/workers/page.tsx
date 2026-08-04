@@ -32,7 +32,6 @@ type Worker = {
   date_of_birth: string | null
   languages: string[] | null
   own_transport: boolean
-  years_experience: number | null
   service_areas: string[] | null
   work_photos: string[] | null
   created_at: string
@@ -80,7 +79,7 @@ async function getWorkers(skill?: string, area?: string, sort?: string, name?: s
   let { data, error } = await applyFilters(
     supabase
       .from('workers')
-      .select(`id, name, bio, skills, city, area, photo_url, banner_url, available_now, gender, date_of_birth, languages, own_transport, years_experience, service_areas, work_photos, created_at, reviews(rating)`)
+      .select(`id, name, bio, skills, city, area, photo_url, banner_url, available_now, gender, date_of_birth, languages, own_transport, service_areas, work_photos, created_at, reviews(rating)`)
       .eq('is_active', true)
   )
 
@@ -206,11 +205,6 @@ export default async function WorkersPage({
                       {age !== null && (
                         <span className="text-xs font-medium bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">
                           {age} yrs
-                        </span>
-                      )}
-                      {worker.years_experience != null && (
-                        <span className="text-xs font-medium bg-amber-50 text-amber-700 px-2.5 py-1 rounded-full border border-amber-100">
-                          {worker.years_experience} yr{worker.years_experience !== 1 ? 's' : ''} exp
                         </span>
                       )}
                     </div>

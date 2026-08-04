@@ -7,8 +7,13 @@ import Navbar from '@/components/Navbar'
 import AreaSelect from '@/components/AreaSelect'
 
 const SKILLS = [
-  'Painter', 'Cleaner', 'Gardener', 'Plumber', 'Electrician',
-  'Tiler', 'Carpenter', 'Handyman', 'Domestic Worker', 'Brick Layer',
+  'Air Conditioning', 'Bathroom Renovation', 'Blinds & Curtains', 'Brick Layer',
+  'Carpenter', 'CCTV & Intercom', 'Ceiling', 'Cleaner', 'Domestic Worker',
+  'Drain Cleaning', 'Electrician', 'Flooring', 'Gardener', 'Handyman',
+  'Kitchen Installer', 'Landscaping', 'Moving & Transport', 'Painter',
+  'Paving', 'Pest Control', 'Plastering', 'Plumber', 'Pool & Spa',
+  'Roofing', 'Rubble Removal', 'Security', 'Solar Installation',
+  'Tiler', 'Tree Felling', 'Waterproofing', 'Welding',
 ]
 
 const LANGUAGES = [
@@ -17,6 +22,13 @@ const LANGUAGES = [
 ]
 
 type Step = 'account' | 'profile'
+
+function formatDOB(val: string) {
+  const digits = val.replace(/\D/g, '')
+  if (digits.length <= 4) return digits
+  if (digits.length <= 6) return digits.slice(0, 4) + '/' + digits.slice(4)
+  return digits.slice(0, 4) + '/' + digits.slice(4, 6) + '/' + digits.slice(6, 8)
+}
 
 export default function JoinPage() {
   const router = useRouter()
@@ -35,12 +47,15 @@ export default function JoinPage() {
   const [bio, setBio] = useState('')
   const [skills, setSkills] = useState<string[]>([])
   const [phone, setPhone] = useState('')
+  const [contactEmail, setContactEmail] = useState('')
+  const [website, setWebsite] = useState('')
   const [photo, setPhoto] = useState<File | null>(null)
   const [photoPreview, setPhotoPreview] = useState<string | null>(null)
+  const [banner, setBanner] = useState<File | null>(null)
+  const [bannerPreview, setBannerPreview] = useState<string | null>(null)
   const [gender, setGender] = useState('')
   const [dateOfBirth, setDateOfBirth] = useState('')
   const [languages, setLanguages] = useState<string[]>([])
-  const [yearsExperience, setYearsExperience] = useState('')
   const [serviceAreas, setServiceAreas] = useState<string[]>([])
 
   function toggleSkill(skill: string) {
@@ -60,6 +75,13 @@ export default function JoinPage() {
     if (!file) return
     setPhoto(file)
     setPhotoPreview(URL.createObjectURL(file))
+  }
+
+  function handleBannerChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setBanner(file)
+    setBannerPreview(URL.createObjectURL(file))
   }
 
   async function handleAccountSubmit(e: React.FormEvent) {
@@ -119,15 +141,29 @@ export default function JoinPage() {
       }
     }
 
+    let bannerUrl: string | null = null
+    if (banner) {
+      const ext = banner.name.split('.').pop()
+      const filePath = `${userId}-banner.${ext}`
+      const { error: uploadError } = await supabase.storage
+        .from('worker-photos')
+        .upload(filePath, banner, { upsert: true })
+      if (!uploadError) {
+        const { data: urlData } = supabase.storage.from('worker-photos').getPublicUrl(filePath)
+        bannerUrl = urlData.publicUrl
+      }
+    }
+
     const res = await fetch('/api/workers/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         userId, name, bio, skills, phone,
-        photoUrl,
+        photoUrl, bannerUrl,
+        email: contactEmail || null,
+        website: website || null,
         gender, dateOfBirth: dateOfBirth || null,
         languages,
-        yearsExperience: yearsExperience ? parseInt(yearsExperience) : null,
         serviceAreas,
       }),
     })
@@ -220,7 +256,32 @@ export default function JoinPage() {
             <p className="text-gray-500 text-sm mb-6">This is what clients will see when they find you.</p>
 
             <form onSubmit={handleProfileSubmit} className="space-y-5">
-              {/* Photo */}
+
+              {/* Banner */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Banner photo <span className="text-gray-400 font-normal">(optional)</span></label>
+                <label className="relative block cursor-pointer group rounded-xl overflow-hidden bg-gray-100 border-2 border-dashed border-gray-200 hover:border-green-400 transition-colors" style={{ aspectRatio: '3/1' }}>
+                  {bannerPreview ? (
+                    <img src={bannerPreview} alt="Banner" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center gap-1 text-gray-400">
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      <span className="text-xs">Add a banner photo of your work or premises</span>
+                    </div>
+                  )}
+                  {bannerPreview && (
+                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="text-white text-xs font-semibold">Change banner</span>
+                    </div>
+                  )}
+                  <input type="file" accept="image/*" onChange={handleBannerChange} className="hidden" />
+                </label>
+                <p className="text-xs text-gray-400 mt-1">Wide photo (3:1 ratio) of your work, premises or team</p>
+              </div>
+
+              {/* Profile photo */}
               <div className="flex items-center gap-4">
                 <div className="w-20 h-20 rounded-full bg-gray-100 overflow-hidden flex items-center justify-center flex-shrink-0">
                   {photoPreview ? (
@@ -231,7 +292,7 @@ export default function JoinPage() {
                 </div>
                 <div>
                   <label className="cursor-pointer text-sm text-green-600 font-medium hover:underline">
-                    Upload photo
+                    Upload profile photo
                     <input type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" />
                   </label>
                   <p className="text-xs text-gray-400 mt-1">JPG or PNG, max 5MB</p>
@@ -272,10 +333,12 @@ export default function JoinPage() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Date of birth</label>
                 <input
-                  type="date"
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="YYYY/MM/DD"
                   value={dateOfBirth}
-                  onChange={e => setDateOfBirth(e.target.value)}
-                  max={new Date(Date.now() - 16 * 365.25 * 86400000).toISOString().split('T')[0]}
+                  onChange={e => setDateOfBirth(formatDOB(e.target.value))}
+                  maxLength={10}
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
               </div>
@@ -349,7 +412,11 @@ export default function JoinPage() {
               </div>
 
               {/* Areas */}
-              <AreaSelect selected={serviceAreas} onChange={setServiceAreas} />
+              <AreaSelect
+                selected={serviceAreas}
+                onChange={setServiceAreas}
+                label="Areas you work in (Choose more than 1)"
+              />
 
               <input
                 type="text"
@@ -368,14 +435,27 @@ export default function JoinPage() {
               />
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Years of experience</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Email address <span className="text-gray-400 font-normal">(optional)</span></label>
                 <input
-                  type="number"
-                  placeholder="e.g. 3"
-                  value={yearsExperience}
-                  onChange={e => setYearsExperience(e.target.value)}
-                  min={0}
-                  max={60}
+                  type="email"
+                  placeholder="e.g. info@yourcompany.co.za"
+                  value={contactEmail}
+                  onChange={e => setContactEmail(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Website <span className="text-gray-400 font-normal">(optional)</span></label>
+                <input
+                  type="text"
+                  placeholder="e.g. www.yourcompany.co.za"
+                  value={website}
+                  onChange={e => setWebsite(e.target.value)}
+                  onBlur={e => {
+                    const v = e.target.value.trim()
+                    if (v && !v.startsWith('http://') && !v.startsWith('https://')) setWebsite('https://' + v)
+                  }}
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
               </div>

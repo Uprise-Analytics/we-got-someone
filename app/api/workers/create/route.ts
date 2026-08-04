@@ -4,8 +4,8 @@ import { supabaseAdmin } from '@/lib/supabase-admin'
 export async function POST(req: NextRequest) {
   const body = await req.json()
   const {
-    userId, name, bio, skills, phone, photoUrl,
-    gender, dateOfBirth, languages, ownTransport, yearsExperience, serviceAreas,
+    userId, name, bio, skills, phone, photoUrl, bannerUrl,
+    email, website, gender, dateOfBirth, languages, serviceAreas,
   } = body
 
   if (!userId || !name) {
@@ -23,17 +23,18 @@ export async function POST(req: NextRequest) {
     area: primaryCity,
     phone,
     photo_url: photoUrl ?? null,
+    banner_url: bannerUrl ?? null,
+    email: email ?? null,
+    website: website ?? null,
     is_active: false,
     gender: gender ?? null,
     date_of_birth: dateOfBirth ?? null,
     languages: languages ?? [],
-    own_transport: ownTransport ?? false,
-    years_experience: yearsExperience ?? null,
     service_areas: serviceAreas ?? [],
   })
 
   if (error) {
-    // service_areas column may not exist yet — retry without it
+    // service_areas / banner columns may not exist yet — retry without them
     const { error: fallbackError } = await supabaseAdmin.from('workers').insert({
       user_id: userId,
       name, bio, skills,
@@ -41,12 +42,10 @@ export async function POST(req: NextRequest) {
       area: primaryCity,
       phone,
       photo_url: photoUrl ?? null,
-        is_active: false,
+      is_active: false,
       gender: gender ?? null,
       date_of_birth: dateOfBirth ?? null,
       languages: languages ?? [],
-      own_transport: ownTransport ?? false,
-      years_experience: yearsExperience ?? null,
     })
     if (fallbackError) return NextResponse.json({ error: fallbackError.message }, { status: 500 })
   }

@@ -36,11 +36,10 @@ export default function JoinPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  // Account fields
+  // Account fields — stored in state, auth user created on final submit
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [userId, setUserId] = useState<string | null>(null)
 
   // Profile fields
   const [name, setName] = useState('')
@@ -84,54 +83,52 @@ export default function JoinPage() {
     setBannerPreview(URL.createObjectURL(file))
   }
 
-  async function handleAccountSubmit(e: React.FormEvent) {
+  function handleAccountSubmit(e: React.FormEvent) {
     e.preventDefault()
+    setError('')
+    if (!email.trim() || !email.includes('@')) {
+      setError('Please enter a valid email address.')
+      return
+    }
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters.')
+      return
+    }
+    setStep('profile')
+  }
+
+  async function handleProfileSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (skills.length === 0) { setError('Please select at least one skill.'); return }
+    if (!gender) { setError('Please select your gender.'); return }
+    if (serviceAreas.length === 0) { setError('Please select at least one area you work in.'); return }
     setLoading(true)
     setError('')
 
-    const { data, error: signUpError } = await supabase.auth.signUp({ email, password })
+    // Create Supabase auth user — only happens here, not at step 1
+    const { data: authData, error: signUpError } = await supabase.auth.signUp({ email, password })
     if (signUpError) {
       setError(signUpError.message)
       setLoading(false)
       return
     }
-    if (!data.user) {
+    if (!authData.user) {
       setError('Could not create account. Please try again.')
       setLoading(false)
       return
     }
-    setUserId(data.user.id)
-    setStep('profile')
-    setLoading(false)
-  }
-
-  async function handleProfileSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    if (skills.length === 0) {
-      setError('Please select at least one skill.')
-      return
-    }
-    if (!gender) {
-      setError('Please select your gender.')
-      return
-    }
-    if (serviceAreas.length === 0) {
-      setError('Please select at least one area you work in.')
-      return
-    }
-    setLoading(true)
-    setError('')
-
-    if (!userId) {
-      setError('Session expired. Please start again.')
+    if (!authData.session) {
+      setError('Check your email for a confirmation link, then sign in to complete your profile.')
       setLoading(false)
       return
     }
 
+    const uid = authData.user.id
+
     let photoUrl: string | null = null
     if (photo) {
       const ext = photo.name.split('.').pop()
-      const filePath = `${userId}.${ext}`
+      const filePath = `${uid}.${ext}`
       const { error: uploadError } = await supabase.storage
         .from('worker-photos')
         .upload(filePath, photo, { upsert: true })
@@ -144,7 +141,7 @@ export default function JoinPage() {
     let bannerUrl: string | null = null
     if (banner) {
       const ext = banner.name.split('.').pop()
-      const filePath = `${userId}-banner.${ext}`
+      const filePath = `${uid}-banner.${ext}`
       const { error: uploadError } = await supabase.storage
         .from('worker-photos')
         .upload(filePath, banner, { upsert: true })
@@ -158,7 +155,7 @@ export default function JoinPage() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        userId, name, bio, skills, phone,
+        userId: uid, name, bio, skills, phone,
         photoUrl, bannerUrl,
         email: contactEmail || null,
         website: website || null,
@@ -241,12 +238,16 @@ export default function JoinPage() {
               {error && <p className="text-red-500 text-sm">{error}</p>}
               <button
                 type="submit"
-                disabled={loading}
-                className="w-full bg-green-600 text-white font-medium py-3 rounded-lg hover:bg-green-700 disabled:opacity-50 cursor-pointer"
+                className="w-full bg-green-600 text-white font-medium py-3 rounded-lg hover:bg-green-700 cursor-pointer"
               >
-                {loading ? 'Creating account...' : 'Continue'}
+                Continue
               </button>
             </form>
+
+            <p className="text-center text-sm text-gray-500 mt-4">
+              Already have an account?{' '}
+              <a href="/sign-in" className="text-green-600 font-medium hover:underline">Sign in</a>
+            </p>
           </>
         )}
 
@@ -257,28 +258,30 @@ export default function JoinPage() {
 
             <form onSubmit={handleProfileSubmit} className="space-y-5">
 
-              {/* Banner */}
+              {/* Banner — Facebook cover photo style */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Banner photo <span className="text-gray-400 font-normal">(optional)</span></label>
-                <label className="relative block cursor-pointer group rounded-xl overflow-hidden bg-gray-100 border-2 border-dashed border-gray-200 hover:border-green-400 transition-colors" style={{ aspectRatio: '3/1' }}>
+                <p className="text-sm font-medium text-gray-700 mb-1.5">Cover photo <span className="text-gray-400 font-normal">(optional)</span></p>
+                <div className="relative w-full bg-gray-200 overflow-hidden rounded-xl" style={{ aspectRatio: '820/312' }}>
                   {bannerPreview ? (
-                    <img src={bannerPreview} alt="Banner" className="w-full h-full object-cover" />
+                    <img src={bannerPreview} alt="Cover" className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center gap-1 text-gray-400">
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    <div className="w-full h-full flex items-center justify-center">
+                      <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                       </svg>
-                      <span className="text-xs">Add a banner photo of your work or premises</span>
                     </div>
                   )}
-                  {bannerPreview && (
-                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <span className="text-white text-xs font-semibold">Change banner</span>
-                    </div>
-                  )}
-                  <input type="file" accept="image/*" onChange={handleBannerChange} className="hidden" />
-                </label>
-                <p className="text-xs text-gray-400 mt-1">Wide photo (3:1 ratio) of your work, premises or team</p>
+                  <label className="absolute bottom-2 right-2 flex items-center gap-1.5 bg-white/90 text-gray-700 text-xs font-semibold px-3 py-1.5 rounded-lg cursor-pointer hover:bg-white shadow-sm transition-colors">
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    {bannerPreview ? 'Edit cover photo' : 'Add cover photo'}
+                    <input type="file" accept="image/*" onChange={handleBannerChange} className="hidden" />
+                  </label>
+                </div>
+                <p className="text-xs text-gray-400 mt-1">Wide photo of your work, premises or team</p>
               </div>
 
               {/* Profile photo */}
@@ -292,7 +295,7 @@ export default function JoinPage() {
                 </div>
                 <div>
                   <label className="cursor-pointer text-sm text-green-600 font-medium hover:underline">
-                    Upload profile photo
+                    Upload profile photo or logo
                     <input type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" />
                   </label>
                   <p className="text-xs text-gray-400 mt-1">JPG or PNG, max 5MB</p>
@@ -341,6 +344,7 @@ export default function JoinPage() {
                   maxLength={10}
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
+                <p className="text-xs text-gray-400 mt-1">The / will fill in automatically as you type</p>
               </div>
 
               <textarea
@@ -421,7 +425,7 @@ export default function JoinPage() {
               <input
                 type="text"
                 inputMode="numeric"
-                placeholder="071 234 5678"
+                placeholder="WhatsApp number"
                 value={phone}
                 onChange={e => {
                   const digits = e.target.value.replace(/\D/g, '').slice(0, 10)
@@ -467,7 +471,7 @@ export default function JoinPage() {
                 disabled={loading}
                 className="w-full bg-green-600 text-white font-medium py-3 rounded-lg hover:bg-green-700 disabled:opacity-50 cursor-pointer"
               >
-                {loading ? 'Saving...' : 'Continue to Payment'}
+                {loading ? 'Creating your profile...' : 'Continue'}
               </button>
             </form>
           </>

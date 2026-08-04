@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase-browser'
 import Navbar from '@/components/Navbar'
@@ -56,6 +56,38 @@ export default function JoinPage() {
   const [dateOfBirth, setDateOfBirth] = useState('')
   const [languages, setLanguages] = useState<string[]>([])
   const [serviceAreas, setServiceAreas] = useState<string[]>([])
+
+  // Restore draft on mount
+  useEffect(() => {
+    try {
+      const saved = sessionStorage.getItem('wgs_join_draft')
+      if (!saved) return
+      const d = JSON.parse(saved)
+      if (d.email) setEmail(d.email)
+      if (d.name) setName(d.name)
+      if (d.bio) setBio(d.bio)
+      if (d.phone) setPhone(d.phone)
+      if (d.contactEmail) setContactEmail(d.contactEmail)
+      if (d.website) setWebsite(d.website)
+      if (d.gender) setGender(d.gender)
+      if (d.dateOfBirth) setDateOfBirth(d.dateOfBirth)
+      if (d.skills?.length) setSkills(d.skills)
+      if (d.languages?.length) setLanguages(d.languages)
+      if (d.serviceAreas?.length) setServiceAreas(d.serviceAreas)
+      if (d.step === 'profile' && d.email) setStep('profile')
+    } catch {}
+  }, [])
+
+  // Auto-save draft as user types
+  useEffect(() => {
+    if (!email && !name) return
+    try {
+      sessionStorage.setItem('wgs_join_draft', JSON.stringify({
+        step, email, name, bio, phone, contactEmail, website,
+        gender, dateOfBirth, skills, languages, serviceAreas,
+      }))
+    } catch {}
+  }, [step, email, name, bio, phone, contactEmail, website, gender, dateOfBirth, skills, languages, serviceAreas])
 
   function toggleSkill(skill: string) {
     if (skills.includes(skill)) {
@@ -172,6 +204,7 @@ export default function JoinPage() {
       return
     }
 
+    try { sessionStorage.removeItem('wgs_join_draft') } catch {}
     router.push('/join/payment')
   }
 
@@ -253,6 +286,13 @@ export default function JoinPage() {
 
         {step === 'profile' && (
           <>
+            <button
+              type="button"
+              onClick={() => setStep('account')}
+              className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-5 cursor-pointer"
+            >
+              ← Back
+            </button>
             <h1 className="text-2xl font-bold mb-2">Build your profile</h1>
             <p className="text-gray-500 text-sm mb-6">This is what clients will see when they find you.</p>
 

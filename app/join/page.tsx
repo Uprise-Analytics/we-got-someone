@@ -74,7 +74,6 @@ export default function JoinPage() {
       if (d.skills?.length) setSkills(d.skills)
       if (d.languages?.length) setLanguages(d.languages)
       if (d.serviceAreas?.length) setServiceAreas(d.serviceAreas)
-      if (d.step === 'profile' && d.email) setStep('profile')
     } catch {}
   }, [])
 
@@ -83,7 +82,7 @@ export default function JoinPage() {
     if (!email && !name) return
     try {
       sessionStorage.setItem('wgs_join_draft', JSON.stringify({
-        step, email, name, bio, phone, contactEmail, website,
+        email, name, bio, phone, contactEmail, website,
         gender, dateOfBirth, skills, languages, serviceAreas,
       }))
     } catch {}

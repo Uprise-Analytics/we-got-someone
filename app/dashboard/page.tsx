@@ -103,22 +103,20 @@ export default async function DashboardPage() {
             </div>
           </div>
         ) : (
-          <div className="bg-gray-900 text-white rounded-2xl p-4 sm:p-5 mb-5">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-2.5 h-2.5 rounded-full bg-red-400" />
-                <div>
-                  <p className="font-semibold">Profile not visible yet</p>
-                  <p className="text-gray-400 text-sm mt-0.5">Your first month is free. Then R59/month. Cancel any time.</p>
-                </div>
-              </div>
-              <Link
-                href="/join/payment"
-                className="text-sm bg-green-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-green-700 whitespace-nowrap"
-              >
-                Activate free month
-              </Link>
+          <div className="bg-gray-900 text-white rounded-2xl p-5 sm:p-6 mb-5">
+            <div className="flex items-center gap-2.5 mb-3">
+              <div className="w-2.5 h-2.5 rounded-full bg-red-400 flex-shrink-0" />
+              <p className="font-semibold text-base">Profile not visible yet</p>
             </div>
+            <p className="text-gray-400 text-sm mb-5 leading-relaxed">
+              Your profile is saved but not live. Activate your <span className="text-white font-medium">free first month</span> to start showing up in searches. Then just R59/month. Cancel any time.
+            </p>
+            <Link
+              href="/join/payment"
+              className="block w-full text-center bg-green-600 text-white font-semibold py-3 rounded-xl hover:bg-green-700 transition-colors"
+            >
+              Activate free month
+            </Link>
             {process.env.NODE_ENV === 'development' && <DevActivateBanner />}
           </div>
         )}

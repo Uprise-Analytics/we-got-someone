@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { Geist } from 'next/font/google'
-import NextTopLoader from 'nextjs-toploader'
+import NavigationSpinner from '@/components/NavigationSpinner'
 import './globals.css'
 
 const geist = Geist({ subsets: ['latin'] })
@@ -133,7 +133,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="min-h-screen flex flex-col bg-white text-gray-900">
-        <NextTopLoader color="#16a34a" height={3} showSpinner={false} />
+        <NavigationSpinner />
         {children}
       </body>
     </html>

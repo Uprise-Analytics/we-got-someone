@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase-browser'
 import Navbar from '@/components/Navbar'
+import Spinner from '@/components/Spinner'
 
 export default function SignInPage() {
   const router = useRouter()
@@ -95,6 +96,7 @@ export default function SignInPage() {
             disabled={loading}
             className="w-full bg-green-600 text-white font-semibold py-3.5 rounded-xl hover:bg-green-700 disabled:opacity-50 transition-colors cursor-pointer"
           >
+            {loading && <Spinner />}
             {loading ? 'Signing in...' : 'Sign in'}
           </button>
         </form>

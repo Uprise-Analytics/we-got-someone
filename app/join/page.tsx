@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase-browser'
 import Navbar from '@/components/Navbar'
 import AreaSelect from '@/components/AreaSelect'
+import Spinner from '@/components/Spinner'
 
 const SKILLS = [
   'Air Conditioning', 'Bathroom Renovation', 'Blinds & Curtains', 'Brick Layer',
@@ -613,6 +614,7 @@ export default function JoinPage() {
                 disabled={loading}
                 className="w-full bg-green-600 text-white font-medium py-3 rounded-lg hover:bg-green-700 disabled:opacity-50 cursor-pointer"
               >
+                {loading && <Spinner />}
                 {loading ? 'Creating your profile...' : 'Continue'}
               </button>
             </form>

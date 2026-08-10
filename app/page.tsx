@@ -5,6 +5,8 @@ import Navbar from '@/components/Navbar'
 import HeroSearch from '@/components/HeroSearch'
 import WorkerMarquee from '@/components/WorkerMarquee'
 
+export const dynamic = 'force-dynamic'
+
 const SKILL_CATEGORIES = [
   { label: 'Air Conditioning',   icon: '❄️'  },
   { label: 'Bathroom Renovation',icon: '🚿' },
@@ -44,8 +46,7 @@ async function getFeaturedWorkers() {
     .from('workers')
     .select('id, name, skills, photo_url, service_areas, city, available_now')
     .eq('is_active', true)
-    .eq('available_now', true)
-    .limit(10)
+    .limit(50)
   return data ?? []
 }
 

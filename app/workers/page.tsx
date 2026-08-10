@@ -15,8 +15,8 @@ const SKILLS = [
   'Air Conditioning', 'Bathroom Renovation', 'Blinds & Curtains', 'Brick Layer',
   'Carpenter', 'CCTV & Intercom', 'Ceiling', 'Cleaner', 'Domestic Worker',
   'Drain Cleaning', 'Electrician', 'Flooring', 'Gardener', 'Handyman',
-  'Kitchen Installer', 'Landscaping', 'Moving & Transport', 'Painter',
-  'Paving', 'Pest Control', 'Plastering', 'Plumber', 'Pool & Spa',
+  'IT Specialist', 'Kitchen Installer', 'Landscaping', 'Mechanic', 'Moving & Transport', 'Painter',
+  'Panel Beater', 'Paving', 'Pest Control', 'Plastering', 'Plumber', 'Pool & Spa',
   'Roofing', 'Rubble Removal', 'Security', 'Solar Installation',
   'Tiler', 'Tree Felling', 'Waterproofing', 'Welding',
 ]

@@ -1,8 +1,15 @@
+import type { Metadata } from 'next'
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
 import WorkerSearch from './WorkerSearch'
 import Navbar from '@/components/Navbar'
 import TradePattern from '@/components/TradePattern'
+
+export const metadata: Metadata = {
+  title: 'Find Local Workers Near You',
+  description: 'Browse painters, plumbers, electricians, cleaners, gardeners and more in your area. Direct contact, no agency fees. No middlemen.',
+  alternates: { canonical: '/workers' },
+}
 
 const SKILLS = [
   'Air Conditioning', 'Bathroom Renovation', 'Blinds & Curtains', 'Brick Layer',

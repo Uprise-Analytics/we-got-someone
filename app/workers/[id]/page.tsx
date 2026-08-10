@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -26,6 +27,30 @@ function Stars({ rating }: { rating: number }) {
       ))}
     </span>
   )
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params
+  const worker = await getWorker(id)
+  if (!worker) return {}
+
+  const primarySkill = worker.skills?.[0] ?? 'Worker'
+  const location = worker.service_areas?.[0] ?? worker.city ?? 'South Africa'
+  const title = `${worker.name} – ${primarySkill} in ${location}`
+  const description = worker.bio
+    ? `${worker.bio.slice(0, 130).trim()}... Contact ${worker.name} directly. No agency fees.`
+    : `${worker.name} is a ${primarySkill} based in ${location}. Find and contact them directly on We Got Someone. No agency fees.`
+
+  return {
+    title,
+    description,
+    alternates: { canonical: `/workers/${id}` },
+    openGraph: {
+      title,
+      description,
+      images: worker.photo_url ? [{ url: worker.photo_url, alt: worker.name }] : undefined,
+    },
+  }
 }
 
 export default async function WorkerProfilePage({ params }: { params: Promise<{ id: string }> }) {

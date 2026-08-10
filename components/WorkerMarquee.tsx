@@ -36,6 +36,8 @@ export default function WorkerMarquee({ workers }: { workers: Worker[] }) {
         }}
         onMouseEnter={e => ((e.currentTarget as HTMLElement).style.animationPlayState = 'paused')}
         onMouseLeave={e => ((e.currentTarget as HTMLElement).style.animationPlayState = 'running')}
+        onTouchStart={e => ((e.currentTarget as HTMLElement).style.animationPlayState = 'paused')}
+        onTouchEnd={e => ((e.currentTarget as HTMLElement).style.animationPlayState = 'running')}
       >
         {looped.map((worker, i) => {
           const areas = (worker.service_areas?.length ? worker.service_areas : [worker.city]).filter(Boolean) as string[]

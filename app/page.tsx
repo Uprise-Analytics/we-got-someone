@@ -113,7 +113,10 @@ export default async function HomePage() {
               We Got <span className="text-green-600">Someone</span>
             </h2>
             <p className="text-gray-500 text-sm">
-              Workers available right now. Hover to pause.{' '}
+              Workers available right now.{' '}
+              <span className="hidden sm:inline">Hover to pause.</span>
+              <span className="sm:hidden">Touch to pause.</span>
+              {' '}
               <Link href="/workers" className="text-green-600 font-semibold hover:underline">View all →</Link>
             </p>
           </div>

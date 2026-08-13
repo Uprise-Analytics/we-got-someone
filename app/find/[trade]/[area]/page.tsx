@@ -3,7 +3,6 @@ import { TRADE_SLUGS, AREA_SLUGS, TOP_TRADE_SLUGS } from '@/lib/trade-slugs'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
-import TradePattern from '@/components/TradePattern'
 import type { Metadata } from 'next'
 
 export const revalidate = 3600
@@ -74,50 +73,97 @@ export default async function TradeAreaPage(
       : 0
 
   return (
-    <div className="relative min-h-screen bg-gray-50">
-      <TradePattern />
+    <div className="min-h-screen bg-gray-50">
       <Navbar variant="public" />
 
-      <div className="relative max-w-5xl mx-auto px-5 py-10">
-        {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-xs text-gray-400 mb-6">
-          <Link href="/" className="hover:text-gray-600">Home</Link>
-          <span>/</span>
-          <Link href={`/find/${trade}`} className="hover:text-gray-600">{skill}</Link>
-          <span>/</span>
-          <span className="text-gray-600">{city}</span>
-        </div>
-
-        {/* Heading */}
-        <div className="mb-8">
-          <p className="text-xs font-semibold text-green-600 uppercase tracking-widest mb-2">We Got Someone</p>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-2">
-            {skill} in {city}
-          </h1>
-          <p className="text-gray-500 text-sm">
+      {/* ── Hero ── */}
+      <section className="bg-[#0D1B2A] text-white px-5 pt-10 pb-8">
+        <div className="max-w-5xl mx-auto">
+          {/* Breadcrumb */}
+          <div className="flex items-center gap-2 text-xs text-gray-500 mb-4">
+            <Link href="/" className="hover:text-gray-300 transition-colors">Home</Link>
+            <span>/</span>
+            <Link href={`/find/${trade}`} className="hover:text-gray-300 transition-colors">{skill}</Link>
+            <span>/</span>
+            <span className="text-gray-300">{city}</span>
+          </div>
+          <p className="text-xs font-semibold text-green-400 uppercase tracking-widest mb-3">We Got Someone</p>
+          <h1 className="text-3xl sm:text-4xl font-extrabold mb-3">{skill} in {city}</h1>
+          <p className="text-gray-400 text-sm max-w-lg">
             {workers.length > 0
-              ? `${workers.length} verified ${skill.toLowerCase()} worker${workers.length !== 1 ? 's' : ''} serving ${city}.`
-              : `No ${skill.toLowerCase()} workers listed in ${city} yet.`
+              ? `${workers.length} verified ${skill.toLowerCase()} worker${workers.length !== 1 ? 's' : ''} serving ${city}. Contact directly — no agency, no commission.`
+              : `Find a trusted ${skill.toLowerCase()} in ${city}. Contact directly — no agency, no commission.`
             }
-            {' '}Contact directly — no agency, no commission.
           </p>
         </div>
+      </section>
 
-        {/* Worker grid */}
+      <div className="max-w-5xl mx-auto px-5 py-10">
+
         {workers.length === 0 ? (
-          <div className="text-center py-24 bg-white rounded-2xl border border-gray-200">
-            <p className="text-lg font-semibold text-gray-700 mb-1">
-              No {skill.toLowerCase()} workers in {city} yet
-            </p>
-            <p className="text-gray-400 text-sm mb-6">
-              Be the first to list yourself and get found here.
-            </p>
-            <Link
-              href="/join"
-              className="inline-block bg-green-600 text-white font-semibold px-6 py-3 rounded-xl text-sm hover:bg-green-700 transition-colors"
-            >
-              List yourself — first month free
-            </Link>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Worker pitch */}
+            <div className="bg-[#0D1B2A] text-white rounded-2xl p-8">
+              <p className="text-green-400 text-xs font-bold uppercase tracking-widest mb-3">For {skill.toLowerCase()}s in {city}</p>
+              <h2 className="text-2xl font-extrabold mb-3 leading-snug">
+                Be the first {skill.toLowerCase()} listed in {city}.
+              </h2>
+              <p className="text-gray-400 text-sm leading-relaxed mb-6">
+                People in {city} are searching for {skill.toLowerCase()} workers right now. Get your profile up first and own the top spot.
+              </p>
+              <ul className="space-y-2 mb-7">
+                {[
+                  'Your own profile page on Google',
+                  'Clients contact you directly by WhatsApp',
+                  '30-day enquiry guarantee',
+                ].map(item => (
+                  <li key={item} className="flex items-center gap-2.5 text-sm text-gray-300">
+                    <span className="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0">
+                      <svg className="w-2.5 h-2.5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href="/join"
+                className="inline-block bg-green-500 hover:bg-green-400 text-white font-bold px-6 py-3 rounded-xl text-sm transition-colors"
+              >
+                List yourself — first month free
+              </Link>
+              <p className="text-gray-600 text-xs mt-3">R59/month after that. Cancel any time.</p>
+            </div>
+
+            {/* Homeowner message */}
+            <div className="bg-white border border-gray-200 rounded-2xl p-8 flex flex-col justify-between">
+              <div>
+                <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-3">For homeowners</p>
+                <h2 className="text-xl font-extrabold text-gray-900 mb-3 leading-snug">
+                  No {skill.toLowerCase()}s in {city} yet.
+                </h2>
+                <p className="text-gray-500 text-sm leading-relaxed mb-6">
+                  We're growing fast. In the meantime, browse all available {skill.toLowerCase()} workers across South Africa.
+                </p>
+              </div>
+              <div className="space-y-3">
+                <Link
+                  href={`/find/${trade}`}
+                  className="flex items-center justify-between w-full bg-gray-50 border border-gray-200 hover:border-green-300 hover:bg-green-50 rounded-xl px-4 py-3 text-sm font-semibold text-gray-700 hover:text-green-700 transition-all"
+                >
+                  All {skill.toLowerCase()}s in South Africa
+                  <span className="text-gray-400">→</span>
+                </Link>
+                <Link
+                  href={`/workers?skill=${encodeURIComponent(skill)}`}
+                  className="flex items-center justify-between w-full bg-gray-50 border border-gray-200 hover:border-green-300 hover:bg-green-50 rounded-xl px-4 py-3 text-sm font-semibold text-gray-700 hover:text-green-700 transition-all"
+                >
+                  Search with filters
+                  <span className="text-gray-400">→</span>
+                </Link>
+              </div>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -178,41 +224,41 @@ export default async function TradeAreaPage(
           </div>
         )}
 
-        {/* Browse + CTA */}
-        <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-between items-center border-t border-gray-200 pt-8">
-          <Link
-            href={`/workers?skill=${encodeURIComponent(skill)}&area=${encodeURIComponent(city)}`}
-            className="text-sm font-semibold text-green-600 hover:underline"
-          >
-            Browse all {skill.toLowerCase()} workers with filters →
-          </Link>
-          <Link
-            href="/join"
-            className="inline-block bg-[#0D1B2A] text-white text-sm font-semibold px-6 py-3 rounded-xl hover:bg-gray-800 transition-colors"
-          >
-            Are you a {skill.toLowerCase()} in {city}? List yourself free
-          </Link>
-        </div>
-
-        {/* Structured data */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'ItemList',
-              name: `${skill} Workers in ${city}`,
-              description: `Find trusted ${skill.toLowerCase()} workers in ${city}, South Africa.`,
-              itemListElement: workers.slice(0, 10).map((w, i) => ({
-                '@type': 'ListItem',
-                position: i + 1,
-                url: `https://www.wegotsomeone.co.za/workers/${w.id}`,
-                name: w.name,
-              })),
-            }),
-          }}
-        />
+        {workers.length > 0 && (
+          <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-between items-center border-t border-gray-200 pt-8">
+            <Link
+              href={`/workers?skill=${encodeURIComponent(skill)}&area=${encodeURIComponent(city)}`}
+              className="text-sm font-semibold text-green-600 hover:underline"
+            >
+              Browse all {skill.toLowerCase()} workers with filters →
+            </Link>
+            <Link
+              href="/join"
+              className="inline-block bg-[#0D1B2A] text-white text-sm font-semibold px-6 py-3 rounded-xl hover:bg-gray-800 transition-colors"
+            >
+              Are you a {skill.toLowerCase()} in {city}? List yourself free
+            </Link>
+          </div>
+        )}
       </div>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'ItemList',
+            name: `${skill} Workers in ${city}`,
+            description: `Find trusted ${skill.toLowerCase()} workers in ${city}, South Africa.`,
+            itemListElement: workers.slice(0, 10).map((w, i) => ({
+              '@type': 'ListItem',
+              position: i + 1,
+              url: `https://www.wegotsomeone.co.za/workers/${w.id}`,
+              name: w.name,
+            })),
+          }),
+        }}
+      />
     </div>
   )
 }

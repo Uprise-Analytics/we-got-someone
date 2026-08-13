@@ -3,7 +3,6 @@ import { TRADE_SLUGS, AREA_SLUGS } from '@/lib/trade-slugs'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
-import TradePattern from '@/components/TradePattern'
 import type { Metadata } from 'next'
 
 export const revalidate = 3600
@@ -64,54 +63,111 @@ export default async function TradePage(
       ? Math.round((w.reviews.reduce((s, r) => s + r.rating, 0) / w.reviews.length) * 10) / 10
       : 0
 
-  const areas = Object.values(AREA_SLUGS)
-
   return (
-    <div className="relative min-h-screen bg-gray-50">
-      <TradePattern />
+    <div className="min-h-screen bg-gray-50">
       <Navbar variant="public" />
 
-      <div className="relative max-w-5xl mx-auto px-5 py-10">
-        {/* Heading */}
-        <div className="mb-8">
-          <p className="text-xs font-semibold text-green-600 uppercase tracking-widest mb-2">We Got Someone</p>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-2">
-            {skill} in South Africa
-          </h1>
-          <p className="text-gray-500 text-sm">
-            {workers.length} verified {skill.toLowerCase()} worker{workers.length !== 1 ? 's' : ''} available.
-            Contact directly — no agency, no commission.
+      {/* ── Hero ── */}
+      <section className="bg-[#0D1B2A] text-white px-5 pt-12 pb-10">
+        <div className="max-w-5xl mx-auto">
+          <p className="text-xs font-semibold text-green-400 uppercase tracking-widest mb-3">We Got Someone</p>
+          <h1 className="text-3xl sm:text-4xl font-extrabold mb-3">{skill} in South Africa</h1>
+          <p className="text-gray-400 text-sm max-w-lg">
+            {workers.length > 0
+              ? `${workers.length} verified ${skill.toLowerCase()} worker${workers.length !== 1 ? 's' : ''} available. Contact them directly — no agency, no commission.`
+              : `Find a trusted ${skill.toLowerCase()} near you. Contact directly — no agency, no commission.`
+            }
           </p>
         </div>
+      </section>
 
-        {/* Area filter chips */}
-        <div className="mb-8 overflow-x-auto pb-2">
-          <div className="flex gap-2 w-max">
+      {/* ── City filter ── */}
+      <section className="bg-[#0D1B2A] border-t border-white/5 px-5 pb-5">
+        <div className="max-w-5xl mx-auto overflow-x-auto">
+          <div className="flex gap-2 w-max pb-1">
             {Object.entries(AREA_SLUGS).map(([slug, label]) => (
               <Link
                 key={slug}
                 href={`/find/${trade}/${slug}`}
-                className="flex-shrink-0 text-xs font-semibold text-gray-600 bg-white border border-gray-200 hover:border-green-400 hover:text-green-600 rounded-full px-3.5 py-1.5 transition-colors"
+                className="flex-shrink-0 text-xs font-semibold text-gray-300 bg-white/10 hover:bg-green-500 hover:text-white rounded-full px-4 py-2 transition-colors"
               >
                 {label}
               </Link>
             ))}
           </div>
         </div>
+      </section>
 
-        {/* Worker grid */}
+      <div className="max-w-5xl mx-auto px-5 py-10">
+
         {workers.length === 0 ? (
-          <div className="text-center py-24 bg-white rounded-2xl border border-gray-200">
-            <p className="text-lg font-semibold text-gray-700 mb-1">No {skill.toLowerCase()} workers yet</p>
-            <p className="text-gray-400 text-sm mb-6">Be the first to list yourself.</p>
-            <Link
-              href="/join"
-              className="inline-block bg-green-600 text-white font-semibold px-6 py-3 rounded-xl text-sm hover:bg-green-700 transition-colors"
-            >
-              List yourself — first month free
-            </Link>
+          /* ── Empty state ── */
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Left — opportunity pitch */}
+            <div className="bg-[#0D1B2A] text-white rounded-2xl p-8">
+              <p className="text-green-400 text-xs font-bold uppercase tracking-widest mb-3">For {skill.toLowerCase()}s</p>
+              <h2 className="text-2xl font-extrabold mb-3 leading-snug">
+                Be the first {skill.toLowerCase()} listed in South Africa.
+              </h2>
+              <p className="text-gray-400 text-sm leading-relaxed mb-6">
+                People are already searching for {skill.toLowerCase()} workers online. Get your profile up before anyone else does and own the top spot.
+              </p>
+              <ul className="space-y-2 mb-7">
+                {[
+                  'Your own profile page on Google',
+                  'Clients contact you directly by WhatsApp',
+                  '30-day enquiry guarantee',
+                ].map(item => (
+                  <li key={item} className="flex items-center gap-2.5 text-sm text-gray-300">
+                    <span className="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0">
+                      <svg className="w-2.5 h-2.5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href="/join"
+                className="inline-block bg-green-500 hover:bg-green-400 text-white font-bold px-6 py-3 rounded-xl text-sm transition-colors"
+              >
+                List yourself — first month free
+              </Link>
+              <p className="text-gray-600 text-xs mt-3">R59/month after that. Cancel any time.</p>
+            </div>
+
+            {/* Right — homeowner message */}
+            <div className="bg-white border border-gray-200 rounded-2xl p-8 flex flex-col justify-between">
+              <div>
+                <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-3">For homeowners</p>
+                <h2 className="text-xl font-extrabold text-gray-900 mb-3 leading-snug">
+                  No {skill.toLowerCase()}s listed here yet.
+                </h2>
+                <p className="text-gray-500 text-sm leading-relaxed mb-6">
+                  We're growing fast. In the meantime, browse all available workers or search by your area below.
+                </p>
+              </div>
+              <div className="space-y-3">
+                <Link
+                  href={`/workers?skill=${encodeURIComponent(skill)}`}
+                  className="flex items-center justify-between w-full bg-gray-50 border border-gray-200 hover:border-green-300 hover:bg-green-50 rounded-xl px-4 py-3 text-sm font-semibold text-gray-700 hover:text-green-700 transition-all"
+                >
+                  Browse all workers
+                  <span className="text-gray-400">→</span>
+                </Link>
+                <Link
+                  href="/workers"
+                  className="flex items-center justify-between w-full bg-gray-50 border border-gray-200 hover:border-green-300 hover:bg-green-50 rounded-xl px-4 py-3 text-sm font-semibold text-gray-700 hover:text-green-700 transition-all"
+                >
+                  Search by area
+                  <span className="text-gray-400">→</span>
+                </Link>
+              </div>
+            </div>
           </div>
         ) : (
+          /* ── Worker grid ── */
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {workers.map(worker => {
               const displayAreas = worker.service_areas?.length ? worker.service_areas : [worker.city]
@@ -170,41 +226,42 @@ export default async function TradePage(
           </div>
         )}
 
-        {/* Browse all + CTA */}
-        <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-between items-center border-t border-gray-200 pt-8">
-          <Link
-            href={`/workers?skill=${encodeURIComponent(skill)}`}
-            className="text-sm font-semibold text-green-600 hover:underline"
-          >
-            Browse all {skill.toLowerCase()} workers with filters →
-          </Link>
-          <Link
-            href="/join"
-            className="inline-block bg-[#0D1B2A] text-white text-sm font-semibold px-6 py-3 rounded-xl hover:bg-gray-800 transition-colors"
-          >
-            Are you a {skill.toLowerCase()}? List yourself free
-          </Link>
-        </div>
-
-        {/* Structured data */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'ItemList',
-              name: `${skill} Workers in South Africa`,
-              description: `Find trusted ${skill.toLowerCase()} workers near you in South Africa.`,
-              itemListElement: workers.slice(0, 10).map((w, i) => ({
-                '@type': 'ListItem',
-                position: i + 1,
-                url: `https://www.wegotsomeone.co.za/workers/${w.id}`,
-                name: w.name,
-              })),
-            }),
-          }}
-        />
+        {/* ── Bottom links (only when workers exist) ── */}
+        {workers.length > 0 && (
+          <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-between items-center border-t border-gray-200 pt-8">
+            <Link
+              href={`/workers?skill=${encodeURIComponent(skill)}`}
+              className="text-sm font-semibold text-green-600 hover:underline"
+            >
+              Browse all {skill.toLowerCase()} workers with filters →
+            </Link>
+            <Link
+              href="/join"
+              className="inline-block bg-[#0D1B2A] text-white text-sm font-semibold px-6 py-3 rounded-xl hover:bg-gray-800 transition-colors"
+            >
+              Are you a {skill.toLowerCase()}? List yourself free
+            </Link>
+          </div>
+        )}
       </div>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'ItemList',
+            name: `${skill} Workers in South Africa`,
+            description: `Find trusted ${skill.toLowerCase()} workers near you in South Africa.`,
+            itemListElement: workers.slice(0, 10).map((w, i) => ({
+              '@type': 'ListItem',
+              position: i + 1,
+              url: `https://www.wegotsomeone.co.za/workers/${w.id}`,
+              name: w.name,
+            })),
+          }),
+        }}
+      />
     </div>
   )
 }

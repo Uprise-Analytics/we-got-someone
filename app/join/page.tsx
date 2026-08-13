@@ -11,7 +11,7 @@ const SKILLS = [
   'Air Conditioning', 'Bathroom Renovation', 'Blinds & Curtains', 'Brick Layer',
   'Carpenter', 'CCTV & Intercom', 'Ceiling', 'Cleaner', 'Domestic Worker',
   'Drain Cleaning', 'Electrician', 'Flooring', 'Gardener', 'Handyman',
-  'IT Specialist', 'Kitchen Installer', 'Landscaping', 'Mechanic', 'Moving & Transport', 'Painter',
+  'Garage Door Specialist', 'Glass Specialist', 'IT Specialist', 'Kitchen Installer', 'Landscaping', 'Mechanic', 'Moving & Transport', 'Painter',
   'Panel Beater', 'Paving', 'Pest Control', 'Plastering', 'Plumber', 'Pool & Spa',
   'Roofing', 'Rubble Removal', 'Security', 'Solar Installation',
   'Tiler', 'Tree Felling', 'Waterproofing', 'Welding',
@@ -61,6 +61,7 @@ export default function JoinPage() {
   const [isEditMode, setIsEditMode] = useState(false)
   const [existingPhotoUrl, setExistingPhotoUrl] = useState<string | null>(null)
   const [existingBannerUrl, setExistingBannerUrl] = useState<string | null>(null)
+  const [referralCode, setReferralCode] = useState('')
 
   // Keep ref in sync so popstate handler never has a stale closure
   useEffect(() => { stepRef.current = step }, [step])
@@ -86,6 +87,12 @@ export default function JoinPage() {
 
   // Restore draft on mount + detect if user already signed up (coming back from payment page)
   useEffect(() => {
+    try {
+      // Capture ?ref= referral code from URL
+      const refCode = new URLSearchParams(window.location.search).get('ref')
+      if (refCode) setReferralCode(refCode)
+    } catch {}
+
     try {
       const saved = sessionStorage.getItem('wgs_join_draft')
       if (saved) {
@@ -286,6 +293,18 @@ export default function JoinPage() {
       }
     }
 
+    // Read UTM params saved by UtmCapture component
+    let utmSource: string | null = null
+    let utmMedium: string | null = null
+    let utmCampaign: string | null = null
+    let utmContent: string | null = null
+    try {
+      utmSource = sessionStorage.getItem('utm_source')
+      utmMedium = sessionStorage.getItem('utm_medium')
+      utmCampaign = sessionStorage.getItem('utm_campaign')
+      utmContent = sessionStorage.getItem('utm_content')
+    } catch {}
+
     const res = await fetch('/api/workers/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -297,6 +316,8 @@ export default function JoinPage() {
         gender, dateOfBirth: dateOfBirth || null,
         languages,
         serviceAreas,
+        referralCode: referralCode || null,
+        utmSource, utmMedium, utmCampaign, utmContent,
       }),
     })
 
@@ -314,6 +335,64 @@ export default function JoinPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar variant="minimal" />
+
+      {/* ── Value Stack — only shown on step 1 ── */}
+      {step === 'account' && (
+        <div className="bg-[#0D1B2A] text-white px-4 py-10">
+          <div className="max-w-lg mx-auto">
+            <h2 className="text-xl font-extrabold mb-1">Here's exactly what you get</h2>
+            <p className="text-gray-400 text-sm mb-6">Everything included. No hidden costs.</p>
+
+            <div className="space-y-3 mb-6">
+              {[
+                { label: 'Your own professional profile page',        value: 'R600/month' },
+                { label: 'Appear in Google Search for your trade + area', value: 'R800/month' },
+                { label: 'WhatsApp & call button — clients reach you directly', value: 'R200/month' },
+                { label: 'Photo gallery to show off your best work',  value: 'R300/month' },
+                { label: 'Star ratings & reviews that build your reputation', value: 'R400/month' },
+                { label: 'Listed across multiple service areas',       value: 'R200/month' },
+                { label: 'Profile view counter — see your monthly reach', value: 'R100/month' },
+              ].map(({ label, value }) => (
+                <div key={label} className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className="flex-shrink-0 w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center">
+                      <svg className="w-3 h-3 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </span>
+                    <span className="text-sm text-gray-200 leading-snug">{label}</span>
+                  </div>
+                  <span className="flex-shrink-0 text-sm text-green-400 font-semibold">{value}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="border-t border-white/10 pt-4 mb-4">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-400">Total value</span>
+                <span className="text-sm text-gray-400 line-through">R2,600/month</span>
+              </div>
+              <div className="flex items-center justify-between mt-1">
+                <span className="text-base font-bold text-white">Your price</span>
+                <div className="text-right">
+                  <span className="text-2xl font-extrabold text-green-400">R59</span>
+                  <span className="text-gray-400 text-sm">/month</span>
+                </div>
+              </div>
+              <p className="text-xs text-gray-500 mt-1">First month completely free. No contract. Cancel any time.</p>
+            </div>
+
+            {/* Guarantee badge */}
+            <div className="flex items-start gap-3 border border-green-500/30 bg-green-500/10 rounded-xl px-4 py-3.5">
+              <span className="text-xl flex-shrink-0">🛡️</span>
+              <div>
+                <p className="text-sm font-bold text-green-300 mb-0.5">30-Day Enquiry Guarantee</p>
+                <p className="text-xs text-gray-400 leading-relaxed">If you don't receive a genuine client enquiry in your first 30 days, your second month is on us. No questions asked.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="max-w-lg mx-auto w-full px-4 sm:px-6 py-8 sm:py-10 flex-1">
         {/* Steps indicator */}
@@ -340,6 +419,17 @@ export default function JoinPage() {
                 placeholder="Email address"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
+                onBlur={() => {
+                  if (email && email.includes('@')) {
+                    try {
+                      fetch('/api/leads/capture', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, utm_source: sessionStorage.getItem('utm_source') }),
+                      })
+                    } catch {}
+                  }
+                }}
                 required
                 className="w-full px-4 py-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
               />

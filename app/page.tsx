@@ -29,6 +29,8 @@ const SKILL_CATEGORIES = [
   { label: 'Moving & Transport', icon: '🚛' },
   { label: 'Painter',            icon: '🎨' },
   { label: 'Panel Beater',       icon: '🚘' },
+  { label: 'Glass Specialist',   icon: '🪟' },
+  { label: 'Garage Door Specialist', icon: '🚪' },
   { label: 'Paving',             icon: '🛤️' },
   { label: 'Pest Control',       icon: '🐛' },
   { label: 'Plastering',         icon: '🪣' },
@@ -152,24 +154,37 @@ export default async function HomePage() {
       </section>
 
       {/* ── Worker CTA ── */}
-      <section className="bg-[#0D1B2A] text-white py-24 px-6">
+      <section className="bg-[#0D1B2A] text-white py-20 px-6">
         <div className="max-w-2xl mx-auto text-center">
-          <span className="inline-block bg-green-500/20 text-green-400 text-xs font-bold px-4 py-1.5 rounded-full mb-6 uppercase tracking-widest">
-            For workers
-          </span>
-          <h2 className="text-3xl md:text-4xl font-extrabold mb-5 leading-tight">
-            Get found by people<br />who need your skills.
+          <h2 className="text-3xl md:text-4xl font-extrabold mb-4 leading-tight">
+            People in your area are already<br />searching for someone like you.
           </h2>
           <p className="text-gray-400 text-base mb-8 leading-relaxed max-w-lg mx-auto">
-            List your profile on We Got Someone.{' '}
-            <span className="text-white font-semibold">First month free</span>, then just R59/month. No commission, no jobs lost to a middleman. Clients find you and contact you directly.
+            List your profile and get found directly. No agency, no commission, no middleman. Everything you need to get more work, for R59/month.
           </p>
+          <ul className="text-left max-w-sm mx-auto mb-10 space-y-3">
+            {[
+              'Your own profile page that shows up on Google',
+              'Clients contact you directly via WhatsApp or call',
+              '30-day enquiry guarantee — or your second month is free',
+            ].map(item => (
+              <li key={item} className="flex items-start gap-3 text-sm text-gray-300">
+                <span className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center">
+                  <svg className="w-3 h-3 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </span>
+                {item}
+              </li>
+            ))}
+          </ul>
           <Link
             href="/join"
             className="inline-block bg-green-500 hover:bg-green-400 text-white font-bold px-10 py-4 rounded-xl text-sm transition-colors shadow-lg shadow-green-500/20"
           >
-            Start free — list yourself now
+            Get listed — first month free
           </Link>
+          <p className="text-gray-600 text-xs mt-4">No contract. Cancel any time.</p>
         </div>
       </section>
 

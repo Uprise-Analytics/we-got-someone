@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next'
 import { supabaseAdmin } from '@/lib/supabase-admin'
+import { TRADE_SLUGS, TOP_TRADE_SLUGS, AREA_SLUGS } from '@/lib/trade-slugs'
 
 const BASE_URL = 'https://www.wegotsomeone.co.za'
 
@@ -24,6 +25,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     },
     {
+      url: `${BASE_URL}/for-workers`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    },
+    {
       url: `${BASE_URL}/contact`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
@@ -37,8 +44,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ]
 
-  // Every active worker profile gets its own sitemap entry
-  // Google will index "John Smith – Painter in Pretoria" as a standalone search result
+  // /find/[trade] — one page per skill
+  const tradePages: MetadataRoute.Sitemap = Object.keys(TRADE_SLUGS).map(trade => ({
+    url: `${BASE_URL}/find/${trade}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.8,
+  }))
+
+  // /find/[trade]/[area] — top 10 trades × 15 cities = 150 pages
+  const tradeAreaPages: MetadataRoute.Sitemap = []
+  for (const trade of TOP_TRADE_SLUGS) {
+    for (const area of Object.keys(AREA_SLUGS)) {
+      tradeAreaPages.push({
+        url: `${BASE_URL}/find/${trade}/${area}`,
+        lastModified: new Date(),
+        changeFrequency: 'weekly' as const,
+        priority: 0.75,
+      })
+    }
+  }
+
+  // Individual worker profiles
   const { data: workers } = await supabaseAdmin
     .from('workers')
     .select('id, updated_at')
@@ -51,5 +78,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }))
 
-  return [...staticPages, ...workerPages]
+  return [...staticPages, ...tradePages, ...tradeAreaPages, ...workerPages]
 }

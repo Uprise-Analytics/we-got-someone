@@ -29,6 +29,9 @@ export async function POST(req: NextRequest) {
       status: 'active',
       next_billing_date: billingDate ?? null,
     }, { onConflict: 'worker_id' })
+
+    // Reward referrer on first payment
+    await rewardReferrer(workerId)
   }
 
   if (paymentStatus === 'FAILED' || paymentStatus === 'CANCELLED') {
@@ -44,4 +47,42 @@ export async function POST(req: NextRequest) {
   }
 
   return new NextResponse('OK', { status: 200 })
+}
+
+async function rewardReferrer(workerId: string) {
+  try {
+    // Find an unrewarded referral where this worker is the referred one
+    const { data: referral } = await supabaseAdmin
+      .from('referrals')
+      .select('id, referrer_id')
+      .eq('referred_worker_id', workerId)
+      .is('rewarded_at', null)
+      .single()
+
+    if (!referral) return
+
+    // Extend referrer's free_until by 30 days
+    const { data: referrer } = await supabaseAdmin
+      .from('workers')
+      .select('free_until')
+      .eq('id', referral.referrer_id)
+      .single()
+
+    const base = referrer?.free_until ? new Date(referrer.free_until) : new Date()
+    if (base < new Date()) base.setTime(Date.now())
+    base.setDate(base.getDate() + 30)
+
+    await supabaseAdmin
+      .from('workers')
+      .update({ free_until: base.toISOString() })
+      .eq('id', referral.referrer_id)
+
+    // Mark referral as rewarded
+    await supabaseAdmin
+      .from('referrals')
+      .update({ rewarded_at: new Date().toISOString() })
+      .eq('id', referral.id)
+  } catch {
+    // Referrals table may not exist yet — fail silently so payment flow continues
+  }
 }

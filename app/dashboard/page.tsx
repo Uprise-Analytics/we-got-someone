@@ -6,6 +6,7 @@ import SignOutButton from './SignOutButton'
 import DevActivateBanner from './DevActivateBanner'
 import ShareProfile from './ShareProfile'
 import CancelSubscriptionButton from './CancelSubscriptionButton'
+import ReferralCard from './ReferralCard'
 import Navbar from '@/components/Navbar'
 import TradePattern from '@/components/TradePattern'
 
@@ -182,6 +183,11 @@ export default async function DashboardPage() {
             </div>
           )
         })()}
+
+        {/* Referral card — only shown when active and referral_code exists */}
+        {worker.is_active && worker.referral_code && (
+          <ReferralCard code={worker.referral_code} />
+        )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           {/* Subscription card */}

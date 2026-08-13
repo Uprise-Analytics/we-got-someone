@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Geist } from 'next/font/google'
 import NavigationSpinner from '@/components/NavigationSpinner'
 import WhatsAppSupport from '@/components/WhatsAppSupport'
+import UtmCapture from '@/components/UtmCapture'
 import './globals.css'
 
 const geist = Geist({ subsets: ['latin'] })
@@ -146,6 +147,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="min-h-screen flex flex-col bg-white text-gray-900">
+        <UtmCapture />
         <NavigationSpinner />
         <WhatsAppSupport />
         {children}

@@ -12,7 +12,7 @@ const BASE_URL = 'https://www.wegotsomeone.co.za'
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: 'We Got Someone | Find Trusted Local Workers in South Africa',
+    default: 'Find Trusted Local Workers in South Africa',
     template: '%s | We Got Someone',
   },
   description: 'Need a painter, cleaner, gardener or plumber? Find trusted local workers near you in South Africa. Direct contact, no agency fees. First month free, then R59/month.',
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     locale: 'en_ZA',
     url: BASE_URL,
     siteName: 'We Got Someone',
-    title: 'We Got Someone | Find Trusted Local Workers in South Africa',
+    title: 'Find Trusted Local Workers in South Africa',
     description: 'Find trusted painters, cleaners, gardeners, plumbers and more near you. Direct contact, no agency fees.',
     images: [
       {
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
   // Twitter / X card
   twitter: {
     card: 'summary_large_image',
-    title: 'We Got Someone | Find Trusted Local Workers in South Africa',
+    title: 'Find Trusted Local Workers in South Africa',
     description: 'Find trusted painters, cleaners, gardeners, plumbers and more near you. Direct contact, no agency fees.',
     images: ['/og-image.png'],
   },

@@ -1,6 +1,10 @@
 {
   "crons": [
     {
+      "path": "/api/cron/enquiry-guarantee",
+      "schedule": "0 2 * * *"
+    },
+    {
       "path": "/api/cron/deactivate-expired",
       "schedule": "0 3 * * *"
     }

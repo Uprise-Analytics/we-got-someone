@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -6,6 +7,10 @@ import HeroSearch from '@/components/HeroSearch'
 import WorkerMarquee from '@/components/WorkerMarquee'
 
 export const dynamic = 'force-dynamic'
+
+export const metadata: Metadata = {
+  title: 'Find Trusted Local Workers in South Africa',
+}
 
 const SKILL_CATEGORIES = [
   { label: 'Air Conditioning',   icon: '❄️'  },

@@ -9,7 +9,9 @@ import WorkerMarquee from '@/components/WorkerMarquee'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Find Trusted Local Workers in South Africa',
+  title: {
+    absolute: 'Find Trusted Local Workers in South Africa | We Got Someone',
+  },
 }
 
 const SKILL_CATEGORIES = [

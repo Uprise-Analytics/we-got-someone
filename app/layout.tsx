@@ -94,7 +94,23 @@ export const metadata: Metadata = {
   },
 }
 
-// JSON-LD structured data — helps Google show rich results
+// WebSite schema — tells Google to show "We Got Someone" instead of the domain in search results
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'We Got Someone',
+  url: BASE_URL,
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: `${BASE_URL}/workers?q={search_term_string}`,
+    },
+    'query-input': 'required name=search_term_string',
+  },
+}
+
+// LocalBusiness schema — business contact details and service area
 const structuredData = {
   '@context': 'https://schema.org',
   '@type': 'LocalBusiness',
@@ -115,20 +131,16 @@ const structuredData = {
   },
   priceRange: 'R59/month',
   sameAs: [],
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: {
-      '@type': 'EntryPoint',
-      urlTemplate: `${BASE_URL}/workers?q={search_term_string}`,
-    },
-    'query-input': 'required name=search_term_string',
-  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en-ZA" className={geist.className}>
       <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}

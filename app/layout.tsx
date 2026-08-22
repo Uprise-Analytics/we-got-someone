@@ -94,14 +94,6 @@ export const metadata: Metadata = {
   },
 }
 
-// WebSite schema — tells Google the site name to show above the URL in search results
-const websiteSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  name: 'We Got Someone',
-  url: BASE_URL,
-}
-
 // JSON-LD structured data — helps Google show rich results
 const structuredData = {
   '@context': 'https://schema.org',
@@ -137,10 +129,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en-ZA" className={geist.className}>
       <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
-        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}

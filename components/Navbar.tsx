@@ -12,8 +12,8 @@ export default function Navbar(props: NavbarProps) {
   return (
     <nav className="sticky top-0 z-50 bg-white border-b border-gray-100">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center">
-          <Image src="/logo.png" alt="We Got Someone" width={360} height={90} priority className="h-14 sm:h-16 w-auto" />
+        <Link href="/" aria-label="We Got Someone" className="flex items-center">
+          <Image src="/logo.png" alt="" width={360} height={90} priority className="h-20 sm:h-24 w-auto" />
         </Link>
 
         {props.variant === 'public' && <NavMenu />}

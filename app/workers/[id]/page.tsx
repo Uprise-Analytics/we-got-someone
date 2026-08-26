@@ -14,7 +14,7 @@ async function getWorker(id: string) {
   const { data } = await supabaseAdmin
     .from('workers')
     .select(`
-      id, name, bio, skills, city, area, phone, photo_url, banner_url,
+      id, name, bio, skills, city, area, phone, email, website, photo_url, banner_url,
       work_photos, available_now, languages, own_transport, daily_rate,
       years_experience, whatsapp_number, profile_views, is_active, created_at,
       gender, date_of_birth, service_areas,

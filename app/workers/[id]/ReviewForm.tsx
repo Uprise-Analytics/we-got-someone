@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { supabase } from '@/lib/supabase-browser'
 
 export default function ReviewForm({ workerId }: { workerId: string }) {
   const [name, setName] = useState('')
@@ -21,17 +20,17 @@ export default function ReviewForm({ workerId }: { workerId: string }) {
     setLoading(true)
     setError('')
 
-    const { error: err } = await supabase.from('reviews').insert({
-      worker_id: workerId,
-      reviewer_name: name,
-      rating,
-      comment,
+    const res = await fetch('/api/reviews/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ worker_id: workerId, reviewer_name: name, rating, comment }),
     })
 
-    if (err) {
-      setError('Something went wrong. Please try again.')
-    } else {
+    if (res.ok) {
       setSubmitted(true)
+    } else {
+      const data = await res.json().catch(() => ({}))
+      setError(data.error ?? 'Something went wrong. Please try again.')
     }
     setLoading(false)
   }
@@ -56,6 +55,7 @@ export default function ReviewForm({ workerId }: { workerId: string }) {
           placeholder="Your name"
           value={name}
           onChange={e => setName(e.target.value)}
+          maxLength={100}
           className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
         />
 
@@ -78,6 +78,7 @@ export default function ReviewForm({ workerId }: { workerId: string }) {
           placeholder="Tell others about your experience (optional)"
           value={comment}
           onChange={e => setComment(e.target.value)}
+          maxLength={1000}
           rows={3}
           className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
         />

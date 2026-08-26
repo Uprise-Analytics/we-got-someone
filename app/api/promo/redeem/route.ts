@@ -25,7 +25,19 @@ export async function POST(req: NextRequest) {
     .single()
 
   if (!promo) return NextResponse.json({ error: 'Invalid code. Check the code and try again.' }, { status: 400 })
-  if (promo.uses_count >= promo.max_uses) return NextResponse.json({ error: 'This code has already been used.' }, { status: 400 })
+
+  // Atomic increment — only succeeds if uses_count < max_uses, preventing race conditions
+  const { data: claimed, error: claimError } = await supabaseAdmin
+    .from('promo_codes')
+    .update({ uses_count: promo.uses_count + 1 })
+    .eq('id', promo.id)
+    .lt('uses_count', promo.max_uses)
+    .select('id')
+    .single()
+
+  if (claimError || !claimed) {
+    return NextResponse.json({ error: 'This code has already been used.' }, { status: 400 })
+  }
 
   // Get the worker
   const { data: worker } = await supabaseAdmin
@@ -52,11 +64,6 @@ export async function POST(req: NextRequest) {
     status: 'active',
     next_billing_date: freeUntil.toISOString().split('T')[0],
   }, { onConflict: 'worker_id' })
-
-  // Increment usage
-  await supabaseAdmin.from('promo_codes').update({
-    uses_count: promo.uses_count + 1
-  }).eq('id', promo.id)
 
   return NextResponse.json({ ok: true, freeDays: promo.free_days })
 }

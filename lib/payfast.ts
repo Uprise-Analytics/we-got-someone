@@ -28,10 +28,7 @@ export function generateSignature(data: Record<string, string>, passphrase: stri
   if (passphrase.trim()) {
     output += `&passphrase=${pfEncode(passphrase)}`
   }
-  const hash = crypto.createHash('md5').update(output).digest('hex')
-  console.warn('PAYFAST_SIG_STRING:', output)
-  console.warn('PAYFAST_SIG_HASH:', hash)
-  return hash
+  return crypto.createHash('md5').update(output).digest('hex')
 }
 
 export function verifyITN(params: Record<string, string>, passphrase: string): boolean {

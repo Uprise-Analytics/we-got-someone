@@ -13,7 +13,13 @@ import TradePattern from '@/components/TradePattern'
 async function getWorker(id: string) {
   const { data } = await supabaseAdmin
     .from('workers')
-    .select('*, reviews(id, reviewer_name, rating, comment, created_at)')
+    .select(`
+      id, name, bio, skills, city, area, phone, photo_url, banner_url,
+      work_photos, available_now, languages, own_transport, daily_rate,
+      years_experience, whatsapp_number, profile_views, is_active, created_at,
+      gender, date_of_birth, service_areas,
+      reviews(id, reviewer_name, rating, comment, created_at)
+    `)
     .eq('id', id)
     .single()
   return data
@@ -56,7 +62,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 export default async function WorkerProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const worker = await getWorker(id)
-  if (!worker) notFound()
+  if (!worker || !worker.is_active) notFound()
 
   const avgRating = worker.reviews?.length
     ? Math.round((worker.reviews.reduce((s: number, r: any) => s + r.rating, 0) / worker.reviews.length) * 10) / 10

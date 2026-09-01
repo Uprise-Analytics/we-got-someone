@@ -41,7 +41,7 @@ export default async function PaymentPage() {
     name_last: worker.name.split(' ').slice(1).join(' ') || '-',
     email_address: user.email!,
     m_payment_id: worker.id,
-    amount: '0.00',
+    amount: '59.00',
     item_name: 'We Got Someone Monthly Listing',
     subscription_type: '1',
     billing_date: nextBilling.toISOString().split('T')[0],

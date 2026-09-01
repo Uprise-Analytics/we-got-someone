@@ -53,6 +53,8 @@ export default async function PaymentPage() {
 
   const signature = generateSignature(paymentData, PAYFAST_PASSPHRASE)
 
+  console.log('[PAYFAST DEBUG]', JSON.stringify({ ...paymentData, signature, PAYFAST_URL }, null, 2))
+
   return (
     <div className="flex flex-col min-h-screen items-center justify-center px-4 sm:px-6 bg-gray-50 py-10">
       <div className="max-w-md w-full mb-3 text-left">

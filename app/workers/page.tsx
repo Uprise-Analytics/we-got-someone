@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin as supabase } from '@/lib/supabase-admin'
 import Link from 'next/link'
 import WorkerSearch from './WorkerSearch'
 import Navbar from '@/components/Navbar'
@@ -15,7 +15,7 @@ const SKILLS = [
   'Air Conditioning', 'Bathroom Renovation', 'Blinds & Curtains', 'Brick Layer',
   'Carpenter', 'CCTV & Intercom', 'Ceiling', 'Cleaner', 'Domestic Worker',
   'Drain Cleaning', 'Electrician', 'Flooring', 'Gardener', 'Handyman',
-  'IT Specialist', 'Kitchen Installer', 'Landscaping', 'Mechanic', 'Moving & Transport', 'Painter',
+  'Garage Door Specialist', 'Glass Specialist', 'IT Specialist', 'Kitchen Installer', 'Landscaping', 'Mechanic', 'Moving & Transport', 'Painter',
   'Panel Beater', 'Paving', 'Pest Control', 'Plastering', 'Plumber', 'Pool & Spa',
   'Roofing', 'Rubble Removal', 'Security', 'Solar Installation',
   'Tiler', 'Tree Felling', 'Waterproofing', 'Welding',

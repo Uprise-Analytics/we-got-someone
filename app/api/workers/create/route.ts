@@ -96,7 +96,10 @@ export async function POST(req: NextRequest) {
       date_of_birth: dateOfBirth ?? null,
       languages: languages ?? [],
     }).select('id').single()
-    if (fallbackError) return NextResponse.json({ error: fallbackError.message }, { status: 500 })
+    if (fallbackError) {
+      console.error('worker create fallback failed', { userId, error: fallbackError })
+      return NextResponse.json({ error: 'Could not create profile' }, { status: 500 })
+    }
 
     return NextResponse.json({ ok: true })
   }

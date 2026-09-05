@@ -29,8 +29,8 @@ export default async function PaymentPage() {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000'
 
   const paymentData: Record<string, string> = {
-    merchant_id: '10000100',
-    merchant_key: '46f0cd694581a',
+    merchant_id: PAYFAST_MERCHANT_ID,
+    merchant_key: PAYFAST_MERCHANT_KEY,
     return_url: `${baseUrl}/join/success`,
     cancel_url: `${baseUrl}/join/payment`,
     notify_url: `${baseUrl}/api/payfast/notify`,

@@ -28,6 +28,10 @@ export default async function PaymentPage() {
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000'
 
+  const nextBilling = new Date()
+  nextBilling.setDate(1)
+  nextBilling.setMonth(nextBilling.getMonth() + 1)
+
   const paymentData: Record<string, string> = {
     merchant_id: PAYFAST_MERCHANT_ID,
     merchant_key: PAYFAST_MERCHANT_KEY,
@@ -38,8 +42,13 @@ export default async function PaymentPage() {
     name_last: worker.name.split(' ').slice(1).join(' ') || '',
     email_address: user.email!,
     m_payment_id: worker.id,
-    amount: '59.00',
+    amount: '0.00',
     item_name: 'We Got Someone Monthly Listing',
+    subscription_type: '1',
+    billing_date: nextBilling.toISOString().split('T')[0],
+    recurring_amount: '59.00',
+    frequency: '3',
+    cycles: '0',
   }
 
   const signature = generateSignature(paymentData, PAYFAST_PASSPHRASE)

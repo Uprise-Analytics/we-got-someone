@@ -16,7 +16,7 @@ const SECTIONS = [
   },
   {
     heading: 'Why we collect it',
-    body: `We use your information to create and display your worker profile, process your monthly subscription payment, allow homeowners to find and contact you, and improve the service. We do not sell your personal information to third parties.`,
+    body: `We use your information to create and display your worker profile, allow homeowners to find and contact you, and improve the service. We do not sell your personal information to third parties.`,
   },
   {
     heading: 'How we store it',
@@ -24,7 +24,7 @@ const SECTIONS = [
   },
   {
     heading: 'Who can see your information',
-    body: `Your worker profile (name, photo, skills, area, and contact number) is public. That is the purpose of the listing. Your email address and billing details are never shown publicly. Reviewers see only the name you choose to provide when writing a review.`,
+    body: `Your worker profile (name, photo, skills, area, and contact number) is public. That is the purpose of the listing. Your email address is never shown publicly. Reviewers see only the name you choose to provide when writing a review.`,
   },
   {
     heading: 'Your rights under POPIA',

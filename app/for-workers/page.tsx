@@ -4,7 +4,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Get More Work — List Yourself Free | We Got Someone',
-  description: 'People near you are searching for your skills right now. Get your own profile page, appear on Google, and get found by clients directly. First month free, then R59/month.',
+  description: 'People near you are searching for your skills right now. Get your own profile page, appear on Google, and get found by clients directly. Free to list.',
   alternates: { canonical: '/for-workers' },
 }
 
@@ -46,9 +46,9 @@ export default function ForWorkersPage() {
             href="/join"
             className="inline-block bg-green-500 hover:bg-green-400 text-white font-extrabold px-10 py-4 rounded-2xl text-base transition-colors shadow-xl shadow-green-500/20"
           >
-            Get listed — first month free
+            Get listed — it's free
           </Link>
-          <p className="text-gray-600 text-xs mt-4">No contract. Cancel any time.</p>
+          <p className="text-gray-600 text-xs mt-4">No credit card. No contract.</p>
         </div>
       </section>
 
@@ -75,18 +75,11 @@ export default function ForWorkersPage() {
           </div>
 
           <div className="border-t border-white/10 pt-4 mb-4 space-y-1.5">
-            <div className="flex items-center justify-between text-sm text-gray-400">
-              <span>Total value</span>
-              <span className="line-through">R2,600/month</span>
-            </div>
             <div className="flex items-center justify-between">
               <span className="font-semibold">Your price</span>
-              <div>
-                <span className="text-3xl font-extrabold text-green-400">R59</span>
-                <span className="text-gray-400 text-sm">/month</span>
-              </div>
+              <span className="text-3xl font-extrabold text-green-400">Free</span>
             </div>
-            <p className="text-xs text-gray-500 pt-1">First month completely free. No contract. Cancel any time.</p>
+            <p className="text-xs text-gray-500 pt-1">No credit card. No contract. Always free.</p>
           </div>
 
           {/* Guarantee */}
@@ -95,7 +88,7 @@ export default function ForWorkersPage() {
             <div>
               <p className="text-sm font-bold text-green-300">30-Day Enquiry Guarantee</p>
               <p className="text-xs text-gray-400 mt-0.5 leading-relaxed">
-                If you don't receive a genuine client enquiry in your first 30 days, your second month is on us. No questions asked.
+                If you don't receive a genuine client enquiry in your first 30 days, we will work to fix your profile until you do.
               </p>
             </div>
           </div>
@@ -107,7 +100,7 @@ export default function ForWorkersPage() {
         <h2 className="text-xl font-extrabold text-center mb-8">Three steps to get found</h2>
         <div className="space-y-4">
           {[
-            { n: '1', title: 'Sign up in 2 minutes', body: 'Create your account with just your email. No card required for the free month.' },
+            { n: '1', title: 'Sign up in 2 minutes', body: 'Create your account with just your email. No card required.' },
             { n: '2', title: 'Build your profile', body: 'Add your skills, your areas, a photo, and a short bio. We show you exactly what clients see.' },
             { n: '3', title: 'Get found by clients', body: 'Your profile goes live on Google and our directory. Clients contact you directly by WhatsApp or call.' },
           ].map(step => (
@@ -134,7 +127,7 @@ export default function ForWorkersPage() {
         >
           Get listed — first month free
         </Link>
-        <p className="text-gray-600 text-xs">R59/month after that. No contract. Cancel any time.</p>
+        <p className="text-gray-600 text-xs">No credit card. No contract.</p>
       </section>
 
     </div>

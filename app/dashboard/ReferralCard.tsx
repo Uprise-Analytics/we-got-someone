@@ -7,7 +7,7 @@ export default function ReferralCard({ code }: { code: string }) {
   const [copied, setCopied] = useState(false)
   const link = `${BASE_URL}/join?ref=${code}`
   const waText = encodeURIComponent(
-    `Hey, I use We Got Someone to get found by clients in my area. Join me and list yourself — first month free: ${link}`
+    `Hey, I use We Got Someone to get found by clients in my area. Join me and list yourself — it's free: ${link}`
   )
 
   function handleCopy() {
@@ -25,11 +25,11 @@ export default function ReferralCard({ code }: { code: string }) {
         </div>
         <div>
           <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-0.5">Invite a colleague</p>
-          <p className="text-sm font-bold text-gray-900">Earn a free month</p>
+          <p className="text-sm font-bold text-gray-900">Invite a colleague</p>
         </div>
       </div>
       <p className="text-sm text-gray-500 leading-relaxed mb-4">
-        When another worker signs up with your link and pays, you get an extra month free. No limit.
+        Share your link and help other workers get found in their area.
       </p>
 
       <div className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 mb-3 flex items-center justify-between gap-2">

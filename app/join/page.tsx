@@ -368,18 +368,11 @@ export default function JoinPage() {
             </div>
 
             <div className="border-t border-white/10 pt-4 mb-4">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-400">Total value</span>
-                <span className="text-sm text-gray-400 line-through">R2,600/month</span>
-              </div>
               <div className="flex items-center justify-between mt-1">
                 <span className="text-base font-bold text-white">Your price</span>
-                <div className="text-right">
-                  <span className="text-2xl font-extrabold text-green-400">R59</span>
-                  <span className="text-gray-400 text-sm">/month</span>
-                </div>
+                <span className="text-2xl font-extrabold text-green-400">Free</span>
               </div>
-              <p className="text-xs text-gray-500 mt-1">First month completely free. No contract. Cancel any time.</p>
+              <p className="text-xs text-gray-500 mt-1">No credit card. No contract. Always free.</p>
             </div>
 
             {/* Guarantee badge */}
@@ -387,7 +380,7 @@ export default function JoinPage() {
               <span className="text-xl flex-shrink-0">🛡️</span>
               <div>
                 <p className="text-sm font-bold text-green-300 mb-0.5">30-Day Enquiry Guarantee</p>
-                <p className="text-xs text-gray-400 leading-relaxed">If you don't receive a genuine client enquiry in your first 30 days, your second month is on us. No questions asked.</p>
+                <p className="text-xs text-gray-400 leading-relaxed">If you don't receive a genuine client enquiry in your first 30 days, we will work to fix your profile until you do.</p>
               </div>
             </div>
           </div>
@@ -411,7 +404,7 @@ export default function JoinPage() {
         {step === 'account' && (
           <>
             <h1 className="text-2xl font-bold mb-2 text-center">Create your account</h1>
-            <p className="text-gray-500 text-sm mb-6 text-center">First month free, then R59/month. Cancel any time.</p>
+            <p className="text-gray-500 text-sm mb-6 text-center">Free to list. No credit card required.</p>
 
             <form onSubmit={handleAccountSubmit} className="space-y-4">
               <input

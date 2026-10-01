@@ -167,13 +167,13 @@ export default async function HomePage() {
             People in your area are already<br />searching for someone like you.
           </h2>
           <p className="text-gray-400 text-base mb-8 leading-relaxed max-w-lg mx-auto">
-            List your profile and get found directly. No agency, no commission, no middleman. Everything you need to get more work, for R59/month.
+            List your profile and get found directly. No agency, no commission, no middleman. Everything you need to get more work — completely free.
           </p>
           <ul className="text-left max-w-sm mx-auto mb-10 space-y-3">
             {[
               'Your own profile page that shows up on Google',
               'Clients contact you directly via WhatsApp or call',
-              '30-day enquiry guarantee — or your second month is free',
+              '30-day enquiry guarantee — if no one contacts you, we fix it',
             ].map(item => (
               <li key={item} className="flex items-start gap-3 text-sm text-gray-300">
                 <span className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center">

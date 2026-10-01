@@ -133,7 +133,7 @@ export default async function TradeAreaPage(
               >
                 List yourself — first month free
               </Link>
-              <p className="text-gray-600 text-xs mt-3">R59/month after that. Cancel any time.</p>
+              <p className="text-gray-600 text-xs mt-3">Free to list. No credit card required.</p>
             </div>
 
             {/* Homeowner message */}

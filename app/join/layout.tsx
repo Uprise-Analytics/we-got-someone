@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'List Yourself — First Month Free | We Got Someone',
-  description: 'Get your own profile page, appear on Google, and get found by clients in your area. First month free, then R59/month. 30-day enquiry guarantee.',
+  description: 'Get your own profile page, appear on Google, and get found by clients in your area. Free to list. No credit card required.',
   alternates: { canonical: '/join' },
 }
 

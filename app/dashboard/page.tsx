@@ -94,13 +94,7 @@ export default async function DashboardPage() {
             <div className="w-2.5 h-2.5 rounded-full bg-white animate-pulse flex-shrink-0" />
             <div>
               <p className="font-semibold">Your profile is live</p>
-              {onFreeTrial ? (
-                <p className="text-green-100 text-sm mt-0.5">
-                  Free trial: <span className="font-semibold text-white">{daysLeft} day{daysLeft !== 1 ? 's' : ''} remaining</span>. After that, R59/month to stay listed.
-                </p>
-              ) : (
-                <p className="text-green-100 text-sm mt-0.5">People in your area can find and contact you.</p>
-              )}
+              <p className="text-green-100 text-sm mt-0.5">People in your area can find and contact you.</p>
             </div>
           </div>
         ) : (
@@ -109,16 +103,9 @@ export default async function DashboardPage() {
               <div className="w-2.5 h-2.5 rounded-full bg-red-400 flex-shrink-0" />
               <p className="font-semibold text-base">Profile not visible yet</p>
             </div>
-            <p className="text-gray-400 text-sm mb-5 leading-relaxed">
-              Your profile is saved but not live. Activate your <span className="text-white font-medium">free first month</span> to start showing up in searches. Then just R59/month. Cancel any time.
+            <p className="text-gray-400 text-sm leading-relaxed">
+              Your profile is saved. It will be reviewed and activated shortly.
             </p>
-            <Link
-              href="/join/payment"
-              className="block w-full text-center bg-green-600 text-white font-semibold py-3 rounded-xl hover:bg-green-700 transition-colors"
-            >
-              Activate free month
-            </Link>
-            {process.env.NODE_ENV === 'development' && <DevActivateBanner />}
           </div>
         )}
 
@@ -190,40 +177,6 @@ export default async function DashboardPage() {
         )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-          {/* Subscription card */}
-          <div className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Subscription</p>
-            {subscription ? (
-              <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-500">Status</span>
-                  <span className={`text-sm font-semibold capitalize px-2.5 py-0.5 rounded-full ${
-                    subscription.status === 'active'
-                      ? 'bg-green-50 text-green-700'
-                      : 'bg-red-50 text-red-600'
-                  }`}>
-                    {subscription.status}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-500">Amount</span>
-                  <span className="text-sm font-semibold text-gray-900">R59 / month</span>
-                </div>
-                {subscription.next_billing_date && (
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-500">Next billing</span>
-                    <span className="text-sm font-semibold text-gray-900">
-                      {new Date(subscription.next_billing_date).toLocaleDateString('en-ZA')}
-                    </span>
-                  </div>
-                )}
-                {subscription.status === 'active' && <CancelSubscriptionButton />}
-              </div>
-            ) : (
-              <p className="text-sm text-gray-400">No active subscription</p>
-            )}
-          </div>
-
           {/* Skills card */}
           <div className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5">
             <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Your Skills</p>

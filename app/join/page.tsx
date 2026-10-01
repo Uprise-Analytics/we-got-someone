@@ -243,7 +243,7 @@ export default function JoinPage() {
 
       setLoading(false)
       if (updateErr) { setError(updateErr.message); return }
-      router.push('/join/payment')
+      router.push('/dashboard')
       return
     }
 
@@ -329,7 +329,7 @@ export default function JoinPage() {
     }
 
     try { sessionStorage.removeItem('wgs_join_draft') } catch {}
-    router.push('/join/payment')
+    router.push('/dashboard')
   }
 
   return (

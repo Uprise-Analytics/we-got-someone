@@ -125,7 +125,7 @@ export default function ForWorkersPage() {
           href="/join"
           className="inline-block bg-green-500 hover:bg-green-400 text-white font-extrabold px-10 py-4 rounded-2xl text-base transition-colors shadow-xl shadow-green-500/20 mb-3"
         >
-          Get listed — first month free
+          Get listed — it's free
         </Link>
         <p className="text-gray-600 text-xs">No credit card. No contract.</p>
       </section>

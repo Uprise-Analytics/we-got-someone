@@ -132,7 +132,7 @@ export default async function TradePage(
                 href="/join"
                 className="inline-block bg-green-500 hover:bg-green-400 text-white font-bold px-6 py-3 rounded-xl text-sm transition-colors"
               >
-                List yourself — first month free
+                List yourself — it's free
               </Link>
               <p className="text-gray-600 text-xs mt-3">Free to list. No credit card required.</p>
             </div>

@@ -189,7 +189,7 @@ export default async function HomePage() {
             href="/join"
             className="inline-block bg-green-500 hover:bg-green-400 text-white font-bold px-10 py-4 rounded-xl text-sm transition-colors shadow-lg shadow-green-500/20"
           >
-            Get listed — first month free
+            Get listed — it's free
           </Link>
           <p className="text-gray-600 text-xs mt-4">No contract. Cancel any time.</p>
         </div>

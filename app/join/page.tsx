@@ -372,7 +372,7 @@ export default function JoinPage() {
                 <span className="text-base font-bold text-white">Your price</span>
                 <span className="text-2xl font-extrabold text-green-400">Free</span>
               </div>
-              <p className="text-xs text-gray-500 mt-1">No credit card. No contract. Always free.</p>
+              <p className="text-xs text-gray-500 mt-1">No credit card. No contract. Free.</p>
             </div>
 
             {/* Guarantee badge */}

@@ -263,12 +263,6 @@ export default function JoinPage() {
       setLoading(false)
       return
     }
-    if (!authData.session) {
-      setError('Check your email for a confirmation link, then sign in to complete your profile.')
-      setLoading(false)
-      return
-    }
-
     const uid = authData.user.id
 
     let photoUrl: string | null = null
@@ -333,7 +327,7 @@ export default function JoinPage() {
     }
 
     try { sessionStorage.removeItem('wgs_join_draft') } catch {}
-    router.push('/dashboard')
+    router.push('/join/success')
   }
 
   return (

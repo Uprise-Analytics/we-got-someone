@@ -24,7 +24,7 @@ export default function ForWorkersPage() {
 
       {/* ── Logo header ── */}
       <header className="flex justify-center pt-8 pb-4 px-6">
-        <Image src="/logo-white.png" alt="We Got Someone" width={200} height={60} className="h-12 w-auto" />
+        <Image src="/logo-white.png" alt="We Got Someone" width={360} height={90} className="h-20 sm:h-24 w-auto" />
       </header>
 
       {/* ── Hero ── */}

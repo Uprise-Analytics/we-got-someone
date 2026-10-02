@@ -248,7 +248,11 @@ export default function JoinPage() {
     }
 
     // Create Supabase auth user — only happens here, not at step 1
-    const { data: authData, error: signUpError } = await supabase.auth.signUp({ email, password })
+    const { data: authData, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { emailRedirectTo: 'https://www.wegotsomeone.co.za/dashboard' },
+    })
     if (signUpError) {
       setError(signUpError.message)
       setLoading(false)

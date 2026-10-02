@@ -15,13 +15,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
   }
 
-  // Verify this user was created very recently — prevents using someone else's userId
+  // Verify the user exists and has not yet confirmed their email
   const { data: { user }, error: userErr } = await supabaseAdmin.auth.admin.getUserById(userId)
   if (userErr || !user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
-  const fiveMinutes = 5 * 60 * 1000
-  if (Date.now() - new Date(user.created_at).getTime() > fiveMinutes) {
+  if (user.email_confirmed_at !== null) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

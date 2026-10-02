@@ -251,7 +251,9 @@ export default function JoinPage() {
     const { data: authData, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
-      options: { emailRedirectTo: 'https://www.wegotsomeone.co.za/dashboard' },
+      options: {
+        emailRedirectTo: 'https://www.wegotsomeone.co.za/auth/callback?next=/dashboard',
+      },
     })
     if (signUpError) {
       setError(signUpError.message)
@@ -264,7 +266,9 @@ export default function JoinPage() {
       return
     }
     const uid = authData.user.id
+    const needsEmailConfirmation = !authData.session
 
+    // Attempt photo uploads — may fail silently if storage requires auth
     let photoUrl: string | null = null
     if (photo) {
       const ext = photo.name.split('.').pop()
@@ -303,20 +307,27 @@ export default function JoinPage() {
       utmContent = sessionStorage.getItem('utm_content')
     } catch {}
 
-    const res = await fetch('/api/workers/create', {
+    const profilePayload = {
+      userId: uid, name, bio, skills, phone,
+      photoUrl, bannerUrl,
+      email: contactEmail || null,
+      website: website || null,
+      gender, dateOfBirth: dateOfBirth || null,
+      languages,
+      serviceAreas,
+      referralCode: referralCode || null,
+      utmSource, utmMedium, utmCampaign, utmContent,
+    }
+
+    // Use the unconfirmed route when there is no session yet (email confirmation pending)
+    const createEndpoint = needsEmailConfirmation
+      ? '/api/workers/create-unconfirmed'
+      : '/api/workers/create'
+
+    const res = await fetch(createEndpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        userId: uid, name, bio, skills, phone,
-        photoUrl, bannerUrl,
-        email: contactEmail || null,
-        website: website || null,
-        gender, dateOfBirth: dateOfBirth || null,
-        languages,
-        serviceAreas,
-        referralCode: referralCode || null,
-        utmSource, utmMedium, utmCampaign, utmContent,
-      }),
+      body: JSON.stringify(profilePayload),
     })
 
     if (!res.ok) {
@@ -327,7 +338,12 @@ export default function JoinPage() {
     }
 
     try { sessionStorage.removeItem('wgs_join_draft') } catch {}
-    router.push('/join/success')
+
+    if (needsEmailConfirmation) {
+      router.push(`/join/check-email?email=${encodeURIComponent(email)}`)
+    } else {
+      router.push('/join/success')
+    }
   }
 
   return (

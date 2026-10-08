@@ -61,6 +61,7 @@ export default function JoinPage() {
   const [languages, setLanguages] = useState<string[]>([])
   const [serviceAreas, setServiceAreas] = useState<string[]>([])
   const [isEditMode, setIsEditMode] = useState(false)
+  const [sessionUserId, setSessionUserId] = useState<string | null>(null)
   const [existingPhotoUrl, setExistingPhotoUrl] = useState<string | null>(null)
   const [existingBannerUrl, setExistingBannerUrl] = useState<string | null>(null)
   const [referralCode, setReferralCode] = useState('')
@@ -113,17 +114,22 @@ export default function JoinPage() {
       }
     } catch {}
 
-    // If the user already has an account + worker record, go straight to step 2 in edit mode
+    // If the user is already signed in, skip to step 2
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!session) return
+      setSessionUserId(session.user.id)
+      setEmail(session.user.email ?? '')
       const { data: worker } = await supabase
         .from('workers')
         .select('name, bio, skills, phone, email, website, gender, date_of_birth, languages, service_areas, photo_url, banner_url')
         .eq('user_id', session.user.id)
         .single()
-      if (!worker) return
+      if (!worker) {
+        // Signed in but no profile yet (e.g. came from dashboard redirect) — skip auth step
+        setStep('profile')
+        return
+      }
       setIsEditMode(true)
-      setEmail(session.user.email ?? '')
       setName(prev => prev || (worker.name ?? ''))
       setBio(prev => prev || (worker.bio ?? ''))
       setPhone(prev => prev || (worker.phone ?? ''))
@@ -250,7 +256,60 @@ export default function JoinPage() {
       return
     }
 
-    // Create Supabase auth user — only happens here, not at step 1
+    // Already signed in but no profile yet — create it now, no signUp needed
+    if (sessionUserId) {
+      const uid = sessionUserId
+      let photoUrl: string | null = null
+      if (photo) {
+        const ext = photo.name.split('.').pop()
+        const { error: upErr } = await supabase.storage.from('worker-photos').upload(`${uid}.${ext}`, photo, { upsert: true })
+        if (!upErr) {
+          const { data: u } = supabase.storage.from('worker-photos').getPublicUrl(`${uid}.${ext}`)
+          photoUrl = u.publicUrl
+        }
+      }
+      let bannerUrl: string | null = null
+      if (banner) {
+        const ext = banner.name.split('.').pop()
+        const { error: upErr } = await supabase.storage.from('worker-photos').upload(`${uid}-banner.${ext}`, banner, { upsert: true })
+        if (!upErr) {
+          const { data: u } = supabase.storage.from('worker-photos').getPublicUrl(`${uid}-banner.${ext}`)
+          bannerUrl = u.publicUrl
+        }
+      }
+      let utmSource: string | null = null, utmMedium: string | null = null
+      let utmCampaign: string | null = null, utmContent: string | null = null
+      try {
+        utmSource = sessionStorage.getItem('utm_source')
+        utmMedium = sessionStorage.getItem('utm_medium')
+        utmCampaign = sessionStorage.getItem('utm_campaign')
+        utmContent = sessionStorage.getItem('utm_content')
+      } catch {}
+      const res = await fetch('/api/workers/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: uid, name, bio, skills, phone, photoUrl, bannerUrl,
+          email: contactEmail || null, website: website || null,
+          gender, dateOfBirth: dateOfBirth || null,
+          languages, serviceAreas,
+          referralCode: referralCode || null,
+          utmSource, utmMedium, utmCampaign, utmContent,
+        }),
+      })
+      if (!res.ok) {
+        const body = await res.json()
+        setError(body.error ?? 'Something went wrong.')
+        setLoading(false)
+        return
+      }
+      try { sessionStorage.removeItem('wgs_join_draft') } catch {}
+      setLoading(false)
+      router.push('/dashboard')
+      return
+    }
+
+    // Brand new signup — create Supabase auth user
     const { data: authData, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
@@ -494,13 +553,15 @@ export default function JoinPage() {
 
         {step === 'profile' && (
           <>
-            <button
-              type="button"
-              onClick={() => setStep('account')}
-              className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-5 cursor-pointer"
-            >
-              ← Back
-            </button>
+            {!sessionUserId && (
+              <button
+                type="button"
+                onClick={() => setStep('account')}
+                className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-5 cursor-pointer"
+              >
+                ← Back
+              </button>
+            )}
             <h1 className="text-2xl font-bold mb-2">Build your profile</h1>
             <p className="text-gray-500 text-sm mb-6">This is what clients will see when they find you.</p>
 

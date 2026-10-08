@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { supabase } from '@/lib/supabase-browser'
 import Navbar from '@/components/Navbar'
 import AreaSelect from '@/components/AreaSelect'
@@ -37,6 +38,7 @@ export default function JoinPage() {
   const stepRef = useRef(step)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [alreadyRegistered, setAlreadyRegistered] = useState(false)
 
   // Account fields — stored in state, auth user created on final submit
   const [email, setEmail] = useState('')
@@ -202,6 +204,7 @@ export default function JoinPage() {
     if (serviceAreas.length === 0) { setError('Please select at least one area you work in.'); return }
     setLoading(true)
     setError('')
+    setAlreadyRegistered(false)
 
     // Edit mode: user already exists, just update their profile and go back to payment
     if (isEditMode) {
@@ -331,6 +334,11 @@ export default function JoinPage() {
     })
 
     if (!res.ok) {
+      if (res.status === 409) {
+        setAlreadyRegistered(true)
+        setLoading(false)
+        return
+      }
       const { error: msg } = await res.json()
       setError(msg ?? 'Something went wrong.')
       setLoading(false)
@@ -704,7 +712,13 @@ export default function JoinPage() {
                 />
               </div>
 
-              {error && <p className="text-red-500 text-sm">{error}</p>}
+              {alreadyRegistered && (
+                <p className="text-red-500 text-sm">
+                  This email is already registered.{' '}
+                  <Link href="/sign-in" className="underline font-semibold">Sign in instead</Link>
+                </p>
+              )}
+              {!alreadyRegistered && error && <p className="text-red-500 text-sm">{error}</p>}
 
               <button
                 type="submit"

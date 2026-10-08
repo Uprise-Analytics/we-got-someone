@@ -15,13 +15,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
   }
 
-  // Verify the user exists and has not yet confirmed their email
+  // Verify the user exists and has not yet confirmed their email.
+  // If getUserById fails, the userId is fake (Supabase obfuscates existing emails).
+  // If email_confirmed_at is set, the user is already registered.
+  // Both cases mean the email is already in use — return 409 so the client can show a helpful message.
   const { data: { user }, error: userErr } = await supabaseAdmin.auth.admin.getUserById(userId)
-  if (userErr || !user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-  if (user.email_confirmed_at !== null) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (userErr || !user || user.email_confirmed_at !== null) {
+    return NextResponse.json({ error: 'already_registered' }, { status: 409 })
   }
 
   const primaryCity = serviceAreas?.[0] ?? ''
@@ -61,6 +61,11 @@ export async function POST(req: NextRequest) {
   }).select('id').single()
 
   if (error) {
+    // Unique constraint violation means the worker row already exists from a previous attempt.
+    // Treat as success — the user just needs to confirm their email.
+    if (error.code === '23505') {
+      return NextResponse.json({ workerId: null })
+    }
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 

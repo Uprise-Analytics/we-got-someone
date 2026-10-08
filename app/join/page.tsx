@@ -391,9 +391,13 @@ export default function JoinPage() {
       ? '/api/workers/create-unconfirmed'
       : '/api/workers/create'
 
+    const signUpToken = authData.session?.access_token
     const res = await fetch(createEndpoint, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(signUpToken ? { 'Authorization': `Bearer ${signUpToken}` } : {}),
+      },
       body: JSON.stringify(profilePayload),
     })
 

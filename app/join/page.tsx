@@ -285,14 +285,9 @@ export default function JoinPage() {
         utmCampaign = sessionStorage.getItem('utm_campaign')
         utmContent = sessionStorage.getItem('utm_content')
       } catch {}
-      const { data: { session: currentSession } } = await supabase.auth.getSession()
-      const accessToken = currentSession?.access_token
       const res = await fetch('/api/workers/create', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(accessToken ? { 'Authorization': `Bearer ${accessToken}` } : {}),
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           userId: uid, name, bio, skills, phone, photoUrl, bannerUrl,
           email: contactEmail || null, website: website || null,
@@ -391,13 +386,9 @@ export default function JoinPage() {
       ? '/api/workers/create-unconfirmed'
       : '/api/workers/create'
 
-    const signUpToken = authData.session?.access_token
     const res = await fetch(createEndpoint, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(signUpToken ? { 'Authorization': `Bearer ${signUpToken}` } : {}),
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(profilePayload),
     })
 

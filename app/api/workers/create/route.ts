@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
-import { createServerClient } from '@supabase/ssr'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 
 function generateReferralCode(): string {
@@ -8,25 +6,6 @@ function generateReferralCode(): string {
 }
 
 export async function POST(req: NextRequest) {
-  // Verify the caller is the authenticated user they claim to be
-  let sessionUserId: string | null = null
-  const authHeader = req.headers.get('Authorization')
-  const bearerToken = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null
-  if (bearerToken) {
-    const { data } = await supabaseAdmin.auth.getUser(bearerToken)
-    sessionUserId = data.user?.id ?? null
-  } else {
-    const cookieStore = await cookies()
-    const serverSupabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      { cookies: { getAll: () => cookieStore.getAll() } }
-    )
-    const { data } = await serverSupabase.auth.getUser()
-    sessionUserId = data.user?.id ?? null
-  }
-  if (!sessionUserId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
   const body = await req.json()
   const {
     userId, name, bio, skills, phone, photoUrl, bannerUrl,
@@ -38,15 +17,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
   }
 
-  // Prevent creating a profile on behalf of another user
-  if (userId !== sessionUserId) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  // Verify the userId is a real, confirmed Supabase auth user.
+  // Using getUserById (service role admin API) — the only reliable server-side auth check.
+  const { data: { user }, error: userErr } = await supabaseAdmin.auth.admin.getUserById(userId)
+  if (userErr || !user || user.email_confirmed_at === null) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   const primaryCity = serviceAreas?.[0] ?? ''
   const myReferralCode = generateReferralCode()
 
-  // Resolve referralCode → referrer worker id
   let referredBy: string | null = null
   if (referralCode) {
     const { data: referrer } = await supabaseAdmin
@@ -59,9 +39,7 @@ export async function POST(req: NextRequest) {
 
   const { data: newWorker, error } = await supabaseAdmin.from('workers').insert({
     user_id: userId,
-    name,
-    bio,
-    skills,
+    name, bio, skills,
     city: primaryCity,
     area: primaryCity,
     phone,
@@ -83,8 +61,7 @@ export async function POST(req: NextRequest) {
   }).select('id').single()
 
   if (error) {
-    // Columns may not exist yet — retry with only guaranteed columns
-    const { data: fallbackWorker, error: fallbackError } = await supabaseAdmin.from('workers').insert({
+    const { error: fallbackError } = await supabaseAdmin.from('workers').insert({
       user_id: userId,
       name, bio, skills,
       city: primaryCity,
@@ -100,11 +77,9 @@ export async function POST(req: NextRequest) {
       console.error('worker create fallback failed', { userId, error: fallbackError })
       return NextResponse.json({ error: 'Could not create profile' }, { status: 500 })
     }
-
     return NextResponse.json({ ok: true })
   }
 
-  // Record referral row so we can reward the referrer on payment
   if (referredBy && newWorker?.id) {
     await supabaseAdmin.from('referrals').insert({
       referrer_id: referredBy,

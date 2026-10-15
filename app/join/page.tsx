@@ -327,6 +327,13 @@ export default function JoinPage() {
       setLoading(false)
       return
     }
+    // Empty identities = email already registered. Show "already registered" instead of
+    // passing a fake UUID to the API which would return 401.
+    if ((authData.user.identities?.length ?? 0) === 0) {
+      setAlreadyRegistered(true)
+      setLoading(false)
+      return
+    }
     const uid = authData.user.id
     const needsEmailConfirmation = !authData.session
 

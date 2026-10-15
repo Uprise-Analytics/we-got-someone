@@ -553,15 +553,13 @@ export default function JoinPage() {
 
         {step === 'profile' && (
           <>
-            {!sessionUserId && (
-              <button
-                type="button"
-                onClick={() => setStep('account')}
-                className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-5 cursor-pointer"
-              >
-                ← Back
-              </button>
-            )}
+            <button
+              type="button"
+              onClick={() => setStep('account')}
+              className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-5 cursor-pointer"
+            >
+              ← Back
+            </button>
             <h1 className="text-2xl font-bold mb-2">Build your profile</h1>
             <p className="text-gray-500 text-sm mb-6">This is what clients will see when they find you.</p>
 

@@ -414,7 +414,12 @@ export default function JoinPage() {
     try { sessionStorage.removeItem('wgs_join_draft') } catch {}
 
     if (needsEmailConfirmation) {
-      router.push(`/join/check-email?email=${encodeURIComponent(email)}`)
+      // Store credentials so the check-email page can auto-sign-in after cross-device confirmation.
+      try {
+        sessionStorage.setItem('wgs_email', email)
+        sessionStorage.setItem('wgs_password', password)
+      } catch {}
+      router.push(`/join/check-email?email=${encodeURIComponent(email)}&uid=${uid}`)
     } else {
       router.push('/join/success')
     }

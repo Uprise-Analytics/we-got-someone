@@ -349,32 +349,32 @@ export default function JoinPage() {
     const uid = authData.user.id
     const needsEmailConfirmation = !authData.session
 
-    // Attempt photo uploads — may fail silently if storage requires auth
-    let photoUrl: string | null = null
-    if (photo) {
-      const ext = photo.name.split('.').pop()
-      const filePath = `${uid}.${ext}`
-      const { error: uploadError } = await supabase.storage
-        .from('worker-photos')
-        .upload(filePath, photo, { upsert: true })
-      if (!uploadError) {
-        const { data: urlData } = supabase.storage.from('worker-photos').getPublicUrl(filePath)
-        photoUrl = urlData.publicUrl
+    // Without a session (email not confirmed yet) storage rejects direct uploads,
+    // so ask the server for a one-time upload link instead.
+    async function uploadImage(file: File, kind: 'photo' | 'banner'): Promise<string | null> {
+      let path: string
+      let uploadError: unknown
+      if (needsEmailConfirmation) {
+        const res = await fetch('/api/workers/photo-upload-url', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: uid, kind, contentType: file.type }),
+        })
+        if (!res.ok) return null
+        const { path: signedPath, token } = await res.json()
+        path = signedPath
+        ;({ error: uploadError } = await supabase.storage.from('worker-photos').uploadToSignedUrl(path, token, file, { contentType: file.type }))
+      } else {
+        const ext = file.name.split('.').pop()
+        path = kind === 'photo' ? `${uid}.${ext}` : `${uid}-banner.${ext}`
+        ;({ error: uploadError } = await supabase.storage.from('worker-photos').upload(path, file, { upsert: true }))
       }
+      if (uploadError) return null
+      return supabase.storage.from('worker-photos').getPublicUrl(path).data.publicUrl
     }
 
-    let bannerUrl: string | null = null
-    if (banner) {
-      const ext = banner.name.split('.').pop()
-      const filePath = `${uid}-banner.${ext}`
-      const { error: uploadError } = await supabase.storage
-        .from('worker-photos')
-        .upload(filePath, banner, { upsert: true })
-      if (!uploadError) {
-        const { data: urlData } = supabase.storage.from('worker-photos').getPublicUrl(filePath)
-        bannerUrl = urlData.publicUrl
-      }
-    }
+    const photoUrl = photo ? await uploadImage(photo, 'photo') : null
+    const bannerUrl = banner ? await uploadImage(banner, 'banner') : null
 
     // Read UTM params saved by UtmCapture component
     let utmSource: string | null = null

@@ -12,5 +12,5 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ confirmed: false })
   }
 
-  return NextResponse.json({ confirmed: user.email_confirmed_at !== null })
+  return NextResponse.json({ confirmed: !!user.email_confirmed_at })
 }

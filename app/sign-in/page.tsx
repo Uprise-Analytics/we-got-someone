@@ -14,16 +14,34 @@ export default function SignInPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [notConfirmed, setNotConfirmed] = useState(false)
+  const [resendState, setResendState] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
+
+  async function handleResend() {
+    setResendState('sending')
+    const { error: resendError } = await supabase.auth.resend({
+      type: 'signup',
+      email,
+      options: { emailRedirectTo: 'https://www.wegotsomeone.co.za/auth/callback?next=/confirmed' },
+    })
+    setResendState(resendError ? 'error' : 'sent')
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError('')
+    setNotConfirmed(false)
+    setResendState('idle')
 
     const { error: signInError } = await supabase.auth.signInWithPassword({ email, password })
 
     if (signInError) {
-      setError('Incorrect email or password.')
+      if (signInError.code === 'email_not_confirmed') {
+        setNotConfirmed(true)
+      } else {
+        setError('Incorrect email or password.')
+      }
       setLoading(false)
       return
     }
@@ -84,6 +102,29 @@ export default function SignInPage() {
               )}
             </button>
           </div>
+
+          {notConfirmed && (
+            <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-center space-y-2">
+              <p className="text-amber-800 text-sm">
+                Your email is not confirmed yet. Check your inbox for the confirmation link.
+              </p>
+              {resendState === 'sent' ? (
+                <p className="text-green-700 text-sm font-medium">Sent. Check your inbox.</p>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleResend}
+                  disabled={resendState === 'sending'}
+                  className="text-green-700 text-sm font-semibold underline hover:text-green-800 disabled:opacity-50"
+                >
+                  {resendState === 'sending' ? 'Sending...' : 'Resend confirmation email'}
+                </button>
+              )}
+              {resendState === 'error' && (
+                <p className="text-red-600 text-xs">Could not send right now. Wait a minute and try again.</p>
+              )}
+            </div>
+          )}
 
           {error && (
             <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-center">

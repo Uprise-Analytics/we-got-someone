@@ -15,12 +15,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
   }
 
-  // Verify the user exists and has not yet confirmed their email.
-  // If getUserById fails, the userId is fake (Supabase obfuscates existing emails).
-  // If email_confirmed_at is set, the user is already registered.
-  // Both cases mean the email is already in use — return 409 so the client can show a helpful message.
+  // Supabase omits email_confirmed_at for unconfirmed users (undefined, not null), so use a truthy check.
   const { data: { user }, error: userErr } = await supabaseAdmin.auth.admin.getUserById(userId)
-  if (userErr || !user || user.email_confirmed_at !== null) {
+  if (userErr || !user || user.email_confirmed_at) {
     return NextResponse.json({ error: 'already_registered' }, { status: 409 })
   }
 

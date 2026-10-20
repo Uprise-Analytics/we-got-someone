@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
   // Verify the userId is a real, confirmed Supabase auth user.
   // Using getUserById (service role admin API) — the only reliable server-side auth check.
   const { data: { user }, error: userErr } = await supabaseAdmin.auth.admin.getUserById(userId)
-  if (userErr || !user || user.email_confirmed_at === null) {
+  if (userErr || !user || !user.email_confirmed_at) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

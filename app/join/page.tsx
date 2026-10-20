@@ -314,7 +314,7 @@ export default function JoinPage() {
       email,
       password,
       options: {
-        emailRedirectTo: 'https://www.wegotsomeone.co.za/auth/callback?next=/dashboard',
+        emailRedirectTo: 'https://www.wegotsomeone.co.za/auth/callback?next=/confirmed',
       },
     })
     if (signUpError) {

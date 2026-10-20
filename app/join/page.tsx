@@ -7,6 +7,18 @@ import { supabase } from '@/lib/supabase-browser'
 import Navbar from '@/components/Navbar'
 import AreaSelect from '@/components/AreaSelect'
 import Spinner from '@/components/Spinner'
+import TradePattern from '@/components/TradePattern'
+
+const INPUT = 'w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-gray-50'
+
+function CardSection({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-5 space-y-4">
+      <p className="text-xs font-bold text-gray-400 uppercase tracking-widest text-center">{label}</p>
+      {children}
+    </div>
+  )
+}
 
 const SKILLS = [
   'Air Conditioning', 'Bathroom Renovation', 'Blinds & Curtains', 'Brick Layer',
@@ -426,12 +438,13 @@ export default function JoinPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="relative flex flex-col min-h-screen bg-gray-50">
+      <TradePattern />
       <Navbar variant="minimal" />
 
       {/* ── Value Stack — only shown on step 1 ── */}
       {step === 'account' && (
-        <div className="bg-[#0D1B2A] text-white px-4 py-10">
+        <div className="relative bg-[#0D1B2A] text-white px-4 py-10">
           <div className="max-w-lg mx-auto">
             <h2 className="text-xl font-extrabold mb-1">Here's exactly what you get</h2>
             <p className="text-gray-400 text-sm mb-6">Everything included. No hidden costs.</p>
@@ -480,7 +493,7 @@ export default function JoinPage() {
         </div>
       )}
 
-      <div className="max-w-lg mx-auto w-full px-4 sm:px-6 py-8 sm:py-10 flex-1">
+      <div className="relative max-w-lg mx-auto w-full px-4 sm:px-6 py-6 sm:py-10 flex-1">
         {/* Steps indicator */}
         <div className="flex items-center gap-3 mb-8">
           <div className={`flex items-center gap-2 text-sm font-medium ${step === 'account' ? 'text-green-600' : 'text-gray-400'}`}>
@@ -496,10 +509,12 @@ export default function JoinPage() {
 
         {step === 'account' && (
           <>
-            <h1 className="text-2xl font-bold mb-2 text-center">Create your account</h1>
-            <p className="text-gray-500 text-sm mb-6 text-center">Free to list. No credit card required.</p>
+            <div className="text-center mb-5">
+              <h1 className="text-xl font-bold text-gray-900 leading-tight">Create your account</h1>
+              <p className="text-gray-400 text-sm mt-0.5">Free to list. No credit card required.</p>
+            </div>
 
-            <form onSubmit={handleAccountSubmit} className="space-y-4">
+            <form onSubmit={handleAccountSubmit} className="bg-white rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-5 space-y-4">
               <input
                 type="email"
                 placeholder="Email address"
@@ -517,7 +532,7 @@ export default function JoinPage() {
                   }
                 }}
                 required
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                className={INPUT}
               />
               <div className="relative">
                 <input
@@ -527,7 +542,7 @@ export default function JoinPage() {
                   onChange={e => setPassword(e.target.value)}
                   required
                   minLength={6}
-                  className="w-full px-4 py-3 pr-12 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className={`${INPUT} pr-12`}
                 />
                 <button
                   type="button"
@@ -550,7 +565,7 @@ export default function JoinPage() {
               {error && <p className="text-red-500 text-sm">{error}</p>}
               <button
                 type="submit"
-                className="w-full bg-green-600 text-white font-medium py-3 rounded-lg hover:bg-green-700 cursor-pointer"
+                className="w-full bg-green-600 text-white font-semibold py-3.5 rounded-xl hover:bg-green-700 cursor-pointer shadow-sm"
               >
                 Continue
               </button>
@@ -568,130 +583,134 @@ export default function JoinPage() {
             <button
               type="button"
               onClick={() => setStep('account')}
-              className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-5 cursor-pointer"
+              className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-4 cursor-pointer"
             >
               ← Back
             </button>
-            <h1 className="text-2xl font-bold mb-2">Build your profile</h1>
-            <p className="text-gray-500 text-sm mb-6">This is what clients will see when they find you.</p>
+            <div className="text-center mb-5">
+              <h1 className="text-xl font-bold text-gray-900 leading-tight">Build your profile</h1>
+              <p className="text-gray-400 text-sm mt-0.5">This is what clients will see when they find you</p>
+            </div>
 
-            <form onSubmit={handleProfileSubmit} className="space-y-5">
+            <form onSubmit={handleProfileSubmit} className="space-y-4">
 
-              {/* Banner — Facebook cover photo style */}
-              <div>
-                <p className="text-sm font-medium text-gray-700 mb-1.5">Cover photo <span className="text-gray-400 font-normal">(optional)</span></p>
-                <div className="relative w-full bg-gray-200 overflow-hidden rounded-xl" style={{ aspectRatio: '820/312' }}>
-                  {bannerPreview ? (
-                    <img src={bannerPreview} alt="Cover" className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
+              {/* ── Profile ── */}
+              <CardSection label="Profile">
+                <div>
+                  <p className="text-xs font-medium text-gray-500 mb-1.5 text-center">Cover photo <span className="text-gray-400 font-normal">(optional)</span></p>
+                  <label className="relative block cursor-pointer group rounded-xl overflow-hidden bg-gray-100 border-2 border-dashed border-gray-200 hover:border-green-400 transition-colors" style={{ aspectRatio: '3/1' }}>
+                    {bannerPreview ? (
+                      <img src={bannerPreview} alt="Cover" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center gap-1 text-gray-400">
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span className="text-xs">Add a cover photo</span>
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="text-white text-xs font-semibold">{bannerPreview ? 'Change cover photo' : 'Add cover photo'}</span>
                     </div>
-                  )}
-                  <label className="absolute bottom-2 right-2 flex items-center gap-1.5 bg-white/90 text-gray-700 text-xs font-semibold px-3 py-1.5 rounded-lg cursor-pointer hover:bg-white shadow-sm transition-colors">
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    {bannerPreview ? 'Edit cover photo' : 'Add cover photo'}
                     <input type="file" accept="image/*" onChange={handleBannerChange} className="hidden" />
                   </label>
+                  <p className="text-xs text-gray-400 mt-1 text-center">Wide photo of your work, premises or team</p>
                 </div>
-                <p className="text-xs text-gray-400 mt-1">Wide photo of your work, premises or team</p>
-              </div>
 
-              {/* Profile photo */}
-              <div className="flex items-center gap-4">
-                <div className="w-20 h-20 rounded-full bg-gray-100 overflow-hidden flex items-center justify-center flex-shrink-0">
-                  {photoPreview ? (
-                    <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
-                  ) : (
-                    <span className="text-gray-400 text-sm text-center px-2">No photo</span>
-                  )}
-                </div>
-                <div>
-                  <label className="cursor-pointer text-sm text-green-600 font-medium hover:underline">
-                    Upload profile photo or logo
+                <div className="flex flex-col items-center">
+                  <label className="relative cursor-pointer group">
+                    <div className="w-24 h-24 rounded-2xl bg-gray-100 overflow-hidden shadow-sm">
+                      {photoPreview ? (
+                        <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-400 text-2xl font-bold">
+                          {name.trim() ? name.trim()[0].toUpperCase() : (
+                            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    <div className="absolute inset-0 rounded-2xl bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity">
+                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                    </div>
                     <input type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" />
                   </label>
-                  <p className="text-xs text-gray-400 mt-1">JPG or PNG, max 5MB</p>
+                  <p className="text-xs text-gray-400 mt-2">Tap to add your photo or logo</p>
                 </div>
-              </div>
 
-              <input
-                type="text"
-                placeholder="Full name"
-                value={name}
-                onChange={e => setName(e.target.value)}
-                required
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
-
-              {/* Gender */}
-              <div>
-                <p className="text-sm font-medium text-gray-700 mb-2">Gender</p>
-                <div className="flex gap-2">
-                  {['Male', 'Female', 'Other'].map(g => (
-                    <button
-                      key={g}
-                      type="button"
-                      onClick={() => setGender(g)}
-                      className={`flex-1 py-2.5 rounded-lg border text-sm font-medium transition-colors cursor-pointer ${
-                        gender === g
-                          ? 'bg-green-600 text-white border-green-600'
-                          : 'border-gray-200 text-gray-600 hover:border-green-400'
-                      }`}
-                    >
-                      {g}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Date of birth */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Date of birth</label>
                 <input
                   type="text"
-                  inputMode="numeric"
-                  placeholder="YYYY/MM/DD"
-                  value={dateOfBirth}
-                  onChange={e => setDateOfBirth(formatDOB(e.target.value))}
-                  maxLength={10}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                  placeholder="Full name"
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  required
+                  className={INPUT}
                 />
-                <p className="text-xs text-gray-400 mt-1">The / will fill in automatically as you type</p>
-              </div>
 
-              <textarea
-                placeholder="Short bio. Tell clients about yourself and your experience"
-                value={bio}
-                onChange={e => setBio(e.target.value)}
-                rows={3}
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
-              />
+                <div>
+                  <p className="text-sm font-medium text-gray-700 mb-2 text-center">Gender</p>
+                  <div className="flex gap-2">
+                    {['Male', 'Female', 'Other'].map(g => (
+                      <button
+                        key={g}
+                        type="button"
+                        onClick={() => setGender(g)}
+                        className={`flex-1 py-2.5 rounded-xl border text-sm font-medium transition-colors cursor-pointer ${
+                          gender === g ? 'bg-green-600 text-white border-green-600' : 'border-gray-200 text-gray-600 bg-gray-50 hover:border-green-400'
+                        }`}
+                      >
+                        {g}
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
-              {/* Skills */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm font-medium text-gray-700">What do you do?</p>
-                  <span className="text-xs text-gray-400">{skills.length}/3 selected</span>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5 text-center">Date of birth</label>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="YYYY/MM/DD"
+                    value={dateOfBirth}
+                    onChange={e => setDateOfBirth(formatDOB(e.target.value))}
+                    maxLength={10}
+                    className={INPUT}
+                  />
+                  <p className="text-xs text-gray-400 mt-1 text-center">The / fills in automatically as you type</p>
+                </div>
+
+                <textarea
+                  placeholder="Short bio. Tell clients what makes you great."
+                  value={bio}
+                  onChange={e => setBio(e.target.value)}
+                  rows={3}
+                  className={`${INPUT} resize-none`}
+                />
+              </CardSection>
+
+              {/* ── Skills ── */}
+              <CardSection label="What you do">
+                <div className="text-center">
+                  <p className="text-sm text-gray-500 mb-1">Pick up to 3 skills, strongest first.</p>
+                  <span className="text-xs font-bold text-gray-400">{skills.length}/3 selected</span>
                 </div>
                 {skills.length > 0 && (
-                  <div className="flex flex-col gap-1.5 mb-3">
+                  <div className="flex flex-col gap-2">
                     {skills.map((s, i) => (
-                      <div key={s} className="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
+                      <div key={s} className="flex items-center gap-2 bg-green-50 border border-green-200 rounded-xl px-3 py-2.5">
                         <span className="text-xs font-bold text-green-600 w-16 flex-shrink-0">{['Primary', 'Secondary', 'Tertiary'][i]}</span>
                         <span className="text-sm font-medium text-green-800 flex-1">{s}</span>
-                        <button type="button" onClick={() => toggleSkill(s)} className="text-green-400 hover:text-green-700 cursor-pointer text-lg leading-none">×</button>
+                        <button type="button" onClick={() => toggleSkill(s)} className="text-green-400 hover:text-green-700 cursor-pointer text-xl leading-none">×</button>
                       </div>
                     ))}
                   </div>
                 )}
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap justify-center gap-2">
                   {SKILLS.filter(s => !skills.includes(s)).map(s => (
                     <button
                       key={s}
@@ -700,8 +719,8 @@ export default function JoinPage() {
                       disabled={skills.length >= 3}
                       className={`text-sm px-3 py-1.5 rounded-full border transition-colors cursor-pointer ${
                         skills.length >= 3
-                          ? 'border-gray-100 text-gray-300 cursor-not-allowed'
-                          : 'border-gray-200 text-gray-600 hover:border-green-400 hover:text-green-600'
+                          ? 'border-gray-100 text-gray-300 cursor-not-allowed bg-gray-50'
+                          : 'border-gray-200 text-gray-600 bg-white hover:border-green-400 hover:text-green-600'
                       }`}
                     >
                       {s}
@@ -709,95 +728,102 @@ export default function JoinPage() {
                   ))}
                 </div>
                 {skills.length >= 3 && (
-                  <p className="text-xs text-gray-400 mt-2">Maximum 3 skills reached. Remove one to change it.</p>
+                  <p className="text-xs text-gray-400 text-center">Max 3 reached. Remove one to swap.</p>
                 )}
-              </div>
+              </CardSection>
 
-              {/* Languages */}
-              <div>
-                <p className="text-sm font-medium text-gray-700 mb-2">Languages spoken</p>
-                <div className="flex flex-wrap gap-2">
-                  {LANGUAGES.map(l => (
-                    <button
-                      key={l}
-                      type="button"
-                      onClick={() => toggleLanguage(l)}
-                      className={`text-sm px-3 py-1.5 rounded-full border transition-colors cursor-pointer ${
-                        languages.includes(l)
-                          ? 'bg-blue-600 text-white border-blue-600'
-                          : 'border-gray-200 text-gray-600 hover:border-blue-400'
-                      }`}
-                    >
-                      {l}
-                    </button>
-                  ))}
+              {/* ── Languages & Areas ── */}
+              <CardSection label="Languages & Areas">
+                <div>
+                  <p className="text-sm font-medium text-gray-700 mb-2 text-center">Languages spoken</p>
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {LANGUAGES.map(l => (
+                      <button
+                        key={l}
+                        type="button"
+                        onClick={() => toggleLanguage(l)}
+                        className={`text-sm px-3 py-1.5 rounded-full border transition-colors cursor-pointer ${
+                          languages.includes(l)
+                            ? 'bg-blue-600 text-white border-blue-600'
+                            : 'border-gray-200 text-gray-600 bg-white hover:border-blue-400'
+                        }`}
+                      >
+                        {l}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
 
-              {/* Areas */}
-              <AreaSelect
-                selected={serviceAreas}
-                onChange={setServiceAreas}
-                label="Areas you work in (Choose more than 1)"
-              />
-
-              <input
-                type="text"
-                inputMode="numeric"
-                placeholder="WhatsApp number"
-                value={phone}
-                onChange={e => {
-                  const digits = e.target.value.replace(/\D/g, '').slice(0, 10)
-                  let formatted = digits
-                  if (digits.length > 6) formatted = `${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6)}`
-                  else if (digits.length > 3) formatted = `${digits.slice(0, 3)} ${digits.slice(3)}`
-                  setPhone(formatted)
-                }}
-                required
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Email address <span className="text-gray-400 font-normal">(optional)</span></label>
-                <input
-                  type="email"
-                  placeholder="e.g. info@yourcompany.co.za"
-                  value={contactEmail}
-                  onChange={e => setContactEmail(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                <AreaSelect
+                  selected={serviceAreas}
+                  onChange={setServiceAreas}
+                  label="Areas you work in (choose more than 1)"
                 />
-              </div>
+              </CardSection>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Website <span className="text-gray-400 font-normal">(optional)</span></label>
-                <input
-                  type="text"
-                  placeholder="e.g. www.yourcompany.co.za"
-                  value={website}
-                  onChange={e => setWebsite(e.target.value)}
-                  onBlur={e => {
-                    const v = e.target.value.trim()
-                    if (v && !v.startsWith('http://') && !v.startsWith('https://')) setWebsite('https://' + v)
-                  }}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
-              </div>
+              {/* ── Contact details ── */}
+              <CardSection label="Contact details">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">WhatsApp number</label>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="e.g. 062 131 7657"
+                    value={phone}
+                    onChange={e => {
+                      const digits = e.target.value.replace(/\D/g, '').slice(0, 10)
+                      let formatted = digits
+                      if (digits.length > 6) formatted = `${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6)}`
+                      else if (digits.length > 3) formatted = `${digits.slice(0, 3)} ${digits.slice(3)}`
+                      setPhone(formatted)
+                    }}
+                    required
+                    className={INPUT}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Email address <span className="text-gray-400 font-normal">(optional)</span></label>
+                  <input
+                    type="email"
+                    placeholder="e.g. info@yourcompany.co.za"
+                    value={contactEmail}
+                    onChange={e => setContactEmail(e.target.value)}
+                    className={INPUT}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Website <span className="text-gray-400 font-normal">(optional)</span></label>
+                  <input
+                    type="text"
+                    placeholder="e.g. www.yourcompany.co.za"
+                    value={website}
+                    onChange={e => setWebsite(e.target.value)}
+                    onBlur={e => {
+                      const v = e.target.value.trim()
+                      if (v && !v.startsWith('http://') && !v.startsWith('https://')) setWebsite('https://' + v)
+                    }}
+                    className={INPUT}
+                  />
+                </div>
+              </CardSection>
 
               {alreadyRegistered && (
-                <p className="text-red-500 text-sm">
+                <p className="text-red-500 text-sm text-center px-1">
                   This email is already registered.{' '}
                   <Link href="/sign-in" className="underline font-semibold">Sign in instead</Link>
                 </p>
               )}
-              {!alreadyRegistered && error && <p className="text-red-500 text-sm">{error}</p>}
+              {!alreadyRegistered && error && <p className="text-red-500 text-sm text-center px-1">{error}</p>}
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-green-600 text-white font-medium py-3 rounded-lg hover:bg-green-700 disabled:opacity-50 cursor-pointer"
+                className="w-full bg-green-600 text-white font-semibold py-4 rounded-2xl hover:bg-green-700 disabled:opacity-50 cursor-pointer shadow-sm"
               >
                 {loading && <Spinner />}
-                {loading ? 'Creating your profile...' : 'Continue'}
+                {loading ? 'Creating your profile...' : 'Create my profile'}
               </button>
             </form>
           </>

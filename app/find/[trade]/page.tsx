@@ -112,22 +112,6 @@ export default async function TradePage(
               <p className="text-gray-400 text-sm leading-relaxed mb-6">
                 People are already searching for {skill.toLowerCase()} workers online. Get your profile up before anyone else does and own the top spot.
               </p>
-              <ul className="space-y-2 mb-7">
-                {[
-                  'Your own profile page on Google',
-                  'Clients contact you directly by WhatsApp',
-                  '30-day enquiry guarantee',
-                ].map(item => (
-                  <li key={item} className="flex items-center gap-2.5 text-sm text-gray-300">
-                    <span className="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0">
-                      <svg className="w-2.5 h-2.5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                    </span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
               <Link
                 href="/join"
                 className="inline-block bg-green-500 hover:bg-green-400 text-white font-bold px-6 py-3 rounded-xl text-sm transition-colors"

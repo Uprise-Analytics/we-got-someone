@@ -1,5 +1,5 @@
 import { supabaseAdmin } from '@/lib/supabase-admin'
-import { TRADE_SLUGS, AREA_SLUGS, TOP_TRADE_SLUGS } from '@/lib/trade-slugs'
+import { TRADE_SLUGS, AREA_SLUGS, TOP_TRADE_SLUGS, lowerTrade, tradePerson, tradePeople, withArticle } from '@/lib/trade-slugs'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
@@ -26,11 +26,11 @@ export async function generateMetadata(
   if (!skill || !city) return {}
   return {
     title: `${skill} in ${city} — Find Workers Near You`,
-    description: `Looking for a ${skill.toLowerCase()} in ${city}? Browse trusted local workers on We Got Someone. Contact directly via WhatsApp or call — no agency fees.`,
+    description: `Looking for ${withArticle(tradePerson(skill))} in ${city}? Browse trusted local workers on We Got Someone. Contact directly via WhatsApp or call — no agency fees.`,
     alternates: { canonical: `/find/${trade}/${area}` },
     openGraph: {
       title: `${skill} in ${city} | We Got Someone`,
-      description: `Find a trusted ${skill.toLowerCase()} in ${city}. Direct contact, no middleman, no commission.`,
+      description: `Find a trusted ${tradePerson(skill)} in ${city}. Direct contact, no middleman, no commission.`,
     },
   }
 }
@@ -92,8 +92,8 @@ export default async function TradeAreaPage(
           <h1 className="text-3xl sm:text-4xl font-extrabold mb-3">{skill} in {city}</h1>
           <p className="text-gray-400 text-sm max-w-lg">
             {workers.length > 0
-              ? `${workers.length} verified ${skill.toLowerCase()} worker${workers.length !== 1 ? 's' : ''} serving ${city}. Contact directly — no agency, no commission.`
-              : `Find a trusted ${skill.toLowerCase()} in ${city}. Contact directly — no agency, no commission.`
+              ? `${workers.length} verified ${lowerTrade(skill)} worker${workers.length !== 1 ? 's' : ''} serving ${city}. Contact directly — no agency, no commission.`
+              : `Find a trusted ${tradePerson(skill)} in ${city}. Contact directly — no agency, no commission.`
             }
           </p>
         </div>
@@ -105,12 +105,12 @@ export default async function TradeAreaPage(
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Worker pitch */}
             <div className="bg-[#0D1B2A] text-white rounded-2xl p-8">
-              <p className="text-green-400 text-xs font-bold uppercase tracking-widest mb-3">For {skill.toLowerCase()}s in {city}</p>
+              <p className="text-green-400 text-xs font-bold uppercase tracking-widest mb-3">For {tradePeople(skill)} in {city}</p>
               <h2 className="text-2xl font-extrabold mb-3 leading-snug">
-                Be the first {skill.toLowerCase()} listed in {city}.
+                Be the first {tradePerson(skill)} listed in {city}.
               </h2>
               <p className="text-gray-400 text-sm leading-relaxed mb-6">
-                People in {city} are searching for {skill.toLowerCase()} workers right now. Get your profile up first and own the top spot.
+                People in {city} are searching for {lowerTrade(skill)} workers right now. Get your profile up first and own the top spot.
               </p>
               <Link
                 href="/join"
@@ -126,10 +126,10 @@ export default async function TradeAreaPage(
               <div>
                 <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-3">For homeowners</p>
                 <h2 className="text-xl font-extrabold text-gray-900 mb-3 leading-snug">
-                  No {skill.toLowerCase()}s in {city} yet.
+                  No {tradePeople(skill)} in {city} yet.
                 </h2>
                 <p className="text-gray-500 text-sm leading-relaxed mb-6">
-                  We're growing fast. In the meantime, browse all available {skill.toLowerCase()} workers across South Africa.
+                  We're growing fast. In the meantime, browse all available {lowerTrade(skill)} workers across South Africa.
                 </p>
               </div>
               <div className="space-y-3">
@@ -137,7 +137,7 @@ export default async function TradeAreaPage(
                   href={`/find/${trade}`}
                   className="flex items-center justify-between w-full bg-gray-50 border border-gray-200 hover:border-green-300 hover:bg-green-50 rounded-xl px-4 py-3 text-sm font-semibold text-gray-700 hover:text-green-700 transition-all"
                 >
-                  All {skill.toLowerCase()}s in South Africa
+                  All {tradePeople(skill)} in South Africa
                   <span className="text-gray-400">→</span>
                 </Link>
                 <Link
@@ -215,13 +215,13 @@ export default async function TradeAreaPage(
               href={`/workers?skill=${encodeURIComponent(skill)}&area=${encodeURIComponent(city)}`}
               className="text-sm font-semibold text-green-600 hover:underline"
             >
-              Browse all {skill.toLowerCase()} workers with filters →
+              Browse all {lowerTrade(skill)} workers with filters →
             </Link>
             <Link
               href="/join"
               className="inline-block bg-[#0D1B2A] text-white text-sm font-semibold px-6 py-3 rounded-xl hover:bg-gray-800 transition-colors"
             >
-              Are you a {skill.toLowerCase()} in {city}? List yourself free
+              Are you {withArticle(tradePerson(skill))} in {city}? List yourself free
             </Link>
           </div>
         )}
@@ -234,7 +234,7 @@ export default async function TradeAreaPage(
             '@context': 'https://schema.org',
             '@type': 'ItemList',
             name: `${skill} Workers in ${city}`,
-            description: `Find trusted ${skill.toLowerCase()} workers in ${city}, South Africa.`,
+            description: `Find trusted ${lowerTrade(skill)} workers in ${city}, South Africa.`,
             itemListElement: workers.slice(0, 10).map((w, i) => ({
               '@type': 'ListItem',
               position: i + 1,

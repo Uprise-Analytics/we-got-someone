@@ -1,5 +1,5 @@
 import { supabaseAdmin } from '@/lib/supabase-admin'
-import { TRADE_SLUGS, AREA_SLUGS } from '@/lib/trade-slugs'
+import { TRADE_SLUGS, AREA_SLUGS, lowerTrade, tradePerson, tradePeople, withArticle, titleCase } from '@/lib/trade-slugs'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
@@ -18,12 +18,12 @@ export async function generateMetadata(
   const skill = TRADE_SLUGS[trade]
   if (!skill) return {}
   return {
-    title: `Find a ${skill} Near You in South Africa`,
-    description: `Browse trusted ${skill.toLowerCase()} workers across South Africa. View profiles, contact directly via WhatsApp or call — no agency fees, no commission.`,
+    title: `Find ${withArticle(titleCase(tradePerson(skill)))} Near You in South Africa`,
+    description: `Browse trusted ${lowerTrade(skill)} workers across South Africa. View profiles, contact directly via WhatsApp or call — no agency fees, no commission.`,
     alternates: { canonical: `/find/${trade}` },
     openGraph: {
       title: `${skill} Workers in South Africa | We Got Someone`,
-      description: `Find a trusted ${skill.toLowerCase()} near you. Direct contact, no middleman.`,
+      description: `Find a trusted ${tradePerson(skill)} near you. Direct contact, no middleman.`,
     },
   }
 }
@@ -75,8 +75,8 @@ export default async function TradePage(
           <h1 className="text-3xl sm:text-4xl font-extrabold mb-3">{skill} in South Africa</h1>
           <p className="text-gray-400 text-sm max-w-lg">
             {workers.length > 0
-              ? `${workers.length} verified ${skill.toLowerCase()} worker${workers.length !== 1 ? 's' : ''} available. Contact them directly — no agency, no commission.`
-              : `Find a trusted ${skill.toLowerCase()} near you. Contact directly — no agency, no commission.`
+              ? `${workers.length} verified ${lowerTrade(skill)} worker${workers.length !== 1 ? 's' : ''} available. Contact them directly — no agency, no commission.`
+              : `Find a trusted ${tradePerson(skill)} near you. Contact directly — no agency, no commission.`
             }
           </p>
         </div>
@@ -106,12 +106,12 @@ export default async function TradePage(
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Left — opportunity pitch */}
             <div className="bg-[#0D1B2A] text-white rounded-2xl p-8">
-              <p className="text-green-400 text-xs font-bold uppercase tracking-widest mb-3">For {skill.toLowerCase()}s</p>
+              <p className="text-green-400 text-xs font-bold uppercase tracking-widest mb-3">For {tradePeople(skill)}</p>
               <h2 className="text-2xl font-extrabold mb-3 leading-snug">
-                Be the first {skill.toLowerCase()} listed in South Africa.
+                Be the first {tradePerson(skill)} listed in South Africa.
               </h2>
               <p className="text-gray-400 text-sm leading-relaxed mb-6">
-                People are already searching for {skill.toLowerCase()} workers online. Get your profile up before anyone else does and own the top spot.
+                People are already searching for {lowerTrade(skill)} workers online. Get your profile up before anyone else does and own the top spot.
               </p>
               <Link
                 href="/join"
@@ -127,7 +127,7 @@ export default async function TradePage(
               <div>
                 <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-3">For homeowners</p>
                 <h2 className="text-xl font-extrabold text-gray-900 mb-3 leading-snug">
-                  No {skill.toLowerCase()}s listed here yet.
+                  No {tradePeople(skill)} listed here yet.
                 </h2>
                 <p className="text-gray-500 text-sm leading-relaxed mb-6">
                   We're growing fast. In the meantime, browse all available workers or search by your area below.
@@ -218,13 +218,13 @@ export default async function TradePage(
               href={`/workers?skill=${encodeURIComponent(skill)}`}
               className="text-sm font-semibold text-green-600 hover:underline"
             >
-              Browse all {skill.toLowerCase()} workers with filters →
+              Browse all {lowerTrade(skill)} workers with filters →
             </Link>
             <Link
               href="/join"
               className="inline-block bg-[#0D1B2A] text-white text-sm font-semibold px-6 py-3 rounded-xl hover:bg-gray-800 transition-colors"
             >
-              Are you a {skill.toLowerCase()}? List yourself free
+              Are you {withArticle(tradePerson(skill))}? List yourself free
             </Link>
           </div>
         )}
@@ -237,7 +237,7 @@ export default async function TradePage(
             '@context': 'https://schema.org',
             '@type': 'ItemList',
             name: `${skill} Workers in South Africa`,
-            description: `Find trusted ${skill.toLowerCase()} workers near you in South Africa.`,
+            description: `Find trusted ${lowerTrade(skill)} workers near you in South Africa.`,
             itemListElement: workers.slice(0, 10).map((w, i) => ({
               '@type': 'ListItem',
               position: i + 1,

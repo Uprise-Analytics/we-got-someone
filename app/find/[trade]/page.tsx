@@ -50,6 +50,7 @@ export default async function TradePage(
     .from('workers')
     .select('id, name, skills, photo_url, city, service_areas, bio, reviews(rating)')
     .eq('is_active', true)
+    .not('photo_url', 'is', null)
     .contains('skills', [skill])
     .limit(30)
 

@@ -61,7 +61,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 export default async function WorkerProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const worker = await getWorker(id)
-  if (!worker || !worker.is_active) notFound()
+  if (!worker || !worker.is_active || !worker.photo_url) notFound()
 
   const avgRating = worker.reviews?.length
     ? Math.round((worker.reviews.reduce((s: number, r: any) => s + r.rating, 0) / worker.reviews.length) * 10) / 10

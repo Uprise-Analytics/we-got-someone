@@ -32,6 +32,8 @@ export default async function DashboardPage() {
   if (!worker) redirect('/join')
 
   const firstName = worker.name.split(' ')[0]
+  const needsPhoto = !worker.photo_url
+  const isLive = worker.is_active && !needsPhoto
 
   return (
     <div className="relative min-h-screen bg-gray-50">
@@ -58,7 +60,7 @@ export default async function DashboardPage() {
                 </div>
               )}
             </div>
-            {worker.is_active && (
+            {isLive && (
               <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 border-2 border-white rounded-full" />
             )}
           </div>
@@ -83,7 +85,23 @@ export default async function DashboardPage() {
         </div>
 
         {/* Status banner */}
-        {worker.is_active ? (
+        {worker.is_active && needsPhoto ? (
+          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 sm:p-5 mb-5">
+            <div className="flex items-center gap-2.5 mb-1.5">
+              <div className="w-2.5 h-2.5 rounded-full bg-amber-500 flex-shrink-0" />
+              <p className="font-semibold text-amber-900">Add a profile photo to go live</p>
+            </div>
+            <p className="text-amber-800 text-sm leading-relaxed mb-3">
+              Your profile is hidden from search until it has a photo of you or your logo. Clients want to see who they are hiring.
+            </p>
+            <Link
+              href="/dashboard/edit"
+              className="inline-block bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors"
+            >
+              Add your photo
+            </Link>
+          </div>
+        ) : worker.is_active ? (
           <div className="bg-green-600 text-white rounded-2xl p-4 sm:p-5 mb-5 flex items-center gap-3">
             <div className="w-2.5 h-2.5 rounded-full bg-white animate-pulse flex-shrink-0" />
             <div>
@@ -114,7 +132,9 @@ export default async function DashboardPage() {
               ? 'People are viewing your profile. A strong photo and bio gets more contacts.'
               : views > 0
                 ? 'Your profile is getting noticed. Keep it updated to attract more clients.'
-                : 'Your profile is live. You will start getting views soon.'
+                : isLive
+                  ? 'Your profile is live. You will start getting views soon.'
+                  : 'Views will start once your profile is live.'
           return (
             <div className="bg-white border border-gray-200 rounded-2xl p-5 mb-4">
               <div className="flex items-center justify-between mb-4">
@@ -166,7 +186,7 @@ export default async function DashboardPage() {
         })()}
 
         {/* Referral card — only shown when active and referral_code exists */}
-        {worker.is_active && worker.referral_code && (
+        {isLive && worker.referral_code && (
           <ReferralCard code={worker.referral_code} />
         )}
 
@@ -248,7 +268,7 @@ export default async function DashboardPage() {
           </p>
         </div>
 
-        {worker.is_active && (
+        {isLive && (
           <div className="mt-4">
             <ShareProfile
               profileUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/workers/${worker.id}`}

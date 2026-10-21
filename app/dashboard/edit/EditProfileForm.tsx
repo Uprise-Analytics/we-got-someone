@@ -85,6 +85,7 @@ export default function EditProfileForm({ worker }: { worker: Worker }) {
   const [banner, setBanner] = useState<File | null>(null)
   const [bannerPreview, setBannerPreview] = useState<string | null>(worker.banner_url)
   const [cropping, setCropping] = useState<{ kind: 'photo' | 'banner'; file: File } | null>(null)
+  const [photoMissing, setPhotoMissing] = useState(false)
   const [languages, setLanguages] = useState<string[]>(worker.languages ?? [])
   const [workPhotos, setWorkPhotos] = useState<string[]>(worker.work_photos ?? [])
   const [uploadingWork, setUploadingWork] = useState(false)
@@ -102,6 +103,12 @@ export default function EditProfileForm({ worker }: { worker: Worker }) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (!photo && !worker.photo_url) {
+      setPhotoMissing(true)
+      setError('Please add a profile photo or logo. Clients want to see who they are hiring.')
+      document.getElementById('profile-photo')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      return
+    }
     if (skills.length === 0) { setError('Please select at least one skill.'); return }
     if (serviceAreas.length === 0) { setError('Please select at least one area you work in.'); return }
     setLoading(true)
@@ -185,9 +192,10 @@ export default function EditProfileForm({ worker }: { worker: Worker }) {
         </div>
 
         {/* Clickable photo */}
-        <div className="flex flex-col items-center">
+        <div id="profile-photo" className="flex flex-col items-center">
+          <p className="text-xs font-medium text-gray-500 mb-1.5">Profile photo or logo <span className="text-green-600 font-semibold">(required)</span></p>
           <label className="relative cursor-pointer group">
-            <div className="w-24 h-24 rounded-2xl bg-gray-100 overflow-hidden shadow-sm">
+            <div className={`w-24 h-24 rounded-2xl bg-gray-100 overflow-hidden shadow-sm ${photoMissing ? 'ring-2 ring-red-400 ring-offset-2' : ''}`}>
               {photoPreview ? (
                 <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
               ) : (
@@ -208,7 +216,9 @@ export default function EditProfileForm({ worker }: { worker: Worker }) {
               if (file) setCropping({ kind: 'photo', file })
             }} className="hidden" />
           </label>
-          <p className="text-xs text-gray-400 mt-2">Tap to change photo</p>
+          <p className={`text-xs mt-2 ${photoMissing ? 'text-red-500 font-medium' : 'text-gray-400'}`}>
+            {photoPreview ? 'Tap to change' : photoMissing ? 'Add a photo so clients can see who you are' : 'Tap to add a clear photo of you or your logo'}
+          </p>
         </div>
 
         <input
@@ -425,7 +435,7 @@ export default function EditProfileForm({ worker }: { worker: Worker }) {
           onCancel={() => setCropping(null)}
           onSave={cropped => {
             const preview = URL.createObjectURL(cropped)
-            if (cropping.kind === 'photo') { setPhoto(cropped); setPhotoPreview(preview) }
+            if (cropping.kind === 'photo') { setPhoto(cropped); setPhotoPreview(preview); setPhotoMissing(false) }
             else { setBanner(cropped); setBannerPreview(preview) }
             setCropping(null)
           }}

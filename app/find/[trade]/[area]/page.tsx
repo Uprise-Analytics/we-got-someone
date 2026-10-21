@@ -58,6 +58,7 @@ export default async function TradeAreaPage(
     .from('workers')
     .select('id, name, skills, photo_url, city, service_areas, bio, reviews(rating)')
     .eq('is_active', true)
+    .not('photo_url', 'is', null)
     .contains('skills', [skill])
     .or(`city.ilike.%${city}%,service_areas.cs.{${city}}`)
     .limit(30)

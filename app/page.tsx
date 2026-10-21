@@ -58,6 +58,7 @@ async function getFeaturedWorkers() {
     .from('workers')
     .select('id, name, skills, photo_url, service_areas, city, available_now')
     .eq('is_active', true)
+    .not('photo_url', 'is', null)
     .limit(50)
   return data ?? []
 }

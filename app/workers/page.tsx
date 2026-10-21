@@ -76,6 +76,7 @@ async function getWorkers(skill?: string, area?: string, sort?: string, name?: s
       .from('workers')
       .select(`id, name, bio, skills, city, area, photo_url, banner_url, available_now, languages, own_transport, service_areas, work_photos, created_at, reviews(rating)`)
       .eq('is_active', true)
+      .not('photo_url', 'is', null)
   )
 
   if (error || !data) {
@@ -84,6 +85,7 @@ async function getWorkers(skill?: string, area?: string, sort?: string, name?: s
         .from('workers')
         .select(`id, name, bio, skills, city, area, photo_url, banner_url, available_now, created_at, reviews(rating)`)
         .eq('is_active', true)
+        .not('photo_url', 'is', null)
     )
     if (fallback.error || !fallback.data) return []
     data = fallback.data

@@ -68,12 +68,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Individual worker profiles
   const { data: workers } = await supabaseAdmin
     .from('workers')
-    .select('id, updated_at')
+    .select('id, created_at')
     .eq('is_active', true)
+    .not('photo_url', 'is', null)
 
   const workerPages: MetadataRoute.Sitemap = (workers ?? []).map(w => ({
     url: `${BASE_URL}/workers/${w.id}`,
-    lastModified: new Date(w.updated_at ?? Date.now()),
+    lastModified: new Date(w.created_at),
     changeFrequency: 'weekly' as const,
     priority: 0.8,
   }))

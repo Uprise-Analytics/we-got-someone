@@ -654,10 +654,10 @@ export default function JoinPage() {
                 )}
               </CardSection>
 
-              {/* ── Languages & Areas ── */}
-              <CardSection label="Languages & Areas">
+              {/* ── Languages ── */}
+              <CardSection label="Languages">
                 <div>
-                  <p className="text-sm font-medium text-gray-700 mb-2 text-center">Languages spoken</p>
+                  <p className="text-sm text-gray-500 mb-3 text-center">Which languages can you speak with clients?</p>
                   <div className="flex flex-wrap justify-center gap-2">
                     {LANGUAGES.map(l => (
                       <button
@@ -675,12 +675,12 @@ export default function JoinPage() {
                     ))}
                   </div>
                 </div>
+              </CardSection>
 
-                <AreaSelect
-                  selected={serviceAreas}
-                  onChange={setServiceAreas}
-                  label="Areas you work in (choose more than 1)"
-                />
+              {/* ── Where you work ── */}
+              <CardSection label="Where you work">
+                <p className="text-sm text-gray-500 text-center">Add every town or suburb you work in. Clients search by area, so the more you add, the more often you show up.</p>
+                <AreaSelect selected={serviceAreas} onChange={setServiceAreas} label="" />
               </CardSection>
 
               {/* ── Contact details ── */}

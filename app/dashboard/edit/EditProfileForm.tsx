@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase-browser'
 import AreaSelect from '@/components/AreaSelect'
+import ImageCropper from '@/components/ImageCropper'
 
 const SKILLS = [
   'Air Conditioning', 'Bathroom Renovation', 'Blinds & Curtains', 'Brick Layer',
@@ -83,6 +84,7 @@ export default function EditProfileForm({ worker }: { worker: Worker }) {
   const [photoPreview, setPhotoPreview] = useState<string | null>(worker.photo_url)
   const [banner, setBanner] = useState<File | null>(null)
   const [bannerPreview, setBannerPreview] = useState<string | null>(worker.banner_url)
+  const [cropping, setCropping] = useState<{ kind: 'photo' | 'banner'; file: File } | null>(null)
   const [languages, setLanguages] = useState<string[]>(worker.languages ?? [])
   const [workPhotos, setWorkPhotos] = useState<string[]>(worker.work_photos ?? [])
   const [uploadingWork, setUploadingWork] = useState(false)
@@ -112,7 +114,7 @@ export default function EditProfileForm({ worker }: { worker: Worker }) {
       const { error: uploadError } = await supabase.storage.from('worker-photos').upload(filePath, photo, { upsert: true })
       if (!uploadError) {
         const { data: urlData } = supabase.storage.from('worker-photos').getPublicUrl(filePath)
-        photoUrl = urlData.publicUrl
+        photoUrl = `${urlData.publicUrl}?v=${Date.now()}`
       }
     }
 
@@ -123,7 +125,7 @@ export default function EditProfileForm({ worker }: { worker: Worker }) {
       const { error: uploadError } = await supabase.storage.from('worker-photos').upload(filePath, banner, { upsert: true })
       if (!uploadError) {
         const { data: urlData } = supabase.storage.from('worker-photos').getPublicUrl(filePath)
-        bannerUrl = urlData.publicUrl
+        bannerUrl = `${urlData.publicUrl}?v=${Date.now()}`
       }
     }
 
@@ -175,9 +177,8 @@ export default function EditProfileForm({ worker }: { worker: Worker }) {
             </div>
             <input type="file" accept="image/*" onChange={e => {
               const file = e.target.files?.[0]
-              if (!file) return
-              setBanner(file)
-              setBannerPreview(URL.createObjectURL(file))
+              e.target.value = ''
+              if (file) setCropping({ kind: 'banner', file })
             }} className="hidden" />
           </label>
           <p className="text-xs text-gray-400 mt-1 text-center">Wide photo of your work, premises or team</p>
@@ -203,9 +204,8 @@ export default function EditProfileForm({ worker }: { worker: Worker }) {
             </div>
             <input type="file" accept="image/*" onChange={e => {
               const file = e.target.files?.[0]
-              if (!file) return
-              setPhoto(file)
-              setPhotoPreview(URL.createObjectURL(file))
+              e.target.value = ''
+              if (file) setCropping({ kind: 'photo', file })
             }} className="hidden" />
           </label>
           <p className="text-xs text-gray-400 mt-2">Tap to change photo</p>
@@ -413,6 +413,24 @@ export default function EditProfileForm({ worker }: { worker: Worker }) {
       >
         {loading ? 'Saving...' : 'Save changes'}
       </button>
+
+      {cropping && (
+        <ImageCropper
+          key={cropping.kind}
+          file={cropping.file}
+          aspect={cropping.kind === 'photo' ? 1 : 3}
+          round={cropping.kind === 'photo'}
+          outputWidth={cropping.kind === 'photo' ? 600 : 1500}
+          title={cropping.kind === 'photo' ? 'Position your photo or logo' : 'Position your cover photo'}
+          onCancel={() => setCropping(null)}
+          onSave={cropped => {
+            const preview = URL.createObjectURL(cropped)
+            if (cropping.kind === 'photo') { setPhoto(cropped); setPhotoPreview(preview) }
+            else { setBanner(cropped); setBannerPreview(preview) }
+            setCropping(null)
+          }}
+        />
+      )}
     </form>
   )
 }

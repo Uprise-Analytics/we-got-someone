@@ -8,6 +8,7 @@ import Navbar from '@/components/Navbar'
 import AreaSelect from '@/components/AreaSelect'
 import Spinner from '@/components/Spinner'
 import TradePattern from '@/components/TradePattern'
+import ImageCropper from '@/components/ImageCropper'
 
 const INPUT = 'w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-gray-50'
 
@@ -61,6 +62,7 @@ export default function JoinPage() {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null)
   const [banner, setBanner] = useState<File | null>(null)
   const [bannerPreview, setBannerPreview] = useState<string | null>(null)
+  const [cropping, setCropping] = useState<{ kind: 'photo' | 'banner'; file: File } | null>(null)
   const [languages, setLanguages] = useState<string[]>([])
   const [serviceAreas, setServiceAreas] = useState<string[]>([])
   const [isEditMode, setIsEditMode] = useState(false)
@@ -176,16 +178,26 @@ export default function JoinPage() {
 
   function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
-    if (!file) return
-    setPhoto(file)
-    setPhotoPreview(URL.createObjectURL(file))
+    e.target.value = ''
+    if (file) setCropping({ kind: 'photo', file })
   }
 
   function handleBannerChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
-    if (!file) return
-    setBanner(file)
-    setBannerPreview(URL.createObjectURL(file))
+    e.target.value = ''
+    if (file) setCropping({ kind: 'banner', file })
+  }
+
+  function handleCropSave(cropped: File) {
+    const preview = URL.createObjectURL(cropped)
+    if (cropping?.kind === 'photo') {
+      setPhoto(cropped)
+      setPhotoPreview(preview)
+    } else {
+      setBanner(cropped)
+      setBannerPreview(preview)
+    }
+    setCropping(null)
   }
 
   function handleAccountSubmit(e: React.FormEvent) {
@@ -222,7 +234,7 @@ export default function JoinPage() {
         const { error: upErr } = await supabase.storage.from('worker-photos').upload(`${uid}.${ext}`, photo, { upsert: true })
         if (!upErr) {
           const { data: u } = supabase.storage.from('worker-photos').getPublicUrl(`${uid}.${ext}`)
-          photoUrl = u.publicUrl
+          photoUrl = `${u.publicUrl}?v=${Date.now()}`
         }
       }
 
@@ -232,7 +244,7 @@ export default function JoinPage() {
         const { error: upErr } = await supabase.storage.from('worker-photos').upload(`${uid}-banner.${ext}`, banner, { upsert: true })
         if (!upErr) {
           const { data: u } = supabase.storage.from('worker-photos').getPublicUrl(`${uid}-banner.${ext}`)
-          bannerUrl = u.publicUrl
+          bannerUrl = `${u.publicUrl}?v=${Date.now()}`
         }
       }
 
@@ -261,7 +273,7 @@ export default function JoinPage() {
         const { error: upErr } = await supabase.storage.from('worker-photos').upload(`${uid}.${ext}`, photo, { upsert: true })
         if (!upErr) {
           const { data: u } = supabase.storage.from('worker-photos').getPublicUrl(`${uid}.${ext}`)
-          photoUrl = u.publicUrl
+          photoUrl = `${u.publicUrl}?v=${Date.now()}`
         }
       }
       let bannerUrl: string | null = null
@@ -270,7 +282,7 @@ export default function JoinPage() {
         const { error: upErr } = await supabase.storage.from('worker-photos').upload(`${uid}-banner.${ext}`, banner, { upsert: true })
         if (!upErr) {
           const { data: u } = supabase.storage.from('worker-photos').getPublicUrl(`${uid}-banner.${ext}`)
-          bannerUrl = u.publicUrl
+          bannerUrl = `${u.publicUrl}?v=${Date.now()}`
         }
       }
       let utmSource: string | null = null, utmMedium: string | null = null
@@ -353,7 +365,7 @@ export default function JoinPage() {
         ;({ error: uploadError } = await supabase.storage.from('worker-photos').upload(path, file, { upsert: true }))
       }
       if (uploadError) return null
-      return supabase.storage.from('worker-photos').getPublicUrl(path).data.publicUrl
+      return `${supabase.storage.from('worker-photos').getPublicUrl(path).data.publicUrl}?v=${Date.now()}`
     }
 
     const photoUrl = photo ? await uploadImage(photo, 'photo') : null
@@ -728,6 +740,19 @@ export default function JoinPage() {
           </>
         )}
       </div>
+
+      {cropping && (
+        <ImageCropper
+          key={cropping.kind}
+          file={cropping.file}
+          aspect={cropping.kind === 'photo' ? 1 : 3}
+          round={cropping.kind === 'photo'}
+          outputWidth={cropping.kind === 'photo' ? 600 : 1500}
+          title={cropping.kind === 'photo' ? 'Position your photo or logo' : 'Position your cover photo'}
+          onCancel={() => setCropping(null)}
+          onSave={handleCropSave}
+        />
+      )}
     </div>
   )
 }

@@ -8,16 +8,6 @@ export const metadata: Metadata = {
   alternates: { canonical: '/for-workers' },
 }
 
-const VALUE_STACK = [
-  { label: 'Your own professional profile page',           value: 'R600/month' },
-  { label: 'Appear in Google Search for your trade + area', value: 'R800/month' },
-  { label: 'WhatsApp & call button — clients reach you directly', value: 'R200/month' },
-  { label: 'Photo gallery to show off your best work',     value: 'R300/month' },
-  { label: 'Star ratings & reviews that build your reputation', value: 'R400/month' },
-  { label: 'Listed across multiple service areas',         value: 'R200/month' },
-  { label: 'Profile view counter — see your monthly reach', value: 'R100/month' },
-]
-
 export default function ForWorkersPage() {
   return (
     <div className="min-h-screen bg-[#0D1B2A] text-white">
@@ -49,49 +39,6 @@ export default function ForWorkersPage() {
             Get listed — it's free
           </Link>
           <p className="text-gray-600 text-xs mt-4">No credit card. No contract.</p>
-        </div>
-      </section>
-
-      {/* ── Value stack ── */}
-      <section className="px-5 pb-16 max-w-xl mx-auto">
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-          <h2 className="text-xl font-extrabold mb-1">Here's exactly what you get</h2>
-          <p className="text-gray-400 text-sm mb-6">Everything included. No hidden costs.</p>
-
-          <div className="space-y-3 mb-6">
-            {VALUE_STACK.map(({ label, value }) => (
-              <div key={label} className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <span className="flex-shrink-0 w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center">
-                    <svg className="w-3 h-3 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </span>
-                  <span className="text-sm text-gray-200 leading-snug">{label}</span>
-                </div>
-                <span className="flex-shrink-0 text-xs font-semibold text-green-400">{value}</span>
-              </div>
-            ))}
-          </div>
-
-          <div className="border-t border-white/10 pt-4 mb-4 space-y-1.5">
-            <div className="flex items-center justify-between">
-              <span className="font-semibold">Your price</span>
-              <span className="text-3xl font-extrabold text-green-400">Free</span>
-            </div>
-            <p className="text-xs text-gray-500 pt-1">No credit card. No contract. Free.</p>
-          </div>
-
-          {/* Guarantee */}
-          <div className="flex items-start gap-3 border border-green-500/30 bg-green-500/10 rounded-xl px-4 py-3.5">
-            <span className="text-xl mt-0.5">🛡️</span>
-            <div>
-              <p className="text-sm font-bold text-green-300">30-Day Enquiry Guarantee</p>
-              <p className="text-xs text-gray-400 mt-0.5 leading-relaxed">
-                If you don't receive a genuine client enquiry in your first 30 days, we will work to fix your profile until you do.
-              </p>
-            </div>
-          </div>
         </div>
       </section>
 

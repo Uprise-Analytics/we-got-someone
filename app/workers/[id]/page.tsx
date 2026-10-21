@@ -87,7 +87,7 @@ export default async function WorkerProfilePage({ params }: { params: Promise<{ 
           {/* ── Banner ── */}
           {worker.banner_url && (
             <div className="w-full h-40 sm:h-52 bg-gray-100 overflow-hidden">
-              <img src={worker.banner_url} alt="Banner" className="w-full h-full object-cover" />
+              <PhotoLightbox src={worker.banner_url} alt={`${worker.name} cover photo`} className="w-full h-full object-cover" />
             </div>
           )}
 

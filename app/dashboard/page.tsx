@@ -3,9 +3,7 @@ import Link from 'next/link'
 import { cookies } from 'next/headers'
 import { createServerClient } from '@supabase/ssr'
 import SignOutButton from './SignOutButton'
-import DevActivateBanner from './DevActivateBanner'
 import ShareProfile from './ShareProfile'
-import CancelSubscriptionButton from './CancelSubscriptionButton'
 import ReferralCard from './ReferralCard'
 import Navbar from '@/components/Navbar'
 import TradePattern from '@/components/TradePattern'
@@ -27,17 +25,13 @@ export default async function DashboardPage() {
 
   const { data: worker } = await serverSupabase
     .from('workers')
-    .select('*, subscriptions(status, next_billing_date), free_until')
+    .select('*')
     .eq('user_id', user.id)
     .single()
 
   if (!worker) redirect('/join')
 
-  const subscription = worker.subscriptions?.[0]
   const firstName = worker.name.split(' ')[0]
-  const freeUntil = worker.free_until ? new Date(worker.free_until) : null
-  const daysLeft = freeUntil ? Math.max(0, Math.ceil((freeUntil.getTime() - Date.now()) / 86400000)) : null
-  const onFreeTrial = daysLeft !== null && daysLeft > 0
 
   return (
     <div className="relative min-h-screen bg-gray-50">

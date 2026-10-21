@@ -12,7 +12,7 @@ const SECTIONS = [
   },
   {
     heading: 'What information we collect',
-    body: `For workers who list a profile, we collect your name, phone number, photo, skills, location, and payment information processed through PayFast. For visitors who use the search function, we do not require any personal information. If you leave a review, you may optionally provide your name.`,
+    body: `For workers who list a profile, we collect your name, phone number, photo, skills, and location. For visitors who use the search function, we do not require any personal information. If you leave a review, you may optionally provide your name.`,
   },
   {
     heading: 'Why we collect it',
@@ -20,7 +20,7 @@ const SECTIONS = [
   },
   {
     heading: 'How we store it',
-    body: `All data is stored on secure servers via Supabase (hosted in the EU/US). Payment processing is handled by PayFast, a PCI DSS-compliant South African payment provider. We do not store card details. Worker photos are stored in secure cloud storage.`,
+    body: `All data is stored on secure servers via Supabase (hosted in the EU/US). Worker photos are stored in secure cloud storage.`,
   },
   {
     heading: 'Who can see your information',

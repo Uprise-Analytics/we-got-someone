@@ -16,7 +16,7 @@ async function getWorker(id: string) {
     .select(`
       id, name, bio, skills, city, area, phone, email, website, photo_url, banner_url,
       work_photos, available_now, languages, own_transport, profile_views, is_active, created_at,
-      gender, date_of_birth, service_areas,
+      service_areas,
       reviews(id, reviewer_name, rating, comment, created_at)
     `)
     .eq('id', id)
@@ -69,18 +69,6 @@ export default async function WorkerProfilePage({ params }: { params: Promise<{ 
 
   const whatsappUrl = `https://wa.me/${worker.phone?.replace(/\D/g, '')}`
   const callUrl = `tel:${worker.phone}`
-
-  function calcAge(dob: string | null): number | null {
-    if (!dob) return null
-    const birth = new Date(dob)
-    const now = new Date()
-    let age = now.getFullYear() - birth.getFullYear()
-    const m = now.getMonth() - birth.getMonth()
-    if (m < 0 || (m === 0 && now.getDate() < birth.getDate())) age--
-    return age
-  }
-
-  const age = calcAge(worker.date_of_birth)
 
   return (
     <div className="relative min-h-screen bg-gray-50">
@@ -146,20 +134,6 @@ export default async function WorkerProfilePage({ params }: { params: Promise<{ 
                 </div>
               )}
             </div>
-          </div>
-
-          {/* ── Info badges ── */}
-          <div className="flex flex-wrap justify-center sm:justify-start gap-2 mb-5">
-            {worker.gender && (
-              <span className="text-sm font-medium bg-purple-50 text-purple-700 px-3 py-1 rounded-full">
-                {worker.gender}
-              </span>
-            )}
-            {age !== null && (
-              <span className="text-sm font-medium bg-gray-100 text-gray-600 px-3 py-1 rounded-full">
-                {age} yrs old
-              </span>
-            )}
           </div>
 
           {/* ── Languages ── */}

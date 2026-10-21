@@ -9,7 +9,7 @@ const SKILLS = [
   'Air Conditioning', 'Bathroom Renovation', 'Blinds & Curtains', 'Brick Layer',
   'Carpenter', 'CCTV & Intercom', 'Ceiling', 'Cleaner', 'Domestic Worker',
   'Drain Cleaning', 'Electrician', 'Flooring', 'Gardener', 'Handyman',
-  'IT Specialist', 'Kitchen Installer', 'Landscaping', 'Mechanic', 'Moving & Transport', 'Painter',
+  'Garage Door Specialist', 'Glass Specialist', 'IT Specialist', 'Kitchen Installer', 'Landscaping', 'Mechanic', 'Moving & Transport', 'Painter',
   'Panel Beater', 'Paving', 'Pest Control', 'Plastering', 'Plumber', 'Pool & Spa',
   'Roofing', 'Rubble Removal', 'Security', 'Solar Installation',
   'Tiler', 'Tree Felling', 'Waterproofing', 'Welding',
@@ -34,8 +34,6 @@ type Worker = {
   email: string | null
   website: string | null
   available_now: boolean
-  gender?: string | null
-  date_of_birth?: string | null
   languages?: string[] | null
   own_transport?: boolean
   years_experience?: number | null
@@ -85,8 +83,6 @@ export default function EditProfileForm({ worker }: { worker: Worker }) {
   const [photoPreview, setPhotoPreview] = useState<string | null>(worker.photo_url)
   const [banner, setBanner] = useState<File | null>(null)
   const [bannerPreview, setBannerPreview] = useState<string | null>(worker.banner_url)
-  const [gender, setGender] = useState(worker.gender ?? '')
-  const [dateOfBirth, setDateOfBirth] = useState(worker.date_of_birth ?? '')
   const [languages, setLanguages] = useState<string[]>(worker.languages ?? [])
   const [workPhotos, setWorkPhotos] = useState<string[]>(worker.work_photos ?? [])
   const [uploadingWork, setUploadingWork] = useState(false)
@@ -138,8 +134,6 @@ export default function EditProfileForm({ worker }: { worker: Worker }) {
         name, bio, skills, phone, photoUrl, bannerUrl,
         email: email || null,
         website: website || null,
-        gender: gender || null,
-        dateOfBirth: dateOfBirth || null,
         languages,
         serviceAreas,
         workPhotos,
@@ -225,35 +219,6 @@ export default function EditProfileForm({ worker }: { worker: Worker }) {
           required
           className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-gray-50"
         />
-
-        <div>
-          <p className="text-sm font-medium text-gray-700 mb-2 text-center">Gender</p>
-          <div className="flex gap-2">
-            {['Male', 'Female', 'Other'].map(g => (
-              <button
-                key={g}
-                type="button"
-                onClick={() => setGender(g)}
-                className={`flex-1 py-2.5 rounded-xl border text-sm font-medium transition-colors cursor-pointer ${
-                  gender === g ? 'bg-green-600 text-white border-green-600' : 'border-gray-200 text-gray-600 bg-gray-50 hover:border-green-400'
-                }`}
-              >
-                {g}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5 text-center">Date of birth</label>
-          <input
-            type="date"
-            value={dateOfBirth}
-            onChange={e => setDateOfBirth(e.target.value)}
-            max={new Date(Date.now() - 16 * 365.25 * 86400000).toISOString().split('T')[0]}
-            className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-gray-50"
-          />
-        </div>
 
         <textarea
           placeholder="Short bio. Tell clients what makes you great."

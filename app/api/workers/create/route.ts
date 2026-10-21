@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
   const body = await req.json()
   const {
     userId, name, bio, skills, phone, photoUrl, bannerUrl,
-    email, website, gender, dateOfBirth, languages, serviceAreas,
+    email, website, languages, serviceAreas,
     referralCode, utmSource, utmMedium, utmCampaign, utmContent,
   } = body
 
@@ -48,8 +48,6 @@ export async function POST(req: NextRequest) {
     email: email ?? null,
     website: website ?? null,
     is_active: true,
-    gender: gender ?? null,
-    date_of_birth: dateOfBirth ?? null,
     languages: languages ?? [],
     service_areas: serviceAreas ?? [],
     referral_code: myReferralCode,
@@ -69,8 +67,6 @@ export async function POST(req: NextRequest) {
       phone,
       photo_url: photoUrl ?? null,
       is_active: true,
-      gender: gender ?? null,
-      date_of_birth: dateOfBirth ?? null,
       languages: languages ?? [],
     }).select('id').single()
     if (fallbackError) {

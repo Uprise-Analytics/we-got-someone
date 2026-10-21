@@ -37,13 +37,6 @@ const LANGUAGES = [
 
 type Step = 'account' | 'profile'
 
-function formatDOB(val: string) {
-  const digits = val.replace(/\D/g, '')
-  if (digits.length <= 4) return digits
-  if (digits.length <= 6) return digits.slice(0, 4) + '/' + digits.slice(4)
-  return digits.slice(0, 4) + '/' + digits.slice(4, 6) + '/' + digits.slice(6, 8)
-}
-
 export default function JoinPage() {
   const router = useRouter()
   const [step, setStep] = useState<Step>('account')
@@ -68,8 +61,6 @@ export default function JoinPage() {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null)
   const [banner, setBanner] = useState<File | null>(null)
   const [bannerPreview, setBannerPreview] = useState<string | null>(null)
-  const [gender, setGender] = useState('')
-  const [dateOfBirth, setDateOfBirth] = useState('')
   const [languages, setLanguages] = useState<string[]>([])
   const [serviceAreas, setServiceAreas] = useState<string[]>([])
   const [isEditMode, setIsEditMode] = useState(false)
@@ -118,8 +109,6 @@ export default function JoinPage() {
         if (d.phone) setPhone(d.phone)
         if (d.contactEmail) setContactEmail(d.contactEmail)
         if (d.website) setWebsite(d.website)
-        if (d.gender) setGender(d.gender)
-        if (d.dateOfBirth) setDateOfBirth(d.dateOfBirth)
         if (d.skills?.length) setSkills(d.skills)
         if (d.languages?.length) setLanguages(d.languages)
         if (d.serviceAreas?.length) setServiceAreas(d.serviceAreas)
@@ -133,7 +122,7 @@ export default function JoinPage() {
       setEmail(session.user.email ?? '')
       const { data: worker } = await supabase
         .from('workers')
-        .select('name, bio, skills, phone, email, website, gender, date_of_birth, languages, service_areas, photo_url, banner_url')
+        .select('name, bio, skills, phone, email, website, languages, service_areas, photo_url, banner_url')
         .eq('user_id', session.user.id)
         .single()
       if (!worker) {
@@ -147,8 +136,6 @@ export default function JoinPage() {
       setPhone(prev => prev || (worker.phone ?? ''))
       setContactEmail(prev => prev || (worker.email ?? ''))
       setWebsite(prev => prev || (worker.website ?? ''))
-      setGender(prev => prev || (worker.gender ?? ''))
-      setDateOfBirth(prev => prev || (worker.date_of_birth ?? ''))
       setSkills(prev => prev.length ? prev : (worker.skills ?? []))
       setLanguages(prev => prev.length ? prev : (worker.languages ?? []))
       setServiceAreas(prev => prev.length ? prev : (worker.service_areas ?? []))
@@ -170,10 +157,10 @@ export default function JoinPage() {
     try {
       sessionStorage.setItem('wgs_join_draft', JSON.stringify({
         email, name, bio, phone, contactEmail, website,
-        gender, dateOfBirth, skills, languages, serviceAreas,
+        skills, languages, serviceAreas,
       }))
     } catch {}
-  }, [step, email, name, bio, phone, contactEmail, website, gender, dateOfBirth, skills, languages, serviceAreas])
+  }, [step, email, name, bio, phone, contactEmail, website, skills, languages, serviceAreas])
 
   function toggleSkill(skill: string) {
     if (skills.includes(skill)) {
@@ -218,7 +205,6 @@ export default function JoinPage() {
   async function handleProfileSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (skills.length === 0) { setError('Please select at least one skill.'); return }
-    if (!gender) { setError('Please select your gender.'); return }
     if (serviceAreas.length === 0) { setError('Please select at least one area you work in.'); return }
     setLoading(true)
     setError('')
@@ -256,8 +242,6 @@ export default function JoinPage() {
         banner_url: bannerUrl,
         email: contactEmail || null,
         website: website || null,
-        gender,
-        date_of_birth: dateOfBirth || null,
         languages,
         service_areas: serviceAreas,
       }).eq('user_id', uid)
@@ -303,7 +287,6 @@ export default function JoinPage() {
         body: JSON.stringify({
           userId: uid, name, bio, skills, phone, photoUrl, bannerUrl,
           email: contactEmail || null, website: website || null,
-          gender, dateOfBirth: dateOfBirth || null,
           languages, serviceAreas,
           referralCode: referralCode || null,
           utmSource, utmMedium, utmCampaign, utmContent,
@@ -393,7 +376,6 @@ export default function JoinPage() {
       photoUrl, bannerUrl,
       email: contactEmail || null,
       website: website || null,
-      gender, dateOfBirth: dateOfBirth || null,
       languages,
       serviceAreas,
       referralCode: referralCode || null,
@@ -600,38 +582,6 @@ export default function JoinPage() {
                   required
                   className={INPUT}
                 />
-
-                <div>
-                  <p className="text-sm font-medium text-gray-700 mb-2 text-center">Gender</p>
-                  <div className="flex gap-2">
-                    {['Male', 'Female', 'Other'].map(g => (
-                      <button
-                        key={g}
-                        type="button"
-                        onClick={() => setGender(g)}
-                        className={`flex-1 py-2.5 rounded-xl border text-sm font-medium transition-colors cursor-pointer ${
-                          gender === g ? 'bg-green-600 text-white border-green-600' : 'border-gray-200 text-gray-600 bg-gray-50 hover:border-green-400'
-                        }`}
-                      >
-                        {g}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5 text-center">Date of birth</label>
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    placeholder="YYYY/MM/DD"
-                    value={dateOfBirth}
-                    onChange={e => setDateOfBirth(formatDOB(e.target.value))}
-                    maxLength={10}
-                    className={INPUT}
-                  />
-                  <p className="text-xs text-gray-400 mt-1 text-center">The / fills in automatically as you type</p>
-                </div>
 
                 <textarea
                   placeholder="Short bio. Tell clients what makes you great."

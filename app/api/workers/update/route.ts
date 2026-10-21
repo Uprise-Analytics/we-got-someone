@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
 
   const {
     name, bio, skills, phone, photoUrl, bannerUrl, email, website, availableNow,
-    gender, dateOfBirth, languages, ownTransport, yearsExperience, serviceAreas, workPhotos,
+    languages, ownTransport, yearsExperience, serviceAreas, workPhotos,
   } = await req.json()
 
   const primaryCity = serviceAreas?.[0] ?? ''
@@ -41,8 +41,6 @@ export async function POST(req: NextRequest) {
     available_now: availableNow ?? false,
     email: email ?? null,
     website: website ?? null,
-    gender: gender ?? null,
-    date_of_birth: dateOfBirth ?? null,
     languages: languages ?? [],
     own_transport: ownTransport ?? false,
     years_experience: yearsExperience ?? null,
@@ -67,8 +65,6 @@ export async function POST(req: NextRequest) {
     available_now: availableNow ?? false,
     email: email ?? null,
     website: website ?? null,
-    gender: gender ?? null,
-    date_of_birth: dateOfBirth ?? null,
     languages: languages ?? [],
     own_transport: ownTransport ?? false,
     years_experience: yearsExperience ?? null,

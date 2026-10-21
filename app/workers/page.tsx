@@ -35,23 +35,11 @@ type Worker = {
   available_now: boolean
   avg_rating: number
   review_count: number
-  gender: string | null
-  date_of_birth: string | null
   languages: string[] | null
   own_transport: boolean
   service_areas: string[] | null
   work_photos: string[] | null
   created_at: string
-}
-
-function calcAge(dob: string | null): number | null {
-  if (!dob) return null
-  const birth = new Date(dob)
-  const now = new Date()
-  let age = now.getFullYear() - birth.getFullYear()
-  const m = now.getMonth() - birth.getMonth()
-  if (m < 0 || (m === 0 && now.getDate() < birth.getDate())) age--
-  return age
 }
 
 function shuffleArr<T>(arr: T[]): T[] {
@@ -86,7 +74,7 @@ async function getWorkers(skill?: string, area?: string, sort?: string, name?: s
   let { data, error } = await applyFilters(
     supabase
       .from('workers')
-      .select(`id, name, bio, skills, city, area, photo_url, banner_url, available_now, gender, date_of_birth, languages, own_transport, service_areas, work_photos, created_at, reviews(rating)`)
+      .select(`id, name, bio, skills, city, area, photo_url, banner_url, available_now, languages, own_transport, service_areas, work_photos, created_at, reviews(rating)`)
       .eq('is_active', true)
   )
 
@@ -155,7 +143,6 @@ export default async function WorkersPage({
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {workers.map(worker => {
-              const age = calcAge(worker.date_of_birth)
               const areas = worker.service_areas?.length ? worker.service_areas : [worker.city]
               return (
                 <Link
@@ -200,20 +187,6 @@ export default async function WorkersPage({
                           <span className="text-sm font-medium text-gray-800">{s}</span>
                         </div>
                       ))}
-                    </div>
-
-                    {/* Info badges */}
-                    <div className="flex flex-wrap gap-1.5 mb-3">
-                      {worker.gender && (
-                        <span className="text-xs font-medium bg-purple-50 text-purple-700 px-2.5 py-1 rounded-full border border-purple-100">
-                          {worker.gender}
-                        </span>
-                      )}
-                      {age !== null && (
-                        <span className="text-xs font-medium bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">
-                          {age} yrs
-                        </span>
-                      )}
                     </div>
 
                     {/* Languages */}

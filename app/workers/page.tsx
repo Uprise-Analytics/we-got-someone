@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { supabaseAdmin as supabase } from '@/lib/supabase-admin'
 import Link from 'next/link'
 import WorkerSearch from './WorkerSearch'
+import SearchTracker from '@/components/SearchTracker'
 import Navbar from '@/components/Navbar'
 import TradePattern from '@/components/TradePattern'
 
@@ -117,6 +118,7 @@ export default async function WorkersPage({
     <div className="relative min-h-screen bg-gray-50">
       <TradePattern />
       <Navbar variant="public" />
+      <SearchTracker trade={skill} area={area} results={workers.length} />
 
       <div className="relative max-w-5xl mx-auto w-full px-6 py-10">
         <div className="mb-6">

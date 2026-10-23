@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { usePathname } from 'next/navigation'
 import { supabase } from '@/lib/supabase-browser'
 
 const PHONE = '27621317657'
@@ -15,6 +16,7 @@ const ISSUES = [
 export default function WhatsAppSupport() {
   const [open, setOpen] = useState(false)
   const [busy, setBusy] = useState(false)
+  const pathname = usePathname()
 
   async function handleIssue(label: string) {
     setBusy(true)
@@ -27,6 +29,8 @@ export default function WhatsAppSupport() {
     setOpen(false)
     setBusy(false)
   }
+
+  if (pathname.startsWith('/admin')) return null
 
   return (
     <>

@@ -3,6 +3,7 @@ import { TRADE_SLUGS, AREA_SLUGS, lowerTrade, tradePerson, tradePeople, withArti
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
+import SearchTracker from '@/components/SearchTracker'
 import type { Metadata } from 'next'
 
 export const revalidate = 3600
@@ -67,6 +68,7 @@ export default async function TradePage(
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar variant="public" />
+      <SearchTracker trade={skill} results={workers.length} />
 
       {/* ── Hero ── */}
       <section className="bg-[#0D1B2A] text-white px-5 pt-12 pb-10">

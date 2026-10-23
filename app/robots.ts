@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/dashboard', '/api/', '/sign-in'],
+      disallow: ['/admin', '/dashboard', '/api/', '/sign-in'],
     },
     sitemap: 'https://www.wegotsomeone.co.za/sitemap.xml',
   }

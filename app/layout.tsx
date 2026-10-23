@@ -1,8 +1,10 @@
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import { Geist } from 'next/font/google'
 import NavigationSpinner from '@/components/NavigationSpinner'
 import WhatsAppSupport from '@/components/WhatsAppSupport'
 import UtmCapture from '@/components/UtmCapture'
+import PageTracker from '@/components/PageTracker'
 import './globals.css'
 
 const geist = Geist({ subsets: ['latin'] })
@@ -148,6 +150,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-screen flex flex-col bg-white text-gray-900">
         <UtmCapture />
+        <Suspense fallback={null}><PageTracker /></Suspense>
         <NavigationSpinner />
         <WhatsAppSupport />
         {children}

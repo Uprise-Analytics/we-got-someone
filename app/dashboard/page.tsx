@@ -7,6 +7,7 @@ import ShareProfile from './ShareProfile'
 import ReferralCard from './ReferralCard'
 import Navbar from '@/components/Navbar'
 import TradePattern from '@/components/TradePattern'
+import { isOwnerEmail } from '@/lib/admin'
 
 async function getSession() {
   const cookieStore = await cookies()
@@ -41,6 +42,19 @@ export default async function DashboardPage() {
       <Navbar variant="dashboard" profileHref={`/workers/${worker.id}`} signOutSlot={<SignOutButton />} />
 
       <div className="relative max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+
+        {isOwnerEmail(user.email) && (
+          <Link
+            href="/admin"
+            className="flex items-center justify-between bg-[#0D1B2A] text-white rounded-2xl px-5 py-4 mb-5 hover:bg-[#1D294A] transition-colors"
+          >
+            <span>
+              <span className="block text-xs font-semibold text-green-400 uppercase tracking-widest">Only you can see this</span>
+              <span className="font-semibold">Open the owner dashboard</span>
+            </span>
+            <span aria-hidden className="text-xl">→</span>
+          </Link>
+        )}
 
         {/* Header */}
         <div className="bg-white border border-gray-200 rounded-2xl mb-5 text-center overflow-hidden">

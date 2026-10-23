@@ -1,11 +1,15 @@
 'use client'
 
+import { isOwnerBrowser, trackingIds } from '@/lib/track'
+
 export default function WhatsAppButton({ phone, workerId }: { phone: string; workerId: string }) {
   function handleClick() {
+    if (isOwnerBrowser()) return
     fetch('/api/workers/whatsapp-tap', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ workerId }),
+      body: JSON.stringify({ workerId, path: location.pathname, ...trackingIds() }),
+      keepalive: true,
     }).catch(() => {})
   }
 

@@ -16,6 +16,8 @@ export const metadata: Metadata = {
 
 const SKILL_CATEGORIES = [
   { label: 'Air Conditioning',   icon: '❄️'  },
+  { label: 'Au Pair',            icon: '👶' },
+  { label: 'Baking & Catering',  icon: '🎂' },
   { label: 'Bathroom Renovation',icon: '🚿' },
   { label: 'Blinds & Curtains',  icon: '🪟' },
   { label: 'Brick Layer',        icon: '🧱' },
@@ -32,6 +34,7 @@ const SKILL_CATEGORIES = [
   { label: 'IT Specialist',      icon: '💻' },
   { label: 'Kitchen Installer',  icon: '🍳' },
   { label: 'Landscaping',        icon: '🌳' },
+  { label: 'LPG Gas Installer',  icon: '⛽' },
   { label: 'Mechanic',           icon: '🛠️' },
   { label: 'Moving & Transport', icon: '🚛' },
   { label: 'Nails & Beauty',     icon: '💅' },
@@ -52,6 +55,7 @@ const SKILL_CATEGORIES = [
   { label: 'Tiler',              icon: '🔲' },
   { label: 'Tree Felling',       icon: '🪓' },
   { label: 'Waterproofing',      icon: '💧' },
+  { label: 'Wedding Venues',     icon: '💒' },
   { label: 'Welding',            icon: '🔥' },
 ]
 

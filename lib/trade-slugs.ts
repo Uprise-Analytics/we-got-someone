@@ -1,5 +1,7 @@
 export const TRADE_SLUGS: Record<string, string> = {
   'air-conditioning':       'Air Conditioning',
+  'au-pair':                'Au Pair',
+  'baking-catering':        'Baking & Catering',
   'bathroom-renovation':    'Bathroom Renovation',
   'blinds-curtains':        'Blinds & Curtains',
   'brick-layer':            'Brick Layer',
@@ -18,6 +20,7 @@ export const TRADE_SLUGS: Record<string, string> = {
   'it-specialist':          'IT Specialist',
   'kitchen-installer':      'Kitchen Installer',
   'landscaping':            'Landscaping',
+  'lpg-gas-installer':      'LPG Gas Installer',
   'mechanic':               'Mechanic',
   'moving-transport':       'Moving & Transport',
   'nails-beauty':           'Nails & Beauty',
@@ -36,6 +39,7 @@ export const TRADE_SLUGS: Record<string, string> = {
   'tiler':                  'Tiler',
   'tree-felling':           'Tree Felling',
   'waterproofing':          'Waterproofing',
+  'wedding-venues':         'Wedding Venues',
   'welding':                'Welding',
 }
 
@@ -66,6 +70,7 @@ export const TOP_TRADE_SLUGS = [
 // What you call the person who does each trade, where it differs from the trade name.
 const TRADE_PERSON: Record<string, string> = {
   'Air Conditioning':    'air conditioning technician',
+  'Baking & Catering':   'baker & caterer',
   'Bathroom Renovation': 'bathroom renovator',
   'Blinds & Curtains':   'blinds & curtains installer',
   'CCTV & Intercom':     'CCTV & intercom installer',
@@ -86,6 +91,7 @@ const TRADE_PERSON: Record<string, string> = {
   'Solar Installation':  'solar installer',
   'Tree Felling':        'tree feller',
   'Waterproofing':       'waterproofing specialist',
+  'Wedding Venues':      'wedding venue',
   'Welding':             'welder',
 }
 
@@ -98,13 +104,21 @@ export function tradePerson(skill: string): string {
   return TRADE_PERSON[skill] ?? lowerTrade(skill)
 }
 
+const TRADE_PEOPLE: Record<string, string> = {
+  'Baking & Catering': 'bakers & caterers',
+}
+
 export function tradePeople(skill: string): string {
+  if (TRADE_PEOPLE[skill]) return TRADE_PEOPLE[skill]
   const person = tradePerson(skill)
   return person.endsWith('man') ? `${person.slice(0, -3)}men` : `${person}s`
 }
 
 export function withArticle(noun: string): string {
-  return `${/^[aeiou]/i.test(noun) ? 'an' : 'a'} ${noun}`
+  // Abbreviations are read letter by letter, so "LPG" takes "an" ("el-pee-gee").
+  const abbreviation = /^[A-Z]{2,}\b/.test(noun)
+  const vowelSound = abbreviation ? /^[AEFHILMNORSX]/.test(noun) : /^[aeiou]/i.test(noun)
+  return `${vowelSound ? 'an' : 'a'} ${noun}`
 }
 
 export function titleCase(text: string): string {

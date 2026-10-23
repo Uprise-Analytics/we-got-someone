@@ -7,13 +7,13 @@ import AreaSelect from '@/components/AreaSelect'
 import ImageCropper from '@/components/ImageCropper'
 
 const SKILLS = [
-  'Air Conditioning', 'Bathroom Renovation', 'Blinds & Curtains', 'Brick Layer',
+  'Air Conditioning', 'Au Pair', 'Baking & Catering', 'Bathroom Renovation', 'Blinds & Curtains', 'Brick Layer',
   'Carpenter', 'CCTV & Intercom', 'Ceiling', 'Cleaner', 'Domestic Worker',
   'Drain Cleaning', 'Electrician', 'Flooring', 'Gardener', 'Handyman',
-  'Garage Door Specialist', 'Glass Specialist', 'IT Specialist', 'Kitchen Installer', 'Landscaping', 'Mechanic', 'Moving & Transport', 'Nails & Beauty', 'Painter',
+  'Garage Door Specialist', 'Glass Specialist', 'IT Specialist', 'Kitchen Installer', 'Landscaping', 'LPG Gas Installer', 'Mechanic', 'Moving & Transport', 'Nails & Beauty', 'Painter',
   'Panel Beater', 'Paving', 'Pest Control', 'Photography', 'Plastering', 'Plumber', 'Pool & Spa',
   'Roofing', 'Rubble Removal', 'Security', 'Solar Installation',
-  'Tiler', 'Tree Felling', 'Waterproofing', 'Welding',
+  'Tiler', 'Tree Felling', 'Waterproofing', 'Wedding Venues', 'Welding',
 ]
 
 const LANGUAGES = [

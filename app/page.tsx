@@ -52,6 +52,7 @@ const SKILL_CATEGORIES = [
   { label: 'Rubble Removal',     icon: '🚜' },
   { label: 'Security',           icon: '🔒' },
   { label: 'Solar Installation', icon: '☀️' },
+  { label: 'T-Shirt Printing',   icon: '👕' },
   { label: 'Tiler',              icon: '🔲' },
   { label: 'Tree Felling',       icon: '🪓' },
   { label: 'Waterproofing',      icon: '💧' },

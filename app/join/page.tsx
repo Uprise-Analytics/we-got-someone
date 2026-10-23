@@ -27,7 +27,7 @@ const SKILLS = [
   'Drain Cleaning', 'Electrician', 'Flooring', 'Gardener', 'Handyman',
   'Garage Door Specialist', 'Glass Specialist', 'IT Specialist', 'Kitchen Installer', 'Landscaping', 'LPG Gas Installer', 'Mechanic', 'Moving & Transport', 'Nails & Beauty', 'Painter',
   'Panel Beater', 'Paving', 'Pest Control', 'Photography', 'Plastering', 'Plumber', 'Pool & Spa',
-  'Roofing', 'Rubble Removal', 'Security', 'Solar Installation',
+  'Roofing', 'Rubble Removal', 'Security', 'Solar Installation', 'T-Shirt Printing',
   'Tiler', 'Tree Felling', 'Waterproofing', 'Wedding Venues', 'Welding',
 ]
 

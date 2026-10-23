@@ -36,6 +36,7 @@ export const TRADE_SLUGS: Record<string, string> = {
   'rubble-removal':         'Rubble Removal',
   'security':               'Security',
   'solar-installation':     'Solar Installation',
+  't-shirt-printing':       'T-Shirt Printing',
   'tiler':                  'Tiler',
   'tree-felling':           'Tree Felling',
   'waterproofing':          'Waterproofing',
@@ -89,6 +90,7 @@ const TRADE_PERSON: Record<string, string> = {
   'Rubble Removal':      'rubble removal specialist',
   'Security':            'security specialist',
   'Solar Installation':  'solar installer',
+  'T-Shirt Printing':    'T-shirt printer',
   'Tree Felling':        'tree feller',
   'Waterproofing':       'waterproofing specialist',
   'Wedding Venues':      'wedding venue',
@@ -122,5 +124,6 @@ export function withArticle(noun: string): string {
 }
 
 export function titleCase(text: string): string {
-  return text.split(' ').map(w => (w === '&' || /^[A-Z]{2,}$/.test(w) ? w : w[0].toUpperCase() + w.slice(1))).join(' ')
+  const cap = (w: string) => (w === '&' || /^[A-Z]{2,}$/.test(w) ? w : w[0].toUpperCase() + w.slice(1))
+  return text.split(' ').map(w => w.split('-').map(cap).join('-')).join(' ')
 }

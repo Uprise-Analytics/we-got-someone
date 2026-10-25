@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase-admin'
-import { validUnsubscribeToken } from '@/lib/unsubscribe'
 
+// Unsubscribe links carry a random per-address code from email_unsub_tokens, so nobody can unsubscribe someone else.
 async function optOut(req: NextRequest) {
-  const email = req.nextUrl.searchParams.get('e')?.trim().toLowerCase() ?? ''
   const token = req.nextUrl.searchParams.get('t') ?? ''
-  if (!email || !validUnsubscribeToken(email, token)) return false
-  await supabaseAdmin.from('email_optouts').upsert({ email }, { onConflict: 'email' })
+  if (!/^[0-9a-f]{36}$/.test(token)) return false
+  const { data } = await supabaseAdmin.from('email_unsub_tokens').select('email').eq('token', token).maybeSingle()
+  if (!data) return false
+  await supabaseAdmin.from('email_optouts').upsert({ email: data.email }, { onConflict: 'email' })
   return true
 }
 

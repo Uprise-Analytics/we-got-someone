@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
+import { FACEBOOK_URL, FACEBOOK_ICON_PATH } from '@/lib/social'
 import Image from 'next/image'
 import Navbar from '@/components/Navbar'
 import HeroSearch from '@/components/HeroSearch'
@@ -198,6 +199,15 @@ export default async function HomePage() {
             <Link href="/contact" className="hover:text-white transition-colors">Contact Us</Link>
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
           </div>
+          <a
+            href={FACEBOOK_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-sm font-semibold text-white bg-[#1877F2] hover:bg-[#166FE5] px-4 py-2 rounded-full transition-colors"
+          >
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden><path d={FACEBOOK_ICON_PATH} /></svg>
+            Follow us on Facebook
+          </a>
           <div className="w-16 h-px bg-white/10" />
           <span className="text-xs text-gray-600 text-center">© {new Date().getFullYear()} We Got Someone</span>
         </div>

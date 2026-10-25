@@ -5,6 +5,7 @@ import NavigationSpinner from '@/components/NavigationSpinner'
 import WhatsAppSupport from '@/components/WhatsAppSupport'
 import UtmCapture from '@/components/UtmCapture'
 import PageTracker from '@/components/PageTracker'
+import { FACEBOOK_URL } from '@/lib/social'
 import './globals.css'
 
 const geist = Geist({ subsets: ['latin'] })
@@ -132,7 +133,7 @@ const structuredData = {
     name: 'South Africa',
   },
   priceRange: 'Free',
-  sameAs: [],
+  sameAs: [FACEBOOK_URL],
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -8,6 +8,7 @@ import ReferralCard from './ReferralCard'
 import Navbar from '@/components/Navbar'
 import TradePattern from '@/components/TradePattern'
 import { isOwnerEmail } from '@/lib/admin'
+import { FACEBOOK_URL, FACEBOOK_ICON_PATH } from '@/lib/social'
 
 async function getSession() {
   const cookieStore = await cookies()
@@ -273,6 +274,23 @@ export default async function DashboardPage() {
             ))}
           </div>
         </div>
+
+        {/* Facebook */}
+        <a
+          href={FACEBOOK_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-4 flex items-center gap-3 bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 hover:border-gray-300 transition-colors"
+        >
+          <span className="w-10 h-10 flex-shrink-0 rounded-xl bg-[#1877F2] flex items-center justify-center">
+            <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24" aria-hidden><path d={FACEBOOK_ICON_PATH} /></svg>
+          </span>
+          <span className="flex-1 min-w-0">
+            <span className="block font-semibold text-gray-900 text-sm">Follow us on Facebook</span>
+            <span className="block text-xs text-gray-500">Share our posts so more clients in your area find you.</span>
+          </span>
+          <span aria-hidden className="text-gray-400">→</span>
+        </a>
 
         {/* Support link */}
         <div className="mt-4 text-center">

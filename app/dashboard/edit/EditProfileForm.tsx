@@ -5,9 +5,10 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase-browser'
 import AreaSelect from '@/components/AreaSelect'
 import ImageCropper from '@/components/ImageCropper'
+import { shrinkImage } from '@/lib/shrink-image'
 
 const SKILLS = [
-  'Air Conditioning', 'Au Pair', 'Baking & Catering', 'Bathroom Renovation', 'Blinds & Curtains', 'Brick Layer',
+  '4x4 Accessories', 'Air Conditioning', 'Au Pair', 'Baking & Catering', 'Bathroom Renovation', 'Blinds & Curtains', 'Brick Layer',
   'Carpenter', 'CCTV & Intercom', 'Ceiling', 'Cleaner', 'Domestic Worker',
   'Drain Cleaning', 'Electrician', 'Flooring', 'Gardener', 'Handyman',
   'Garage Door Specialist', 'Glass Specialist', 'IT Specialist', 'Kitchen Installer', 'Landscaping', 'LPG Gas Installer', 'Mechanic', 'Moving & Transport', 'Nails & Beauty', 'Painter',
@@ -399,10 +400,11 @@ export default function EditProfileForm({ worker }: { worker: Worker }) {
                 setUploadingWork(true)
                 const toUpload = files.slice(0, 6 - workPhotos.length)
                 const urls = await Promise.all(
-                  toUpload.map(async file => {
+                  toUpload.map(async original => {
+                    const file = await shrinkImage(original)
                     const ext = file.name.split('.').pop()
                     const filePath = `${worker.user_id}/work-${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
-                    const { error } = await supabase.storage.from('worker-photos').upload(filePath, file, { upsert: false })
+                    const { error } = await supabase.storage.from('worker-photos').upload(filePath, file, { upsert: false, contentType: file.type })
                     if (error) return null
                     const { data: urlData } = supabase.storage.from('worker-photos').getPublicUrl(filePath)
                     return urlData.publicUrl

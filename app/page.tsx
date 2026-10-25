@@ -16,6 +16,7 @@ export const metadata: Metadata = {
 }
 
 const SKILL_CATEGORIES = [
+  { label: '4x4 Accessories',    icon: '🚙' },
   { label: 'Air Conditioning',   icon: '❄️'  },
   { label: 'Au Pair',            icon: '👶' },
   { label: 'Baking & Catering',  icon: '🎂' },

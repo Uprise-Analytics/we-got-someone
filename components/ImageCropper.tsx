@@ -30,7 +30,7 @@ async function cropToFile(src: string, area: Area, outputWidth: number, aspect: 
   ctx.imageSmoothingQuality = 'high'
   ctx.drawImage(img, area.x, area.y, area.width, area.height, 0, 0, width, height)
 
-  const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.9))
+  const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.85))
   if (!blob) throw new Error('Could not process image')
   return new File([blob], 'image.jpg', { type: 'image/jpeg' })
 }

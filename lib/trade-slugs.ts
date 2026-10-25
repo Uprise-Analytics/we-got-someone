@@ -1,4 +1,5 @@
 export const TRADE_SLUGS: Record<string, string> = {
+  '4x4-accessories':        '4x4 Accessories',
   'air-conditioning':       'Air Conditioning',
   'au-pair':                'Au Pair',
   'baking-catering':        'Baking & Catering',
@@ -70,6 +71,7 @@ export const TOP_TRADE_SLUGS = [
 
 // What you call the person who does each trade, where it differs from the trade name.
 const TRADE_PERSON: Record<string, string> = {
+  '4x4 Accessories':     '4x4 accessories specialist',
   'Air Conditioning':    'air conditioning technician',
   'Baking & Catering':   'baker & caterer',
   'Bathroom Renovation': 'bathroom renovator',

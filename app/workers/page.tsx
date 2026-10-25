@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 }
 
 const SKILLS = [
-  'Air Conditioning', 'Au Pair', 'Baking & Catering', 'Bathroom Renovation', 'Blinds & Curtains', 'Brick Layer',
+  '4x4 Accessories', 'Air Conditioning', 'Au Pair', 'Baking & Catering', 'Bathroom Renovation', 'Blinds & Curtains', 'Brick Layer',
   'Carpenter', 'CCTV & Intercom', 'Ceiling', 'Cleaner', 'Domestic Worker',
   'Drain Cleaning', 'Electrician', 'Flooring', 'Gardener', 'Handyman',
   'Garage Door Specialist', 'Glass Specialist', 'IT Specialist', 'Kitchen Installer', 'Landscaping', 'LPG Gas Installer', 'Mechanic', 'Moving & Transport', 'Nails & Beauty', 'Painter',

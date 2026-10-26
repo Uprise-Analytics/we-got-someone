@@ -123,7 +123,7 @@ const structuredData = {
   logo: `${BASE_URL}/android-chrome-512x512.png`,
   image: `${BASE_URL}/og-image.png`,
   telephone: '+27621317657',
-  email: 'info@upriseanalytics.co.za',
+  email: 'info@wegotsomeone.co.za',
   address: {
     '@type': 'PostalAddress',
     addressCountry: 'ZA',

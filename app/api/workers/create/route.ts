@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse, after } from 'next/server'
+import { sendWelcomeIfNeeded } from '@/lib/welcome-email'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 
 function generateReferralCode(): string {
@@ -73,8 +74,11 @@ export async function POST(req: NextRequest) {
       console.error('worker create fallback failed', { userId, error: fallbackError })
       return NextResponse.json({ error: 'Could not create profile' }, { status: 500 })
     }
+    after(() => sendWelcomeIfNeeded(userId))
     return NextResponse.json({ ok: true })
   }
+
+  after(() => sendWelcomeIfNeeded(userId))
 
   if (referredBy && newWorker?.id) {
     await supabaseAdmin.from('referrals').insert({

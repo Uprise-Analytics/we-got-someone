@@ -1,6 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse, after } from 'next/server'
+import { sendWelcomeIfNeeded } from '@/lib/welcome-email'
 
 export async function GET(req: NextRequest) {
   const { searchParams, origin } = new URL(req.url)
@@ -23,8 +24,11 @@ export async function GET(req: NextRequest) {
         },
       }
     )
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
+      // Email just got confirmed: send the welcome email after the redirect goes out
+      const userId = data.user?.id
+      if (userId) after(() => sendWelcomeIfNeeded(userId))
       return NextResponse.redirect(new URL(next, origin))
     }
   }

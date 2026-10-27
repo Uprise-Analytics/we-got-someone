@@ -2,6 +2,7 @@ import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { NextRequest, NextResponse, after } from 'next/server'
 import { sendWelcomeIfNeeded } from '@/lib/welcome-email'
+import { alertOwnerWorkerLive } from '@/lib/owner-alert'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 
 export async function GET(req: NextRequest) {
@@ -35,7 +36,7 @@ export async function GET(req: NextRequest) {
       if (userId && Date.now() - confirmedAt < 30 * 60 * 1000) {
         await supabaseAdmin.from('workers').update({ is_active: true }).eq('user_id', userId).eq('is_active', false)
       }
-      if (userId) after(() => sendWelcomeIfNeeded(userId))
+      if (userId) after(() => Promise.all([sendWelcomeIfNeeded(userId), alertOwnerWorkerLive(userId)]))
       return NextResponse.redirect(new URL(next, origin))
     }
   }

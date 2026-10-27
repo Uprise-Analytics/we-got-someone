@@ -7,7 +7,7 @@ export default function ReferralCard({ code }: { code: string }) {
   const [copied, setCopied] = useState(false)
   const link = `${BASE_URL}/join?ref=${code}`
   const waText = encodeURIComponent(
-    `Hey, I use We Got Someone to get found by clients in my area. Join me and list yourself — it's free: ${link}`
+    `Hey, I use We Got Someone to get found by clients in my area. Join me and list yourself. It's free: ${link}`
   )
 
   function handleCopy() {

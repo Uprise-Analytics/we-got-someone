@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import SearchTracker from '@/components/SearchTracker'
 import type { Metadata } from 'next'
+import { liveWorkers, countFor } from '@/lib/find-coverage'
 
 export const revalidate = 3600
 
@@ -18,9 +19,11 @@ export async function generateMetadata(
   const { trade } = await params
   const skill = TRADE_SLUGS[trade]
   if (!skill) return {}
+  const hasWorkers = countFor(await liveWorkers(), skill) > 0
   return {
     title: `Find ${withArticle(titleCase(tradePerson(skill)))} Near You in South Africa`,
-    description: `Browse trusted ${lowerTrade(skill)} workers across South Africa. View profiles, contact directly via WhatsApp or call — no agency fees, no commission.`,
+    description: `Browse trusted ${lowerTrade(skill)} workers across South Africa. View profiles and contact them directly via WhatsApp or call. No agency fees, no commission.`,
+    robots: hasWorkers ? undefined : { index: false, follow: true },
     alternates: { canonical: `/find/${trade}` },
     openGraph: {
       title: `${skill} Workers in South Africa | We Got Someone`,
@@ -77,8 +80,8 @@ export default async function TradePage(
           <h1 className="text-3xl sm:text-4xl font-extrabold mb-3">{skill} in South Africa</h1>
           <p className="text-gray-400 text-sm max-w-lg">
             {workers.length > 0
-              ? `${workers.length} verified ${lowerTrade(skill)} worker${workers.length !== 1 ? 's' : ''} available. Contact them directly — no agency, no commission.`
-              : `Find a trusted ${tradePerson(skill)} near you. Contact directly — no agency, no commission.`
+              ? `${workers.length} verified ${lowerTrade(skill)} worker${workers.length !== 1 ? 's' : ''} available. Contact them directly. No agency, no commission.`
+              : `Find a trusted ${tradePerson(skill)} near you. Contact directly. No agency, no commission.`
             }
           </p>
         </div>
@@ -106,7 +109,7 @@ export default async function TradePage(
         {workers.length === 0 ? (
           /* ── Empty state ── */
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Left — opportunity pitch */}
+            {/* Left: opportunity pitch */}
             <div className="bg-[#0D1B2A] text-white rounded-2xl p-8">
               <p className="text-green-400 text-xs font-bold uppercase tracking-widest mb-3">For {tradePeople(skill)}</p>
               <h2 className="text-2xl font-extrabold mb-3 leading-snug">
@@ -119,12 +122,12 @@ export default async function TradePage(
                 href="/join"
                 className="inline-block bg-green-500 hover:bg-green-400 text-white font-bold px-6 py-3 rounded-xl text-sm transition-colors"
               >
-                List yourself — it's free
+                List yourself. It's free
               </Link>
               <p className="text-gray-600 text-xs mt-3">Free to list. No credit card required.</p>
             </div>
 
-            {/* Right — homeowner message */}
+            {/* Right: homeowner message */}
             <div className="bg-white border border-gray-200 rounded-2xl p-8 flex flex-col justify-between">
               <div>
                 <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-3">For homeowners</p>

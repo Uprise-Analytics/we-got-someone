@@ -3,7 +3,7 @@ import Image from 'next/image'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Get More Work — List Yourself Free | We Got Someone',
+  title: 'Get More Work: List Yourself Free | We Got Someone',
   description: 'People near you are searching for your skills right now. Get your own profile page, appear on Google, and get found by clients directly. Free to list.',
   alternates: { canonical: '/for-workers' },
 }
@@ -36,7 +36,7 @@ export default function ForWorkersPage() {
             href="/join"
             className="inline-block bg-green-500 hover:bg-green-400 text-white font-extrabold px-10 py-4 rounded-2xl text-base transition-colors shadow-xl shadow-green-500/20"
           >
-            Get listed — it's free
+            Get listed. It's free
           </Link>
           <p className="text-gray-600 text-xs mt-4">No credit card. No contract.</p>
         </div>
@@ -72,7 +72,7 @@ export default function ForWorkersPage() {
           href="/join"
           className="inline-block bg-green-500 hover:bg-green-400 text-white font-extrabold px-10 py-4 rounded-2xl text-base transition-colors shadow-xl shadow-green-500/20 mb-3"
         >
-          Get listed — it's free
+          Get listed. It's free
         </Link>
         <p className="text-gray-600 text-xs">No credit card. No contract.</p>
       </section>

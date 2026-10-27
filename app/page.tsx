@@ -177,13 +177,13 @@ export default async function HomePage() {
             People in your area are already<br />searching for someone like you.
           </h2>
           <p className="text-gray-400 text-base mb-10 leading-relaxed max-w-lg mx-auto">
-            List your profile and get found directly. No agency, no commission, no middleman. Everything you need to get more work — completely free.
+            List your profile and get found directly. No agency, no commission, no middleman. Everything you need to get more work, completely free.
           </p>
           <Link
             href="/join"
             className="inline-block bg-green-500 hover:bg-green-400 text-white font-bold px-10 py-4 rounded-xl text-sm transition-colors shadow-lg shadow-green-500/20"
           >
-            Get listed — it's free
+            Get listed. It's free
           </Link>
           <p className="text-gray-600 text-xs mt-4">No contract. Cancel any time.</p>
         </div>

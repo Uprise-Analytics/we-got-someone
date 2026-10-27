@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import SearchTracker from '@/components/SearchTracker'
 import type { Metadata } from 'next'
+import { liveWorkers, countFor } from '@/lib/find-coverage'
 
 export const revalidate = 3600
 
@@ -25,9 +26,11 @@ export async function generateMetadata(
   const skill = TRADE_SLUGS[trade]
   const city = AREA_SLUGS[area]
   if (!skill || !city) return {}
+  const hasWorkers = countFor(await liveWorkers(), skill, city) > 0
   return {
-    title: `${skill} in ${city} — Find Workers Near You`,
-    description: `Looking for ${withArticle(tradePerson(skill))} in ${city}? Browse trusted local workers on We Got Someone. Contact directly via WhatsApp or call — no agency fees.`,
+    title: `${skill} in ${city}: Find Workers Near You`,
+    description: `Looking for ${withArticle(tradePerson(skill))} in ${city}? Browse trusted local workers on We Got Someone. Contact directly via WhatsApp or call. No agency fees.`,
+    robots: hasWorkers ? undefined : { index: false, follow: true },
     alternates: { canonical: `/find/${trade}/${area}` },
     openGraph: {
       title: `${skill} in ${city} | We Got Someone`,
@@ -94,8 +97,8 @@ export default async function TradeAreaPage(
           <h1 className="text-3xl sm:text-4xl font-extrabold mb-3">{skill} in {city}</h1>
           <p className="text-gray-400 text-sm max-w-lg">
             {workers.length > 0
-              ? `${workers.length} verified ${lowerTrade(skill)} worker${workers.length !== 1 ? 's' : ''} serving ${city}. Contact directly — no agency, no commission.`
-              : `Find a trusted ${tradePerson(skill)} in ${city}. Contact directly — no agency, no commission.`
+              ? `${workers.length} verified ${lowerTrade(skill)} worker${workers.length !== 1 ? 's' : ''} serving ${city}. Contact directly. No agency, no commission.`
+              : `Find a trusted ${tradePerson(skill)} in ${city}. Contact directly. No agency, no commission.`
             }
           </p>
         </div>
@@ -118,7 +121,7 @@ export default async function TradeAreaPage(
                 href="/join"
                 className="inline-block bg-green-500 hover:bg-green-400 text-white font-bold px-6 py-3 rounded-xl text-sm transition-colors"
               >
-                List yourself — it's free
+                List yourself. It's free
               </Link>
               <p className="text-gray-600 text-xs mt-3">Free to list. No credit card required.</p>
             </div>

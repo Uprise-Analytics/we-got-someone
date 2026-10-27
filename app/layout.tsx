@@ -102,7 +102,7 @@ const websiteSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: 'We Got Someone',
-  alternateName: ['WeGotSomeone', 'We Got Someone SA', 'wegotsomeone.co.za'],
+  alternateName: ['WeGotSomeone', 'We Got Someone SA'],
   url: BASE_URL,
   potentialAction: {
     '@type': 'SearchAction',
@@ -119,7 +119,7 @@ const structuredData = {
   '@context': 'https://schema.org',
   '@type': 'LocalBusiness',
   name: 'We Got Someone',
-  alternateName: ['WeGotSomeone', 'wegotsomeone.co.za'],
+  alternateName: ['WeGotSomeone'],
   slogan: 'Gatvol of searching? We Got Someone.',
   description: 'South African labour marketplace connecting homeowners with trusted local workers. Find painters, cleaners, gardeners, plumbers and more.',
   url: BASE_URL,

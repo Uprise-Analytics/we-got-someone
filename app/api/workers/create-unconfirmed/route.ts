@@ -44,7 +44,8 @@ export async function POST(req: NextRequest) {
     banner_url: bannerUrl ?? null,
     email: email ?? null,
     website: website ?? null,
-    is_active: true,
+    // Hidden until the email is confirmed; app/auth/callback switches it on.
+    is_active: false,
     languages: languages ?? [],
     service_areas: serviceAreas ?? [],
     referral_code: myReferralCode,

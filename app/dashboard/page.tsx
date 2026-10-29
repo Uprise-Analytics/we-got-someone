@@ -8,6 +8,7 @@ import ReferralCard from './ReferralCard'
 import Navbar from '@/components/Navbar'
 import TradePattern from '@/components/TradePattern'
 import { isOwnerEmail } from '@/lib/admin'
+import { goLiveIfConfirmed } from '@/lib/go-live'
 import { FACEBOOK_URL, FACEBOOK_ICON_PATH } from '@/lib/social'
 
 async function getSession() {
@@ -32,6 +33,12 @@ export default async function DashboardPage() {
     .single()
 
   if (!worker) redirect('/join')
+  // Safety net: a confirmed worker whose profile never went live gets switched on here
+  if (!worker.is_active) {
+    await goLiveIfConfirmed(user.id)
+    const { data: fresh } = await serverSupabase.from('workers').select('is_active').eq('id', worker.id).single()
+    if (fresh) worker.is_active = fresh.is_active
+  }
 
   const firstName = worker.name.split(' ')[0]
   const needsPhoto = !worker.photo_url

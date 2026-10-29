@@ -1,9 +1,8 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
-import { NextRequest, NextResponse, after } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase-admin'
-import { sendWelcomeIfNeeded } from '@/lib/welcome-email'
-import { alertOwnerWorkerLive } from '@/lib/owner-alert'
+import { goLiveIfConfirmed } from '@/lib/go-live'
 
 const VALID_FOR_MS = 14 * 24 * 60 * 60 * 1000
 
@@ -34,8 +33,7 @@ export async function GET(req: NextRequest) {
   if (error) return fail
 
   await supabaseAdmin.from('activation_tokens').update({ used_at: new Date().toISOString() }).eq('token', token)
-  await supabaseAdmin.from('workers').update({ is_active: true }).eq('user_id', user.id).eq('is_active', false)
-  after(() => Promise.all([sendWelcomeIfNeeded(user.id), alertOwnerWorkerLive(user.id)]))
+  await goLiveIfConfirmed(user.id)
 
   return NextResponse.redirect(new URL('/confirmed', origin))
 }

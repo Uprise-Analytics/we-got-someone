@@ -1,9 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { NextRequest, NextResponse, after } from 'next/server'
-import { sendWelcomeIfNeeded } from '@/lib/welcome-email'
-import { alertOwnerWorkerLive } from '@/lib/owner-alert'
-import { supabaseAdmin } from '@/lib/supabase-admin'
+import { goLiveIfConfirmed } from '@/lib/go-live'
 
 export async function GET(req: NextRequest) {
   const { searchParams, origin } = new URL(req.url)
@@ -28,15 +26,9 @@ export async function GET(req: NextRequest) {
     )
     const { data, error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
-      // Email just got confirmed: send the welcome email after the redirect goes out
+      // Email just got confirmed: put the profile live and send the emails after the redirect goes out
       const userId = data.user?.id
-      // Profiles made before confirming are hidden; switch them on now the email is confirmed.
-      // Only right after confirming, so this never re-enables a profile that was switched off later.
-      const confirmedAt = data.user?.email_confirmed_at ? new Date(data.user.email_confirmed_at).getTime() : 0
-      if (userId && Date.now() - confirmedAt < 30 * 60 * 1000) {
-        await supabaseAdmin.from('workers').update({ is_active: true }).eq('user_id', userId).eq('is_active', false)
-      }
-      if (userId) after(() => Promise.all([sendWelcomeIfNeeded(userId), alertOwnerWorkerLive(userId)]))
+      if (userId) after(() => goLiveIfConfirmed(userId))
       return NextResponse.redirect(new URL(next, origin))
     }
   }

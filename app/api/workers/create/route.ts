@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse, after } from 'next/server'
-import { sendWelcomeIfNeeded } from '@/lib/welcome-email'
-import { alertOwnerWorkerLive } from '@/lib/owner-alert'
+import { goLiveIfConfirmed } from '@/lib/go-live'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 
 function generateReferralCode(): string {
@@ -75,11 +74,11 @@ export async function POST(req: NextRequest) {
       console.error('worker create fallback failed', { userId, error: fallbackError })
       return NextResponse.json({ error: 'Could not create profile' }, { status: 500 })
     }
-    after(() => Promise.all([sendWelcomeIfNeeded(userId), alertOwnerWorkerLive(userId)]))
+    after(() => goLiveIfConfirmed(userId))
     return NextResponse.json({ ok: true })
   }
 
-  after(() => Promise.all([sendWelcomeIfNeeded(userId), alertOwnerWorkerLive(userId)]))
+  after(() => goLiveIfConfirmed(userId))
 
   if (referredBy && newWorker?.id) {
     await supabaseAdmin.from('referrals').insert({

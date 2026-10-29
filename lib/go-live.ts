@@ -22,3 +22,25 @@ export async function goLiveIfConfirmed(userId: string) {
     console.error('go live error', e)
   }
 }
+
+// Safety net for the emails: finds confirmed workers who never got the owner alert (and so likely no welcome
+// email either) and runs the go-live step for them. Runs at most every 10 minutes per server instance,
+// piggybacking on normal site traffic.
+let lastSweep = 0
+export async function sweepPendingGoLive() {
+  if (Date.now() - lastSweep < 10 * 60 * 1000) return
+  lastSweep = Date.now()
+  try {
+    const [{ data: workers }, { data: alerted }, { data: list }] = await Promise.all([
+      supabaseAdmin.from('workers').select('user_id'),
+      supabaseAdmin.from('email_log').select('email').eq('kind', 'owner_alert'),
+      supabaseAdmin.auth.admin.listUsers({ perPage: 1000 }),
+    ])
+    const done = new Set((alerted ?? []).map(r => r.email))
+    const withProfile = new Set((workers ?? []).map(w => w.user_id))
+    const pending = (list?.users ?? []).filter(u => u.email_confirmed_at && withProfile.has(u.id) && !done.has(u.email?.toLowerCase() ?? ''))
+    for (const u of pending) await goLiveIfConfirmed(u.id)
+  } catch (e) {
+    console.error('go live sweep error', e)
+  }
+}

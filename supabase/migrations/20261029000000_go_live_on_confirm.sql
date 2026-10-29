@@ -14,7 +14,8 @@ begin
 end $$;
 
 drop trigger if exists go_live_on_confirm on auth.users;
-create trigger go_live_on_confirm after update of email_confirmed_at on auth.users
+-- Not limited to the email_confirmed_at column: Supabase's auth server doesn't always list it in its updates.
+create trigger go_live_on_confirm after update on auth.users
   for each row execute function public.go_live_on_confirm();
 
 -- Covers the race where someone confirms before their profile row is saved.
@@ -32,3 +33,25 @@ end $$;
 drop trigger if exists go_live_on_insert on public.workers;
 create trigger go_live_on_insert before insert on public.workers
   for each row execute function public.go_live_on_insert();
+
+-- workers_protect_columns resets is_active unless the change comes from the service role.
+-- The go-live triggers run inside the database as postgres (no JWT), so allow that role too.
+-- Logged-in users run as "authenticated" and can never act as postgres, so their limits are unchanged.
+create or replace function public.workers_protect_columns() returns trigger
+language plpgsql as $$
+BEGIN
+  IF auth.role() = 'service_role' OR current_user = 'postgres' THEN
+    RETURN new;
+  END IF;
+  new.free_until        := old.free_until;
+  new.is_active         := old.is_active;
+  new.guarantee_claimed := old.guarantee_claimed;
+  new.referral_code     := old.referral_code;
+  new.referred_by       := old.referred_by;
+  new.profile_views     := old.profile_views;
+  new.whatsapp_taps     := old.whatsapp_taps;
+  new.user_id           := old.user_id;
+  new.created_at        := old.created_at;
+  RETURN new;
+END;
+$$;

@@ -97,8 +97,14 @@ function CheckEmailContent() {
         We sent a confirmation link to
       </p>
       <p className="text-white font-semibold text-lg mb-4">{email}</p>
+      <div className="bg-amber-500/10 border border-amber-400/30 rounded-xl px-4 py-3 max-w-sm mb-4">
+        <p className="text-amber-200 text-sm font-semibold leading-relaxed">
+          Your profile stays hidden from clients until you confirm your email.
+        </p>
+      </div>
       <p className="text-gray-500 text-sm max-w-xs leading-relaxed mb-10">
-        Click the link in that email. Once you confirm, this page will automatically take you to your dashboard.
+        Tap the link in that email and your profile goes live straight away. This page will then take you to your dashboard.
+        Can&apos;t find it? Check your spam or promotions folder.
       </p>
 
       <div className="flex items-center gap-2 text-gray-600 text-xs">

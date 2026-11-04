@@ -13,11 +13,17 @@ export async function liveWorkers(): Promise<LiveWorker[]> {
   return (data ?? []) as LiveWorker[]
 }
 
-// Same matching as the /find pages: the skill, plus the area in their city or service areas.
+// A worker serves an area when their city or one of their service areas is that area,
+// or a part of it ("Pretoria East" counts for Pretoria, "Johannesburg CBD" for Johannesburg).
+export function servesArea(w: { city: string | null; service_areas: string[] | null }, area: string) {
+  const a = area.toLowerCase()
+  const matches = (place: string) => {
+    const p = place.toLowerCase().trim()
+    return p === a || p.startsWith(a + ' ')
+  }
+  return matches(w.city ?? '') || (w.service_areas ?? []).some(matches)
+}
+
 export function countFor(workers: LiveWorker[], skill: string, city?: string) {
-  return workers.filter(w => {
-    if (!w.skills?.includes(skill)) return false
-    if (!city) return true
-    return (w.city ?? '').toLowerCase().includes(city.toLowerCase()) || (w.service_areas ?? []).includes(city)
-  }).length
+  return workers.filter(w => w.skills?.includes(skill) && (!city || servesArea(w, city))).length
 }

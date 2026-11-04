@@ -45,7 +45,8 @@ export const TRADE_SLUGS: Record<string, string> = {
   'welding':                'Welding',
 }
 
-export const AREA_SLUGS: Record<string, string> = {
+// Big cities (pre-built at deploy time)
+export const CITY_SLUGS: Record<string, string> = {
   'johannesburg':     'Johannesburg',
   'cape-town':        'Cape Town',
   'durban':           'Durban',
@@ -61,6 +62,41 @@ export const AREA_SLUGS: Record<string, string> = {
   'witbank':          'Witbank',
   'centurion':        'Centurion',
   'soweto':           'Soweto',
+}
+
+// Suburbs and towns where our workers are (built on first visit). Names match the area list workers pick from.
+export const SUBURB_SLUGS: Record<string, string> = {
+  'alberton':         'Alberton',
+  'benoni':           'Benoni',
+  'boksburg':         'Boksburg',
+  'brakpan':          'Brakpan',
+  'germiston':        'Germiston',
+  'edenvale':         'Edenvale',
+  'bedfordview':      'Bedfordview',
+  'kempton-park':     'Kempton Park',
+  'springs':          'Springs',
+  'krugersdorp':      'Krugersdorp',
+  'roodepoort':       'Roodepoort',
+  'randburg':         'Randburg',
+  'sandton':          'Sandton',
+  'fourways':         'Fourways',
+  'midrand':          'Midrand',
+  'menlyn':           'Menlyn',
+  'vereeniging':      'Vereeniging',
+}
+
+export const AREA_SLUGS: Record<string, string> = { ...CITY_SLUGS, ...SUBURB_SLUGS }
+
+// Suburbs that sit close together, for "nearby areas" links
+export const AREA_GROUPS: string[][] = [
+  ['alberton', 'benoni', 'boksburg', 'brakpan', 'germiston', 'edenvale', 'bedfordview', 'kempton-park', 'springs'],
+  ['krugersdorp', 'roodepoort', 'randburg', 'sandton', 'fourways', 'midrand', 'johannesburg', 'soweto'],
+  ['pretoria', 'centurion', 'menlyn', 'midrand'],
+]
+
+export function nearbyAreas(slug: string): string[] {
+  const group = AREA_GROUPS.find(g => g.includes(slug)) ?? []
+  return group.filter(s => s !== slug)
 }
 
 // Top 10 trades for the /find/[trade]/[area] matrix (150 static pages)

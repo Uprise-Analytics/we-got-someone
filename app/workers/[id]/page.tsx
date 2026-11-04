@@ -34,6 +34,17 @@ function Stars({ rating }: { rating: number }) {
   )
 }
 
+// "chris yobe" -> "Chris Yobe" for Google titles only. The profile itself shows the name as typed.
+function displayName(name: string) {
+  return name.trim().replace(/\s+/g, ' ').toLowerCase().replace(/(^|[\s'-])(\p{L})/gu, (_, p, c) => p + c.toUpperCase())
+}
+
+// Reviews Google may show as stars: not ones a worker left on their own profile.
+function publicReviews(worker: any) {
+  const own = (worker.name ?? '').trim().toLowerCase()
+  return (worker.reviews ?? []).filter((r: any) => r.rating && (r.reviewer_name ?? '').trim().toLowerCase() !== own)
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params
   const worker = await getWorker(id)
@@ -41,10 +52,11 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
   const primarySkill = worker.skills?.[0] ?? 'Worker'
   const location = worker.service_areas?.[0] ?? worker.city ?? 'South Africa'
-  const title = `${worker.name} – ${primarySkill} in ${location}`
+  const name = displayName(worker.name)
+  const title = `${name}, ${primarySkill} in ${location}`
   const description = worker.bio
-    ? `${worker.bio.slice(0, 130).trim()}... Contact ${worker.name} directly. No agency fees.`
-    : `${worker.name} is a ${primarySkill} based in ${location}. Find and contact them directly on We Got Someone. No agency fees.`
+    ? `${worker.bio.slice(0, 130).trim()}... Contact ${name} directly. No agency fees.`
+    : `${name} offers ${primarySkill} in ${location}. Find and contact them directly on We Got Someone. No agency fees.`
 
   return {
     title,
@@ -53,7 +65,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     openGraph: {
       title,
       description,
-      images: worker.photo_url ? [{ url: worker.photo_url, alt: worker.name }] : undefined,
+      images: worker.photo_url ? [{ url: worker.photo_url, alt: name }] : undefined,
     },
   }
 }
@@ -66,6 +78,35 @@ export default async function WorkerProfilePage({ params }: { params: Promise<{ 
   const avgRating = worker.reviews?.length
     ? Math.round((worker.reviews.reduce((s: number, r: any) => s + r.rating, 0) / worker.reviews.length) * 10) / 10
     : 0
+
+  const rated = publicReviews(worker)
+  const jsonLd: Record<string, any> = {
+    '@context': 'https://schema.org',
+    '@type': 'LocalBusiness',
+    name: displayName(worker.name),
+    url: `https://www.wegotsomeone.co.za/workers/${worker.id}`,
+    image: worker.photo_url,
+    description: worker.bio ?? undefined,
+    address: { '@type': 'PostalAddress', addressLocality: worker.city ?? worker.service_areas?.[0], addressCountry: 'ZA' },
+    areaServed: worker.service_areas?.length ? worker.service_areas : undefined,
+    knowsAbout: worker.skills,
+  }
+  if (rated.length) {
+    jsonLd.aggregateRating = {
+      '@type': 'AggregateRating',
+      ratingValue: Math.round((rated.reduce((s: number, r: any) => s + r.rating, 0) / rated.length) * 10) / 10,
+      reviewCount: rated.length,
+      bestRating: 5,
+      worstRating: 1,
+    }
+    jsonLd.review = rated.slice(0, 10).map((r: any) => ({
+      '@type': 'Review',
+      author: { '@type': 'Person', name: r.reviewer_name },
+      datePublished: r.created_at?.slice(0, 10),
+      reviewRating: { '@type': 'Rating', ratingValue: r.rating, bestRating: 5, worstRating: 1 },
+      reviewBody: r.comment || undefined,
+    }))
+  }
 
   const whatsappUrl = `https://wa.me/${worker.phone?.replace(/\D/g, '')}`
   const callUrl = `tel:${worker.phone}`
@@ -226,6 +267,7 @@ export default async function WorkerProfilePage({ params }: { params: Promise<{ 
         <ReviewForm workerId={worker.id} />
       </div>
       <ViewTracker workerId={worker.id} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
     </div>
   )
 }

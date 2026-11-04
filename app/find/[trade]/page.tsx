@@ -6,6 +6,7 @@ import Navbar from '@/components/Navbar'
 import SearchTracker from '@/components/SearchTracker'
 import type { Metadata } from 'next'
 import { liveWorkers, countFor } from '@/lib/find-coverage'
+import TradeGuide from '@/components/TradeGuide'
 
 export const revalidate = 3600
 
@@ -233,6 +234,8 @@ export default async function TradePage(
             </Link>
           </div>
         )}
+
+        <TradeGuide skill={skill} />
       </div>
 
       <script

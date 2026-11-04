@@ -1,18 +1,19 @@
 import { supabaseAdmin } from '@/lib/supabase-admin'
-import { TRADE_SLUGS, AREA_SLUGS, TOP_TRADE_SLUGS, lowerTrade, tradePerson, tradePeople, withArticle } from '@/lib/trade-slugs'
+import { TRADE_SLUGS, AREA_SLUGS, CITY_SLUGS, TOP_TRADE_SLUGS, nearbyAreas, lowerTrade, tradePerson, tradePeople, withArticle } from '@/lib/trade-slugs'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import SearchTracker from '@/components/SearchTracker'
 import type { Metadata } from 'next'
-import { liveWorkers, countFor } from '@/lib/find-coverage'
+import { liveWorkers, countFor, servesArea } from '@/lib/find-coverage'
+import TradeGuide from '@/components/TradeGuide'
 
 export const revalidate = 3600
 
 export async function generateStaticParams() {
   const params: { trade: string; area: string }[] = []
   for (const trade of TOP_TRADE_SLUGS) {
-    for (const area of Object.keys(AREA_SLUGS)) {
+    for (const area of Object.keys(CITY_SLUGS)) {
       params.push({ trade, area })
     }
   }
@@ -64,13 +65,16 @@ export default async function TradeAreaPage(
     .eq('is_active', true)
     .not('photo_url', 'is', null)
     .contains('skills', [skill])
-    .or(`city.ilike.%${city}%,service_areas.cs.{${city}}`)
-    .limit(30)
+    .limit(300)
 
-  const workers: Worker[] = (data ?? []).map((w: any) => ({
-    ...w,
-    reviews: w.reviews ?? [],
-  }))
+  const workers: Worker[] = (data ?? [])
+    .filter((w: any) => servesArea(w, city))
+    .slice(0, 30)
+    .map((w: any) => ({
+      ...w,
+      reviews: w.reviews ?? [],
+    }))
+  const nearby = nearbyAreas(area)
 
   const avgRating = (w: Worker) =>
     w.reviews.length
@@ -230,6 +234,21 @@ export default async function TradeAreaPage(
             </Link>
           </div>
         )}
+
+        {nearby.length > 0 && (
+          <div className="mt-10">
+            <p className="text-sm font-semibold text-gray-900 mb-3">{skill} in nearby areas</p>
+            <div className="flex flex-wrap gap-2">
+              {nearby.map(slug => (
+                <Link key={slug} href={`/find/${trade}/${slug}`} className="text-xs font-semibold text-gray-600 bg-white border border-gray-200 hover:border-green-300 hover:text-green-700 rounded-full px-4 py-2 transition-colors">
+                  {AREA_SLUGS[slug]}
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <TradeGuide skill={skill} area={city} />
       </div>
 
       <script

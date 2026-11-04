@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next'
 import { supabaseAdmin } from '@/lib/supabase-admin'
-import { TRADE_SLUGS, TOP_TRADE_SLUGS, AREA_SLUGS } from '@/lib/trade-slugs'
+import { TRADE_SLUGS, AREA_SLUGS } from '@/lib/trade-slugs'
 import { liveWorkers, countFor } from '@/lib/find-coverage'
 
 const BASE_URL = 'https://www.wegotsomeone.co.za'
@@ -56,9 +56,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }))
 
-  // /find/[trade]/[area]: top trades x main cities
+  // /find/[trade]/[area]: every service x city/suburb that has live workers
   const tradeAreaPages: MetadataRoute.Sitemap = []
-  for (const trade of TOP_TRADE_SLUGS) {
+  for (const trade of Object.keys(TRADE_SLUGS)) {
     for (const area of Object.keys(AREA_SLUGS)) {
       if (countFor(live, TRADE_SLUGS[trade], AREA_SLUGS[area]) === 0) continue
       tradeAreaPages.push({

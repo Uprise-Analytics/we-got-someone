@@ -9,7 +9,7 @@ const FROM = 'We Got Someone <hello@news.wegotsomeone.co.za>'
 const REPLY_TO = 'info@wegotsomeone.co.za'
 const NAVY = '#1D294A', GREEN = '#2DAB64', MUTED = '#4A5470', LIGHT = '#F3F5F9'
 
-const BUSINESS_WORDS = /\b(pty|ltd|cc|inc|services|solutions|removals|gates|doors|analytics|group|company|co|enterprises|trading|construction|electrical|plumbing|projects|gifting|auto|motors|of|and)\b|&|\(/i
+const BUSINESS_WORDS = /\b(pty|ltd|cc|inc|services|solutions|removals|gates|doors|analytics|group|company|co|enterprises|trading|construction|electrical|plumbing|projects|gifting|auto|motors|of|and|the|beauty|salon|studio|spa|nails|hair|cleaning|catering|bakery|designs|care)\b|&|\(/i
 
 type Worker = {
   id: string

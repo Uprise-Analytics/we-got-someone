@@ -10,6 +10,7 @@ import Spinner from '@/components/Spinner'
 import TradePattern from '@/components/TradePattern'
 import ImageCropper from '@/components/ImageCropper'
 import GoogleButton from '@/components/GoogleButton'
+import MicrosoftButton from '@/components/MicrosoftButton'
 
 const INPUT = 'w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-gray-50'
 
@@ -527,6 +528,7 @@ export default function JoinPage() {
                 <div className="flex-1 h-px bg-gray-200" />or<div className="flex-1 h-px bg-gray-200" />
               </div>
               <GoogleButton next={referralCode ? `/join?ref=${encodeURIComponent(referralCode)}` : '/join'} />
+              <MicrosoftButton next={referralCode ? `/join?ref=${encodeURIComponent(referralCode)}` : '/join'} />
             </form>
 
             <p className="text-center text-sm text-gray-500 mt-4">

@@ -7,6 +7,7 @@ import { supabase } from '@/lib/supabase-browser'
 import Navbar from '@/components/Navbar'
 import Spinner from '@/components/Spinner'
 import GoogleButton from '@/components/GoogleButton'
+import MicrosoftButton from '@/components/MicrosoftButton'
 
 export default function SignInPage() {
   const router = useRouter()
@@ -145,6 +146,7 @@ export default function SignInPage() {
             <div className="flex-1 h-px bg-gray-200" />or<div className="flex-1 h-px bg-gray-200" />
           </div>
           <GoogleButton next="/dashboard" />
+          <MicrosoftButton next="/dashboard" />
         </form>
 
         <p className="text-sm text-gray-500 mt-6 text-center">

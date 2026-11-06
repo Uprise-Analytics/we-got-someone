@@ -40,7 +40,6 @@ export default async function DashboardPage() {
     if (fresh) worker.is_active = fresh.is_active
   }
 
-  const firstName = worker.name.split(' ')[0]
   const needsPhoto = !worker.photo_url
   const isLive = worker.is_active && !needsPhoto
 
@@ -87,7 +86,7 @@ export default async function DashboardPage() {
             )}
           </div>
           <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-0.5">Welcome back</p>
-          <h1 className="text-xl font-bold text-gray-900 mb-2">{firstName}</h1>
+          <h1 className="text-xl font-bold text-gray-900 mb-2">{worker.name}</h1>
           <div className="flex flex-col items-center gap-1 mb-4 text-sm text-gray-500">
             {(worker.service_areas?.length ? worker.service_areas : worker.city ? [worker.city] : []).length > 0 && (
               <span>

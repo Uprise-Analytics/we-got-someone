@@ -11,7 +11,6 @@ export default function ShareProfile({ profileUrl, workerName }: { profileUrl: s
     setTimeout(() => setCopied(false), 2000)
   }
 
-  const firstName = workerName.split(' ')[0]
   const whatsappMessage = encodeURIComponent(
     `Hi! I recently did some work for you. It would mean a lot if you could leave me a quick review. It helps me get more clients on We Got Someone.\n\n${profileUrl}`
   )

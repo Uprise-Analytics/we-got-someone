@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { supabase } from '@/lib/supabase-browser'
 import Navbar from '@/components/Navbar'
 import Spinner from '@/components/Spinner'
+import GoogleButton from '@/components/GoogleButton'
 
 export default function SignInPage() {
   const router = useRouter()
@@ -140,6 +141,10 @@ export default function SignInPage() {
             {loading && <Spinner />}
             {loading ? 'Signing in...' : 'Sign in'}
           </button>
+          <div className="flex items-center gap-3 text-xs text-gray-400">
+            <div className="flex-1 h-px bg-gray-200" />or<div className="flex-1 h-px bg-gray-200" />
+          </div>
+          <GoogleButton next="/dashboard" />
         </form>
 
         <p className="text-sm text-gray-500 mt-6 text-center">

@@ -9,6 +9,7 @@ import AreaSelect from '@/components/AreaSelect'
 import Spinner from '@/components/Spinner'
 import TradePattern from '@/components/TradePattern'
 import ImageCropper from '@/components/ImageCropper'
+import GoogleButton from '@/components/GoogleButton'
 
 const INPUT = 'w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-gray-50'
 
@@ -129,7 +130,9 @@ export default function JoinPage() {
         .eq('user_id', session.user.id)
         .single()
       if (!worker) {
-        // Signed in but no profile yet (e.g. came from dashboard redirect) — skip auth step
+        // Signed in but no profile yet (e.g. came from dashboard redirect or Google) — skip auth step
+        const googleName = session.user.user_metadata?.full_name
+        if (googleName) setName(prev => prev || googleName)
         setStep('profile')
         return
       }
@@ -520,6 +523,10 @@ export default function JoinPage() {
               >
                 Continue
               </button>
+              <div className="flex items-center gap-3 text-xs text-gray-400">
+                <div className="flex-1 h-px bg-gray-200" />or<div className="flex-1 h-px bg-gray-200" />
+              </div>
+              <GoogleButton next={referralCode ? `/join?ref=${encodeURIComponent(referralCode)}` : '/join'} />
             </form>
 
             <p className="text-center text-sm text-gray-500 mt-4">

@@ -108,7 +108,6 @@ export default async function WorkerProfilePage({ params }: { params: Promise<{ 
     }))
   }
 
-  const whatsappUrl = `https://wa.me/${worker.phone?.replace(/\D/g, '')}`
   const callUrl = `tel:${worker.phone}`
 
   return (

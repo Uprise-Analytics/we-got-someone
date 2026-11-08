@@ -1,0 +1,9 @@
+// wa.me needs the number in international format without "+" or a leading 0.
+// SA numbers are stored as typed (e.g. "082 123 4567"), so swap the 0 for 27.
+export function waNumber(phone: string | null | undefined) {
+  const digits = (phone ?? '').replace(/\D/g, '')
+  if (!digits) return null
+  if (digits.startsWith('27')) return digits
+  if (digits.startsWith('0')) return '27' + digits.slice(1)
+  return digits
+}

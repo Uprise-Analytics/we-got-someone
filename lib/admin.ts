@@ -1,3 +1,4 @@
+import { waNumber } from './phone'
 import { cookies } from 'next/headers'
 import { createServerClient } from '@supabase/ssr'
 import { supabaseAdmin } from '@/lib/supabase-admin'
@@ -76,14 +77,6 @@ export type WorkerRow = {
 }
 
 export type Delta = { now: number; before: number }
-
-function waNumber(phone: string | null) {
-  const digits = (phone ?? '').replace(/\D/g, '')
-  if (!digits) return null
-  if (digits.startsWith('27')) return digits
-  if (digits.startsWith('0')) return '27' + digits.slice(1)
-  return digits
-}
 
 function firstName(name: string) {
   const clean = name.trim()

@@ -7,3 +7,10 @@ export function waNumber(phone: string | null | undefined) {
   if (digits.startsWith('0')) return '27' + digits.slice(1)
   return digits
 }
+
+// Pre-typed message customers see when they tap WhatsApp on a profile.
+export const ENQUIRY_MESSAGE = "Hi, I found you on We Got Someone and I'd like to ask about your services."
+
+export function waLink(phone: string | null | undefined, text = ENQUIRY_MESSAGE) {
+  return `https://wa.me/${waNumber(phone) ?? ''}?text=${encodeURIComponent(text)}`
+}

@@ -1,7 +1,7 @@
 'use client'
 
 import { isOwnerBrowser, trackingIds } from '@/lib/track'
-import { waNumber } from '@/lib/phone'
+import { waLink } from '@/lib/phone'
 
 export default function WhatsAppButton({ phone, workerId }: { phone: string; workerId: string }) {
   function handleClick() {
@@ -16,7 +16,7 @@ export default function WhatsAppButton({ phone, workerId }: { phone: string; wor
 
   return (
     <a
-      href={`https://wa.me/${waNumber(phone) ?? ''}`}
+      href={waLink(phone)}
       target="_blank"
       rel="noopener noreferrer"
       onClick={handleClick}

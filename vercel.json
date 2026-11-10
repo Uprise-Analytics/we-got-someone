@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/weekly-scoreboard",
+      "schedule": "0 5 * * 1"
+    }
+  ]
+}

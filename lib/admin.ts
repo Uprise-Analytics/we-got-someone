@@ -35,7 +35,7 @@ export function dayKey(date: string | number | Date) {
 }
 
 type Event = {
-  type: 'page_view' | 'profile_view' | 'whatsapp_tap' | 'search'
+  type: 'page_view' | 'profile_view' | 'whatsapp_tap' | 'call_tap' | 'search'
   created_at: string
   visitor_id: string | null
   session_id: string | null
@@ -168,6 +168,8 @@ export async function loadDashboard(days: number) {
   const inPeriod = events.filter(e => new Date(e.created_at) >= periodStart)
   const inPrev = events.filter(e => new Date(e.created_at) < periodStart)
   const of = (list: Event[], type: Event['type']) => list.filter(e => e.type === type)
+  // A contact is a customer tapping WhatsApp or Call on a profile.
+  const contactsOf = (list: Event[]) => list.filter(e => e.type === 'whatsapp_tap' || e.type === 'call_tap')
   const unique = (list: Event[]) => new Set(list.map(e => e.visitor_id ?? e.session_id).filter(Boolean)).size
   const between = (date: string, start: Date, end: number) => {
     const t = new Date(date).getTime()
@@ -180,7 +182,7 @@ export async function loadDashboard(days: number) {
     if (!e.worker_id) continue
     const w = periodByWorker.get(e.worker_id) ?? { views: 0, taps: 0 }
     if (e.type === 'profile_view') w.views++
-    if (e.type === 'whatsapp_tap') w.taps++
+    if (e.type === 'whatsapp_tap' || e.type === 'call_tap') w.taps++
     periodByWorker.set(e.worker_id, w)
   }
   const trackingSince = events[0]?.created_at ?? null
@@ -257,7 +259,7 @@ export async function loadDashboard(days: number) {
   const kpis = {
     visitors: { now: unique(of(inPeriod, 'page_view')), before: unique(of(inPrev, 'page_view')) },
     profileViews: { now: of(inPeriod, 'profile_view').length, before: of(inPrev, 'profile_view').length },
-    contacts: { now: of(inPeriod, 'whatsapp_tap').length, before: of(inPrev, 'whatsapp_tap').length },
+    contacts: { now: contactsOf(inPeriod).length, before: contactsOf(inPrev).length },
     signups: { now: signupsIn(periodStart, now), before: signupsIn(prevStart, periodStart.getTime()) },
     reviews: { now: reviewsIn(periodStart, now), before: reviewsIn(prevStart, periodStart.getTime()) },
     live: realWorkers.filter(w => w.live).length,
@@ -282,7 +284,7 @@ export async function loadDashboard(days: number) {
   }
   const pvDays = byDay(of(inPeriod, 'page_view'))
   const viewDays = byDay(of(inPeriod, 'profile_view'))
-  const tapDays = byDay(of(inPeriod, 'whatsapp_tap'))
+  const tapDays = byDay(contactsOf(inPeriod))
   const daily = {
     visitors: series(k => unique(pvDays.get(k) ?? [])),
     profileViews: series(k => viewDays.get(k)?.length ?? 0),
@@ -363,7 +365,7 @@ export async function loadDashboard(days: number) {
   const activity = [
     ...workersRaw.slice(0, 15).map(w => ({ at: w.created_at as string, kind: 'signup' as const, text: `${w.name?.trim()} joined`, flag: undefined as string | undefined, sub: (w.skills ?? []).slice(0, 2).join(', '), href: `/workers/${w.id}` })),
     ...allReviews.slice(0, 15).map(r => ({ at: r.created_at as string, kind: 'review' as const, text: `${r.reviewer_name} reviewed ${r.worker}`, flag: isSelfReview(r.reviewer_name, r.worker) ? 'Looks like a self-review' : undefined, sub: `${'★'.repeat(r.rating)}${r.comment ? ' · ' + r.comment.slice(0, 80) : ''}`, href: `/workers/${r.workerId}` })),
-    ...of(events, 'whatsapp_tap').slice(-15).map(e => ({ at: e.created_at, kind: 'contact' as const, flag: undefined, text: `Someone WhatsApped ${workers.find(w => w.id === e.worker_id)?.name ?? 'a worker'}`, sub: e.device ?? '', href: `/workers/${e.worker_id}` })),
+    ...contactsOf(events).slice(-15).map(e => ({ at: e.created_at, kind: 'contact' as const, flag: undefined, text: `Someone ${e.type === 'call_tap' ? 'phoned' : 'WhatsApped'} ${workers.find(w => w.id === e.worker_id)?.name ?? 'a worker'}`, sub: e.device ?? '', href: `/workers/${e.worker_id}` })),
   ].sort((a, b) => b.at.localeCompare(a.at)).slice(0, 14)
 
   return {

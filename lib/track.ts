@@ -1,7 +1,7 @@
 'use client'
 
 // Anonymous visit tracking for the owner dashboard. A random id per browser (visitor) and per tab session.
-type EventType = 'page_view' | 'profile_view' | 'whatsapp_tap' | 'search'
+type EventType = 'page_view' | 'profile_view' | 'whatsapp_tap' | 'call_tap' | 'search'
 
 function randomId() {
   return crypto.randomUUID?.() ?? Math.random().toString(36).slice(2) + Date.now().toString(36)

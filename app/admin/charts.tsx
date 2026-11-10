@@ -29,7 +29,7 @@ export function Sparkline({ points, color = '#4ade80' }: { points: Point[]; colo
   )
 }
 
-// Visitors as an area, profile views as a line, WhatsApp contacts as bars along the bottom.
+// Visitors as an area, profile views as a line, contacts (WhatsApp + calls) as bars along the bottom.
 export function TrafficChart({ visitors, views, contacts }: { visitors: Point[]; views: Point[]; contacts: Point[] }) {
   const W = 760, H = 240, L = 34, R = 8, T = 12, B = 26
   const iw = W - L - R, ih = H - T - B
@@ -44,7 +44,7 @@ export function TrafficChart({ visitors, views, contacts }: { visitors: Point[];
   const ticks = [0, 0.25, 0.5, 0.75, 1].map(f => Math.round(max * f))
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto" role="img" aria-label="Daily visitors, profile views and WhatsApp contacts">
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto" role="img" aria-label="Daily visitors, profile views and contacts">
       <defs>
         <linearGradient id="visitorsFill" x1="0" x2="0" y1="0" y2="1">
           <stop offset="0%" stopColor={NAVY} stopOpacity={0.22} />
@@ -59,7 +59,7 @@ export function TrafficChart({ visitors, views, contacts }: { visitors: Point[];
       ))}
       {contacts.map((p, i) => p.value > 0 && (
         <rect key={p.day} x={x(i) - barW / 2} width={barW} y={T + ih - (p.value / cmax) * ih * 0.45} height={(p.value / cmax) * ih * 0.45} rx={2} fill={GREEN} opacity={0.85}>
-          <title>{`${shortDay(p.day)}: ${p.value} WhatsApp contact${p.value === 1 ? '' : 's'}`}</title>
+          <title>{`${shortDay(p.day)}: ${p.value} contact${p.value === 1 ? '' : 's'}`}</title>
         </rect>
       ))}
       <path d={`${path(visitors)} L${x(n - 1)},${T + ih} L${x(0)},${T + ih} Z`} fill="url(#visitorsFill)" />
@@ -68,7 +68,7 @@ export function TrafficChart({ visitors, views, contacts }: { visitors: Point[];
       {visitors.map((p, i) => (
         <g key={p.day}>
           <rect x={x(i) - iw / n / 2} y={T} width={iw / n} height={ih} fill="transparent">
-            <title>{`${shortDay(p.day)}\n${p.value} visitors\n${views[i]?.value ?? 0} profile views\n${contacts[i]?.value ?? 0} WhatsApp contacts`}</title>
+            <title>{`${shortDay(p.day)}\n${p.value} visitors\n${views[i]?.value ?? 0} profile views\n${contacts[i]?.value ?? 0} contacts`}</title>
           </rect>
           {(i % labelEvery === 0 || i === n - 1) && (
             <text x={x(i)} y={H - 6} textAnchor="middle" fontSize={11} fill="#9ca3af">{shortDay(p.day)}</text>

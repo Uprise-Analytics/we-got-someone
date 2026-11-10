@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 
-const TYPES = ['page_view', 'profile_view', 'whatsapp_tap', 'search'] as const
+const TYPES = ['page_view', 'profile_view', 'whatsapp_tap', 'call_tap', 'search'] as const
 type EventType = (typeof TYPES)[number]
 
 const BOTS = /bot|crawl|spider|slurp|preview|facebookexternalhit|whatsapp|headless|lighthouse|vercel|curl|python|axios|node-fetch/i

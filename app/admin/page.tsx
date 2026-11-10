@@ -72,7 +72,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
   const tiles = [
     { label: 'Visitors', value: k.visitors.now, delta: k.visitors, spark: d.daily.visitors, color: '#93c5fd' },
     { label: 'Profile views', value: k.profileViews.now, delta: k.profileViews, spark: d.daily.profileViews, color: '#93c5fd' },
-    { label: 'WhatsApp contacts', value: k.contacts.now, delta: k.contacts, spark: d.daily.contacts, color: '#4ade80' },
+    { label: 'Contacts (WhatsApp + calls)', value: k.contacts.now, delta: k.contacts, spark: d.daily.contacts, color: '#4ade80' },
     { label: 'New workers', value: k.signups.now, delta: k.signups, spark: d.daily.signups, color: '#4ade80' },
     { label: 'New reviews', value: k.reviews.now, delta: k.reviews, spark: d.daily.reviews, color: '#facc15' },
   ]
@@ -152,7 +152,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
               <span className="flex flex-wrap justify-end gap-x-3 gap-y-1">
                 <span className="inline-flex items-center gap-1.5"><span className="w-3 h-0.5 bg-[#1D294A]" />Visitors</span>
                 <span className="inline-flex items-center gap-1.5"><span className="w-3 h-0.5 border-t-2 border-dashed border-blue-400" />Profile views</span>
-                <span className="inline-flex items-center gap-1.5"><span className="w-2 h-2 rounded-sm bg-green-600" />WhatsApp contacts</span>
+                <span className="inline-flex items-center gap-1.5"><span className="w-2 h-2 rounded-sm bg-green-600" />Contacts (WhatsApp + calls)</span>
               </span>
             }
           >
@@ -168,7 +168,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
               </div>
               <div>
                 <p className="text-xl font-bold text-gray-900 tabular-nums">{conversion}%</p>
-                <p className="text-xs text-gray-500">Profile views that led to WhatsApp</p>
+                <p className="text-xs text-gray-500">Profile views that led to a WhatsApp or call</p>
               </div>
             </div>
           </Card>

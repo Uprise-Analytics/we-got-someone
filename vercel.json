@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/weekly-scoreboard",
       "schedule": "0 5 * * 1"
+    },
+    {
+      "path": "/api/cron/worker-weekly",
+      "schedule": "0 6 * * 1"
     }
   ]
 }

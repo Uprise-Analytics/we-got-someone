@@ -14,8 +14,8 @@ export type Delta = { now: number; before: number }
 export type WorkerStats = {
   views: Delta
   contacts: Delta
-  whatsapp: number // this week
-  calls: number // this week
+  whatsapp: number // in the period
+  calls: number // in the period
   searches: Delta // people searching for one of the worker's trades in their areas (or anywhere)
   topSearchedTrade: string | null
   daily: { day: string; views: number; contacts: number }[] // last 28 days, oldest first
@@ -31,10 +31,11 @@ type WorkerInput = {
   whatsapp_taps: number | null
 }
 
-export async function getWorkerStats(w: WorkerInput, now = Date.now()): Promise<WorkerStats> {
-  const weekStart = now - 7 * DAY
-  const prevStart = now - 14 * DAY
-  const chartStart = now - 28 * DAY
+// periodDays: the window for the main numbers (dashboard uses 28, the weekly email 7). The chart is always 28 days.
+export async function getWorkerStats(w: WorkerInput, periodDays = 28, now = Date.now()): Promise<WorkerStats> {
+  const weekStart = now - periodDays * DAY
+  const prevStart = now - 2 * periodDays * DAY
+  const chartStart = Math.min(now - 28 * DAY, prevStart)
   const skills = w.skills ?? []
   const areas = new Set((w.service_areas?.length ? w.service_areas : w.city ? [w.city] : []).map(a => a.toLowerCase()))
 

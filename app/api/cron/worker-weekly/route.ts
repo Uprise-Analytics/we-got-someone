@@ -3,7 +3,8 @@ import { supabaseAdmin } from '@/lib/supabase-admin'
 import { getWorkerStats, saDay } from '@/lib/worker-stats'
 import { buildWeeklyEmail, type WeeklyWorker } from '@/lib/weekly-email'
 
-// Monday-morning "your numbers" email to every worker (Vercel cron, see vercel.json).
+// "Your numbers" email to every worker. PAUSED on 2026-11-11: removed from vercel.json until traffic grows,
+// because many workers would see zeros. Re-add the cron entry to switch it back on.
 // Manual use, same CRON_SECRET bearer:
 //   ?test=you@example.com[&worker=<id>]  sends one preview to that address only, nothing logged
 //   ?dry=1                                lists who would get it, sends nothing
@@ -58,7 +59,7 @@ export async function GET(req: NextRequest) {
     const { data } = id ? await q.eq('id', id) : await q.eq('is_active', true).order('profile_views', { ascending: false })
     const w = data?.[0]
     if (!w) return NextResponse.json({ error: 'worker not found' }, { status: 404 })
-    const stats = await getWorkerStats(w)
+    const stats = await getWorkerStats(w, 7)
     const { subject, html, text } = buildWeeklyEmail(w as WeeklyWorker, stats, `${SITE}/api/email/unsubscribe`)
     const sent = await send(test, `[Preview] ${subject}`, html, text, `${SITE}/api/email/unsubscribe`)
     return NextResponse.json({ ok: true, preview: w.name, subject, sent })
@@ -85,7 +86,7 @@ export async function GET(req: NextRequest) {
     const { error: claimError } = await supabaseAdmin.from('email_log').insert({ email, kind })
     if (claimError) { results.push({ name: w.name, status: 'already sent' }); continue }
     try {
-      const stats = await getWorkerStats(w)
+      const stats = await getWorkerStats(w, 7)
       const unsub = await unsubscribeUrl(email)
       const { subject, html, text } = buildWeeklyEmail(w as WeeklyWorker, stats, unsub)
       const id = await send(email, subject, html, text, unsub)

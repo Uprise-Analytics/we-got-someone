@@ -111,7 +111,7 @@ export function buildWeeklyEmail(w: WeeklyWorker, stats: WorkerStats, unsub: str
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${LIGHT};"><tr><td align="center" style="padding:24px 10px;">
   <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;background:#ffffff;border-radius:16px;overflow:hidden;">
     <tr><td bgcolor="${NAVY}" style="background:${NAVY};padding:26px 28px 22px;">
-      <img src="${SITE}/email/logo-white.png" width="230" alt="We Got Someone" style="display:block;width:230px;max-width:70%;height:auto;border:0;">
+      <img src="cid:wgs-logo-white" width="230" alt="We Got Someone" style="display:block;width:230px;max-width:70%;height:auto;border:0;">
       <div style="${FONT}font-size:24px;font-weight:bold;line-height:30px;color:#ffffff;padding-top:18px;">Your weekly report</div>
       <div style="${FONT}font-size:14px;line-height:20px;color:#B9C1D6;padding-top:2px;">${esc(name)} · ${from} to ${to}</div>
     </td></tr>

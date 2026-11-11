@@ -16,6 +16,13 @@ const COLS = 'id, user_id, name, photo_url, banner_url, bio, work_photos, servic
 
 const sleep = (ms: number) => new Promise(r => setTimeout(r, ms))
 
+// The logo travels inside the email (cid attachment) so it shows even when the email app blocks web images.
+let logoB64: string | null = null
+async function logo() {
+  logoB64 ??= Buffer.from(await (await fetch(`${SITE}/email/logo-white.png`)).arrayBuffer()).toString('base64')
+  return logoB64
+}
+
 async function unsubscribeUrl(email: string) {
   await supabaseAdmin.from('email_unsub_tokens').upsert({ email }, { onConflict: 'email', ignoreDuplicates: true })
   const { data } = await supabaseAdmin.from('email_unsub_tokens').select('token').eq('email', email).single()
@@ -29,6 +36,7 @@ async function send(to: string, subject: string, html: string, text: string, uns
     body: JSON.stringify({
       from: FROM, to: [to], reply_to: REPLY_TO, subject, html, text,
       headers: { 'List-Unsubscribe': `<${unsub}>`, 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' },
+      attachments: [{ filename: 'we-got-someone.png', content: await logo(), content_id: 'wgs-logo-white' }],
     }),
   })
   if (!res.ok) throw new Error(`${res.status} ${await res.text()}`)

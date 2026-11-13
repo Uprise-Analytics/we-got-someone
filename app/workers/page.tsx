@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { supabaseAdmin as supabase } from '@/lib/supabase-admin'
 import Link from 'next/link'
+import { titleCase, tradePeople } from '@/lib/trade-slugs'
 import WorkerSearch from './WorkerSearch'
 import SearchTracker from '@/components/SearchTracker'
 import Navbar from '@/components/Navbar'
@@ -123,7 +124,7 @@ export default async function WorkersPage({
       <div className="relative max-w-5xl mx-auto w-full px-6 py-10">
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-900 mb-1">
-            {skill && area ? `${skill}s in ${area}` : skill ? `${skill}s` : area ? `Workers in ${area}` : 'Find a Worker'}
+            {skill && area ? `${titleCase(tradePeople(skill))} in ${area}` : skill ? titleCase(tradePeople(skill)) : area ? `Workers in ${area}` : 'Find a Worker'}
           </h1>
           {workers.length > 0 && (
             <p className="text-gray-500 text-sm">{workers.length} worker{workers.length !== 1 ? 's' : ''} found</p>

@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     locale: 'en_ZA',
     url: BASE_URL,
     siteName: 'We Got Someone',
-    title: 'Find Trusted Local Workers in South Africa',
+    title: 'We Got Someone | Find Trusted Local Workers in South Africa',
     description: 'Find trusted painters, cleaners, gardeners, plumbers and more near you. Direct contact, no agency fees.',
     images: [
       {
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
   // Twitter / X card
   twitter: {
     card: 'summary_large_image',
-    title: 'Find Trusted Local Workers in South Africa',
+    title: 'We Got Someone | Find Trusted Local Workers in South Africa',
     description: 'Find trusted painters, cleaners, gardeners, plumbers and more near you. Direct contact, no agency fees.',
     images: ['/og-image.png'],
   },

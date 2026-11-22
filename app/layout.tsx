@@ -5,6 +5,7 @@ import NavigationSpinner from '@/components/NavigationSpinner'
 import WhatsAppSupport from '@/components/WhatsAppSupport'
 import UtmCapture from '@/components/UtmCapture'
 import PageTracker from '@/components/PageTracker'
+import MetaPixel from '@/components/MetaPixel'
 import { FACEBOOK_URL } from '@/lib/social'
 import './globals.css'
 
@@ -155,6 +156,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-screen flex flex-col bg-white text-gray-900">
         <UtmCapture />
         <Suspense fallback={null}><PageTracker /></Suspense>
+        <Suspense fallback={null}><MetaPixel /></Suspense>
         <NavigationSpinner />
         <WhatsAppSupport />
         {children}

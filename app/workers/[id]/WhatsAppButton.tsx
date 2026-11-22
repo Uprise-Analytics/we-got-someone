@@ -1,11 +1,13 @@
 'use client'
 
 import { isOwnerBrowser, trackingIds } from '@/lib/track'
+import { fbTrack } from '@/lib/pixel'
 import { waLink } from '@/lib/phone'
 
 export default function WhatsAppButton({ phone, workerId }: { phone: string; workerId: string }) {
   function handleClick() {
     if (isOwnerBrowser()) return
+    fbTrack('Contact', { content_name: 'whatsapp', content_category: 'worker_profile' })
     fetch('/api/workers/whatsapp-tap', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

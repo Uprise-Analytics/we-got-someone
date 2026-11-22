@@ -1,10 +1,12 @@
 'use client'
 
 import { isOwnerBrowser, trackingIds } from '@/lib/track'
+import { fbTrack } from '@/lib/pixel'
 
 export default function CallButton({ phone, workerId }: { phone: string; workerId: string }) {
   function handleClick() {
     if (isOwnerBrowser()) return
+    fbTrack('Contact', { content_name: 'call', content_category: 'worker_profile' })
     fetch('/api/workers/call-tap', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
